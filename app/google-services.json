@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "111417552422",
+    "firebase_url": "https://smoothie-40dd3-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "smoothie-40dd3",
+    "storage_bucket": "smoothie-40dd3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:111417552422:android:97ed21c804b55a26bf40e7",
+        "android_client_info": {
+          "package_name": "com.example.smoothie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "111417552422-97akue3hvemg2vmptll27k839nihftad.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJQKw22YEU8znQS37-up7y67xIMjZd16E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "111417552422-97akue3hvemg2vmptll27k839nihftad.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
