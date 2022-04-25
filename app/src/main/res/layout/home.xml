@@ -21,7 +21,7 @@
 
 
         <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/pager"
+            android:id="@+id/pager_placeholder"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_alignParentStart="true"
@@ -34,11 +34,11 @@
             android:id="@+id/what_to_eat"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_below="@+id/pager"
+            android:layout_below="@+id/pager_placeholder"
             android:layout_alignParentStart="true"
             android:layout_marginEnd="5sp"
             android:fontFamily="@font/oswald"
-            android:text="Предыдущий"
+            android:text="@string/prev"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline1"
@@ -51,7 +51,7 @@
             android:layout_height="0dp"
             android:layout_marginStart="5sp"
             android:fontFamily="@font/oswald"
-            android:text="Следующий"
+            android:text="@string/next"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"

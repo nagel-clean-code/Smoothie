@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="screens.AddRecipeFragment">
-    <!-- TODO: Update blank fragment layout -->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/add_button"
+            app:layout_constraintDimensionRatio="1:0.381"
+            app:layout_constraintEnd_toEndOf="@+id/editText_name_recipe"
+            app:layout_constraintStart_toStartOf="@+id/editText_name_recipe"
+            app:layout_constraintTop_toBottomOf="@+id/entering_description_Layout" />
 
         <EditText
-            android:id="@+id/editTextName"
+            android:id="@+id/editText_name_recipe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16sp"
@@ -28,7 +30,7 @@
             android:ems="10"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:hint="Название рецепта"
+            android:hint="@string/hint_name_recipe"
             android:inputType="textCapSentences"
             android:text=""
             android:textAlignment="center"
@@ -45,7 +47,7 @@
             android:backgroundTint="@color/carrot"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextName" />
+            app:layout_constraintTop_toBottomOf="@id/editText_name_recipe" />
 
         <TextView
             android:id="@+id/textView_ingredients"
@@ -53,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
             android:fontFamily="@font/oswald"
-            android:text="Ингредиенты:"
+            android:text="@string/ingredients"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/guideline_headers"
@@ -66,28 +68,76 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.03" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_text_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.05" />
-
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="409dp"
+            android:id="@+id/entering_ingredients_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView_ingredients">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/enteringIngredients"
+                android:id="@+id/entering_ingredients"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Задайте ингредиенты"
-                android:inputType="textCapSentences|textMultiLine"
-
-                />
+                android:hint="@string/hint_input_ingredients"
+                android:inputType="textCapSentences|textMultiLine" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:id="@+id/textView_recipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20sp"
+            android:fontFamily="@font/oswald"
+            android:text="@string/recipe"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/guideline_headers"
+            app:layout_constraintTop_toBottomOf="@+id/entering_ingredients_layout" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/entering_recipe_Layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_recipe">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/entering_recipe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_input_recipe"
+                android:inputType="textCapSentences|textMultiLine" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/textView_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20sp"
+            android:fontFamily="@font/oswald"
+            android:text="@string/description"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/guideline_headers"
+            app:layout_constraintTop_toBottomOf="@+id/entering_recipe_Layout" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/entering_description_Layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_description">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/entering_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_short_description"
+                android:inputType="textCapSentences|textMultiLine" />
+        </com.google.android.material.textfield.TextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+</ScrollView>

@@ -1,4 +1,4 @@
-package com.example.smoothie.adapters
+package com.example.smoothie.screens.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -7,7 +7,7 @@ import com.example.smoothie.Constants
 import com.example.smoothie.screens.MyFragment
 import com.example.smoothie.screens.StandardFragment
 
-class MyPagerAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
+class HomePagerAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
     override fun getItemCount() = Constants.COUNT_FRAGMENT_VIEW
 
     override fun createFragment(position: Int): Fragment {
