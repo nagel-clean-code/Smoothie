@@ -1,7 +1,9 @@
 package com.example.smoothie
 
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Rect
 import android.os.Bundle
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.smoothie.databinding.ActivityMainBinding
 import com.example.smoothie.screens.AddRecipeFragment
@@ -17,13 +19,12 @@ class MainActivity() : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // При повороте экрана востановленный фрагмент
-        // (с empty конструктором) заменяется
-        replaceFragment(HomeFragment(this))
+        if(savedInstanceState == null)
+            replaceFragment(HomeFragment())
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             val bufFragment = when(it.itemId){
-                R.id.home -> HomeFragment(this)
+                R.id.home -> HomeFragment()
                 R.id.settings -> SettingsFragment()
                 R.id.add_recipe -> AddRecipeFragment()
                 R.id.find_recipe -> FindRecipeFragment()
@@ -31,6 +32,20 @@ class MainActivity() : AppCompatActivity() {
             }
             replaceFragment(bufFragment)
             true
+        }
+        settingKeyboard()
+    }
+
+    /** Скрытие поднятого меню над клавиатурой при вводе текста */
+    private fun settingKeyboard(){
+        binding.bottomNavigationView.viewTreeObserver.addOnGlobalLayoutListener {
+            val r = Rect()
+            binding.root.getWindowVisibleDisplayFrame(r)
+            if (binding.root.rootView.height - (r.bottom - r.top) > 500) {
+                binding.bottomNavigationView.visibility = View.GONE
+            } else {
+                binding.bottomNavigationView.visibility = View.VISIBLE
+            }
         }
     }
 
