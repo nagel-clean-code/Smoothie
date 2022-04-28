@@ -31,4 +31,6 @@
     <string name="test_smoothie">Смузи</string>
     <string name="prev">Предыдущий</string>
     <string name="next">Следующий</string>
+    <string name="add_image">Добавление изображения</string>
+    <string name="preview">Превью</string>
 </resources>

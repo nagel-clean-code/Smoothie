@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="screens.AddRecipeFragment">
+    tools:context="presentation.AddRecipeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,8 +17,8 @@
             android:layout_marginTop="20dp"
             android:text="@string/add_button"
             app:layout_constraintDimensionRatio="1:0.381"
-            app:layout_constraintEnd_toEndOf="@+id/editText_name_recipe"
-            app:layout_constraintStart_toStartOf="@+id/editText_name_recipe"
+            app:layout_constraintEnd_toEndOf="@+id/guideline_button_end"
+            app:layout_constraintStart_toStartOf="@+id/guideline_button_start"
             app:layout_constraintTop_toBottomOf="@+id/entering_description_Layout" />
 
         <EditText
@@ -30,21 +30,52 @@
             android:ems="10"
             android:focusable="true"
             android:focusableInTouchMode="true"
+            android:fontFamily="@font/merriweather_black_italic"
             android:hint="@string/hint_name_recipe"
             android:inputType="textCapSentences"
             android:text=""
             android:textAlignment="center"
+            android:textColor="@color/carrot"
+            android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/image"
-            android:layout_width="100sp"
-            android:layout_height="100sp"
-            android:layout_marginTop="36dp"
-            android:background="@drawable/ic_baseline_add_photo_alternate_24"
-            android:backgroundTint="@color/carrot"
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_button_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.25" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_button_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.75" />
+
+        <ImageView
+            android:id="@+id/image_button"
+            android:layout_width="0dp"
+            android:layout_height="250sp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/add_image"
+            android:paddingTop="46sp"
+            android:paddingBottom="46sp"
+            android:src="@drawable/ic_baseline_add_photo_alternate_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editText_name_recipe"
+            app:tint="@color/carrot" />
+
+        <ImageView
+            android:id="@+id/image_preview"
+            android:layout_width="match_parent"
+            android:layout_height="250sp"
+            android:contentDescription="@string/preview"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/editText_name_recipe" />
@@ -53,13 +84,12 @@
             android:id="@+id/textView_ingredients"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
             android:fontFamily="@font/oswald"
             android:text="@string/ingredients"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/guideline_headers"
-            app:layout_constraintTop_toBottomOf="@+id/image" />
+            app:layout_constraintTop_toBottomOf="@+id/image_button" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_headers"
@@ -80,8 +110,10 @@
                 android:id="@+id/entering_ingredients"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans"
                 android:hint="@string/hint_input_ingredients"
-                android:inputType="textCapSentences|textMultiLine" />
+                android:inputType="textCapSentences|textMultiLine"
+                android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -108,8 +140,10 @@
                 android:id="@+id/entering_recipe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans"
                 android:hint="@string/hint_input_recipe"
-                android:inputType="textCapSentences|textMultiLine" />
+                android:inputType="textCapSentences|textMultiLine"
+                android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -136,8 +170,10 @@
                 android:id="@+id/entering_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans"
                 android:hint="@string/hint_short_description"
-                android:inputType="textCapSentences|textMultiLine" />
+                android:inputType="textCapSentences|textMultiLine"
+                android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

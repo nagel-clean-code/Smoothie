@@ -1,4 +1,4 @@
-package com.example.smoothie.screens
+package com.example.smoothie.presentation
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.smoothie.Constants
 import com.example.smoothie.databinding.HomeBinding
-import com.example.smoothie.screens.adapters.HomePagerAdapter
+import com.example.smoothie.presentation.adapters.HomePagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
 

@@ -6,10 +6,10 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.smoothie.databinding.ActivityMainBinding
-import com.example.smoothie.screens.AddRecipeFragment
-import com.example.smoothie.screens.FindRecipeFragment
-import com.example.smoothie.screens.HomeFragment
-import com.example.smoothie.screens.SettingsFragment
+import com.example.smoothie.presentation.AddRecipeFragment
+import com.example.smoothie.presentation.FindRecipeFragment
+import com.example.smoothie.presentation.HomeFragment
+import com.example.smoothie.presentation.SettingsFragment
 
 class MainActivity() : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

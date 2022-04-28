@@ -1,4 +1,4 @@
-package com.example.smoothie.screens
+package com.example.smoothie.presentation
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
