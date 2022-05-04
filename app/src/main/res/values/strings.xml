@@ -7,19 +7,19 @@
     <string name="test_text_ingredients">Банан – 2 шт. (400 г)\nМолоко – 400 мл\nОвсяные хлопья – 8 ст.л.\nКорица - 0.5 ч.л. (по желанию)\nМед – по необходимости</string>
     <string name="test_text_description">Смузи из яблок, моркови и апельсина – вкусный и полезный напиток для завтрака, который придаст бодрости на весь день. В этом рецепте нет никаких подсластителей, поэтому он идеально подойдёт всем, кто считает калории и бережёт свою фигуру!</string>
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
+    <string name="settings_profile_header">Настройки профиля</string>
+    <string name="settings_random">Настройки рандома</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
+    <string name="nickname_header">Уникальное имя пользователя:</string>
+    <string name="access">Доступ к вашим рецептам</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
+    <string name="time_of_day">Учитывать время суток</string>
     <string name="attachment_title">Download incoming attachments</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="degree_of_significance">Степень значимости времени суток</string>
     <string name="add_button">Добавить</string>
     <string name="hint_name_recipe">Название рецепта</string>
     <string name="ingredients">Ингредиенты:</string>

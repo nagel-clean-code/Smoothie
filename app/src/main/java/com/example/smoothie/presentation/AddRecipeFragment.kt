@@ -11,11 +11,18 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import coil.load
+import com.example.smoothie.data.repository.RecipeRepositoryImpl
 import com.example.smoothie.databinding.FragmentAddRecipeBinding
+import com.example.smoothie.domain.usecase.GetIngredientsFromCache
+import com.example.smoothie.domain.usecase.SaveIngredientsInCache
 import com.example.smoothie.images.ImagePicker
 import com.example.smoothie.presentation.viewmodels.AddRecipeViewModel
 
 class AddRecipeFragment : Fragment() {
+    private val recipeRepositoryImpl by lazy(LazyThreadSafetyMode.NONE) { RecipeRepositoryImpl(requireContext()) }
+    private val saveIngredientsInCache by lazy(LazyThreadSafetyMode.NONE) { SaveIngredientsInCache(recipeRepositoryImpl) }
+    private val getIngredientsFromCache by lazy(LazyThreadSafetyMode.NONE) { GetIngredientsFromCache(recipeRepositoryImpl) }
+
     private lateinit var binding: FragmentAddRecipeBinding
     private var countIngredient: Int = 2
 

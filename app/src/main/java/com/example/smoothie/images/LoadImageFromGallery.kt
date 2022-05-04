@@ -1,4 +1,4 @@
-package com.example.smoothie.domain.usecase
+package com.example.smoothie.images
 
 import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
