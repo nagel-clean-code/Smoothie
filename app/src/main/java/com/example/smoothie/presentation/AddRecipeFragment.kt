@@ -10,29 +10,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import coil.load
 import com.example.smoothie.databinding.FragmentAddRecipeBinding
 import com.example.smoothie.images.ImagePicker
 import com.example.smoothie.presentation.viewmodels.AddRecipeViewModel
-import com.example.smoothie.presentation.viewmodels.AddRecipeViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AddRecipeFragment : Fragment() {
 
     private lateinit var binding: FragmentAddRecipeBinding
     private var countIngredient: Int = 2
 
-    private lateinit var viewModel: AddRecipeViewModel
+    private val viewModel by viewModel<AddRecipeViewModel>()
     private val imagePicker = ImagePicker()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentAddRecipeBinding.inflate(layoutInflater)
 
-        viewModel = ViewModelProvider(
-            this,
-            AddRecipeViewModelFactory(requireContext())
-        )[AddRecipeViewModel::class.java]
     }
 
     override fun onCreateView(
