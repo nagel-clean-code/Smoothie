@@ -4,11 +4,13 @@ import com.example.smoothie.domain.models.Ingredients
 
 interface RecipeRepository {
 
-    fun saveLocalNameRecipe(name: String)
-    fun getLocalNameRecipe(): String
-    fun saveLocalIngredients(ingredients: Ingredients)
+    fun saveNameRecipe(name: String)
+    fun getNameRecipe(): String
 
-    fun saveLocalRecipe(recipe: String)
+    fun saveIngredients(ingredients: Ingredients)
+    fun getIngredients(): Ingredients
 
-    fun saveLocalDescription(description: String)
+    fun saveRecipe(recipe: String)
+
+    fun saveDescription(description: String)
 }

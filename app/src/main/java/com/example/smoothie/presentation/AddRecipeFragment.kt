@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,17 +12,12 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import coil.load
-import com.example.smoothie.data.repository.RecipeRepositoryImpl
 import com.example.smoothie.databinding.FragmentAddRecipeBinding
-import com.example.smoothie.domain.usecase.GetIngredientsFromCache
-import com.example.smoothie.domain.usecase.SaveIngredientsInCache
 import com.example.smoothie.images.ImagePicker
 import com.example.smoothie.presentation.viewmodels.AddRecipeViewModel
+import com.example.smoothie.presentation.viewmodels.AddRecipeViewModelFactory
 
 class AddRecipeFragment : Fragment() {
-    private val recipeRepositoryImpl by lazy(LazyThreadSafetyMode.NONE) { RecipeRepositoryImpl(requireContext()) }
-    private val saveIngredientsInCache by lazy(LazyThreadSafetyMode.NONE) { SaveIngredientsInCache(recipeRepositoryImpl) }
-    private val getIngredientsFromCache by lazy(LazyThreadSafetyMode.NONE) { GetIngredientsFromCache(recipeRepositoryImpl) }
 
     private lateinit var binding: FragmentAddRecipeBinding
     private var countIngredient: Int = 2
@@ -32,7 +28,11 @@ class AddRecipeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentAddRecipeBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(this)[AddRecipeViewModel::class.java]
+
+        viewModel = ViewModelProvider(
+            this,
+            AddRecipeViewModelFactory(requireContext())
+        )[AddRecipeViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -48,7 +48,19 @@ class AddRecipeFragment : Fragment() {
                 }
             }
         }
+        viewModel.resultNameLiveDataMutable.observe(viewLifecycleOwner) { text ->
+            Log.e("observe", "Сработал слушатель")
+            binding.editTextNameRecipe.text.clear()
+            binding.editTextNameRecipe.text.append(text)
+        }
+        viewModel.loadName()
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        Log.e("onDestroy","Ща уничтажим activity")
+        viewModel.saveName(binding.editTextNameRecipe.text.toString())
+        super.onDestroyView()
     }
 
     /** Обработка ввода ингридиентов (автоматическая нумерация строк) */
