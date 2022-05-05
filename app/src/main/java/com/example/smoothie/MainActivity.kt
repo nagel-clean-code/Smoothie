@@ -10,7 +10,9 @@ import com.example.smoothie.presentation.AddRecipeFragment
 import com.example.smoothie.presentation.FindRecipeFragment
 import com.example.smoothie.presentation.HomeFragment
 import com.example.smoothie.presentation.SettingsFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity() : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 

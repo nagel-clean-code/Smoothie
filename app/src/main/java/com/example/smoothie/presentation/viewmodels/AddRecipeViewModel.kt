@@ -4,16 +4,19 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.smoothie.domain.usecase.GetIngredients
-import com.example.smoothie.domain.usecase.GetNameRecipe
-import com.example.smoothie.domain.usecase.SaveIngredients
-import com.example.smoothie.domain.usecase.SaveNameRecipe
+import com.example.smoothie.domain.usecase.GetIngredientsUseCase
+import com.example.smoothie.domain.usecase.GetNameRecipeUseCase
+import com.example.smoothie.domain.usecase.SaveIngredientsUseCase
+import com.example.smoothie.domain.usecase.SaveNameRecipeUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class AddRecipeViewModel(
-    private val saveIngredients: SaveIngredients,
-    private val getIngredients: GetIngredients,
-    private val saveNameRecipe: SaveNameRecipe,
-    private val getNameRecipe: GetNameRecipe
+@HiltViewModel
+class AddRecipeViewModel @Inject constructor(
+    private val saveIngredientsUseCase: SaveIngredientsUseCase,
+    private val getIngredientsUseCase: GetIngredientsUseCase,
+    private val saveNameRecipeUseCase: SaveNameRecipeUseCase,
+    private val getNameRecipeUseCase: GetNameRecipeUseCase
 ) : ViewModel() {
 
     private var ingredientsLiveDataMutable = MutableLiveData<String>()
@@ -28,20 +31,20 @@ class AddRecipeViewModel(
     }
 
     fun saveIngredients(text: String) {
-        saveIngredients.execute(text)
+        saveIngredientsUseCase.execute(text)
         ingredientsLiveDataMutable.value = text
     }
 
     fun saveName(text: String) {
         Log.e("saveName","Сохраняем в кэш и лайфдату")
-        saveNameRecipe.execute(text)
+        saveNameRecipeUseCase.execute(text)
         nameLiveDataMutable.value = text
     }
 
 
     fun loadName() {
         Log.e("loadName","Загружаем в лайфдату из кэша")
-        nameLiveDataMutable.value = getNameRecipe.execute()
+        nameLiveDataMutable.value = getNameRecipeUseCase.execute()
     }
 
 }

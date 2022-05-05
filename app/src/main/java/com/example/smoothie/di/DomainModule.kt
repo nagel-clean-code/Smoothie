@@ -1,26 +1,31 @@
 package com.example.smoothie.di
 
-import com.example.smoothie.domain.usecase.GetIngredients
-import com.example.smoothie.domain.usecase.GetNameRecipe
-import com.example.smoothie.domain.usecase.SaveIngredients
-import com.example.smoothie.domain.usecase.SaveNameRecipe
-import org.koin.dsl.module
+import com.example.smoothie.domain.repository.RecipeRepository
+import com.example.smoothie.domain.usecase.GetIngredientsUseCase
+import com.example.smoothie.domain.usecase.GetNameRecipeUseCase
+import com.example.smoothie.domain.usecase.SaveIngredientsUseCase
+import com.example.smoothie.domain.usecase.SaveNameRecipeUseCase
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-val domainModule = module{
+@Module
+@InstallIn(ViewModelComponent::class)
+class DomainModule{
 
-    factory<SaveIngredients>{
-        SaveIngredients(recipeRepository = get())
-    }
+    @Provides
+    fun provideSaveIngredients(recipeRepository: RecipeRepository) = SaveIngredientsUseCase(recipeRepository)
 
-    factory<GetIngredients>{
-        GetIngredients(recipeRepository = get())
-    }
+    @Provides
+    fun provideGetIngredients(recipeRepository: RecipeRepository) = GetIngredientsUseCase(recipeRepository)
 
-    factory<SaveNameRecipe>{
-        SaveNameRecipe(recipeRepository = get())
-    }
+    @Provides
+    fun provideSaveNameRecipe(recipeRepository: RecipeRepository) = SaveNameRecipeUseCase(recipeRepository)
 
-    factory<GetNameRecipe>{
-        GetNameRecipe(recipeRepository = get())
-    }
+    @Provides
+    fun provideGetNameRecipe(recipeRepository: RecipeRepository) = GetNameRecipeUseCase(recipeRepository)
+
 }

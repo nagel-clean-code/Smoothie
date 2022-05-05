@@ -1,23 +1,7 @@
 package com.example.smoothie.app
 
 import android.app.Application
-import com.example.smoothie.di.appModule
-import com.example.smoothie.di.dataModule
-import com.example.smoothie.di.domainModule
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.startKoin
-import org.koin.core.logger.Level
+import dagger.hilt.android.HiltAndroidApp
 
-class App: Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-
-        startKoin{
-            androidLogger(Level.ERROR)
-            androidContext(this@App)
-            modules(listOf(appModule, dataModule, domainModule))
-        }
-    }
-}
+@HiltAndroidApp
+class App: Application()

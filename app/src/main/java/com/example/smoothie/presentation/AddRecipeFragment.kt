@@ -10,18 +10,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import coil.load
 import com.example.smoothie.databinding.FragmentAddRecipeBinding
 import com.example.smoothie.images.ImagePicker
 import com.example.smoothie.presentation.viewmodels.AddRecipeViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddRecipeFragment : Fragment() {
 
     private lateinit var binding: FragmentAddRecipeBinding
     private var countIngredient: Int = 2
 
-    private val viewModel by viewModel<AddRecipeViewModel>()
+    private val viewModel: AddRecipeViewModel by viewModels()
     private val imagePicker = ImagePicker()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,10 +54,10 @@ class AddRecipeFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroyView() {
+    override fun onStop() {
         Log.e("onDestroy","Ща уничтажим activity")
         viewModel.saveName(binding.editTextNameRecipe.text.toString())
-        super.onDestroyView()
+        super.onStop()
     }
 
     /** Обработка ввода ингридиентов (автоматическая нумерация строк) */
