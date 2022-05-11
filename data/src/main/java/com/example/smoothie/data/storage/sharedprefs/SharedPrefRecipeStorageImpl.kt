@@ -1,14 +1,13 @@
 package com.example.smoothie.data.storage.sharedprefs
 
 import android.content.Context
-import com.example.smoothie.data.storage.RecipeStorage
 import com.example.smoothie.domain.models.Ingredients
 
 private const val SHARED_PREFS_ADD_RECIPE_NAME = "SHARED_PREFS_ADD_RECIPE_NAME"
 private const val NAME_RECIPE = "NAME_RECIPE"
 private const val INGREDIENTS = "INGREDIENTS"
 
-class SharedPrefRecipeStorageImpl(private val context: Context): RecipeStorage {
+class SharedPrefRecipeStorageImpl(private val context: Context): RecipeStorageSharPref {
 
     private val sharedPreferences =
         context.getSharedPreferences(SHARED_PREFS_ADD_RECIPE_NAME, Context.MODE_PRIVATE)

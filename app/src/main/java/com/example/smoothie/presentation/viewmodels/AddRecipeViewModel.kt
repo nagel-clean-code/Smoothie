@@ -4,10 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.smoothie.domain.usecase.GetIngredientsUseCase
-import com.example.smoothie.domain.usecase.GetNameRecipeUseCase
-import com.example.smoothie.domain.usecase.SaveIngredientsUseCase
-import com.example.smoothie.domain.usecase.SaveNameRecipeUseCase
+import com.example.smoothie.data.storage.models.RecipeEntity
+import com.example.smoothie.domain.usecase.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -16,7 +14,8 @@ class AddRecipeViewModel @Inject constructor(
     private val saveIngredientsUseCase: SaveIngredientsUseCase,
     private val getIngredientsUseCase: GetIngredientsUseCase,
     private val saveNameRecipeUseCase: SaveNameRecipeUseCase,
-    private val getNameRecipeUseCase: GetNameRecipeUseCase
+    private val getNameRecipeUseCase: GetNameRecipeUseCase,
+    private val saveRecipeToDbUseCase: SaveRecipeToDbUseCase
 ) : ViewModel() {
 
     private var ingredientsLiveDataMutable = MutableLiveData<String>()
@@ -25,9 +24,8 @@ class AddRecipeViewModel @Inject constructor(
     private var nameLiveDataMutable = MutableLiveData<String>()
     val resultNameLiveDataMutable: LiveData<String> = nameLiveDataMutable  //Ограничение доступа из внешнего класса
 
-    override fun onCleared() {
-        super.onCleared()
-
+    fun addRecipeToDataBase(recipe: RecipeEntity){
+        saveRecipeToDbUseCase.execute(recipe)
     }
 
     fun saveIngredients(text: String) {
@@ -36,14 +34,12 @@ class AddRecipeViewModel @Inject constructor(
     }
 
     fun saveName(text: String) {
-        Log.e("saveName","Сохраняем в кэш и лайфдату")
         saveNameRecipeUseCase.execute(text)
         nameLiveDataMutable.value = text
     }
 
 
     fun loadName() {
-        Log.e("loadName","Загружаем в лайфдату из кэша")
         nameLiveDataMutable.value = getNameRecipeUseCase.execute()
     }
 

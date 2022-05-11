@@ -9,13 +9,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import coil.load
+import com.example.smoothie.data.storage.models.RecipeEntity
 import com.example.smoothie.databinding.FragmentAddRecipeBinding
+import com.example.smoothie.domain.models.Ingredients
 import com.example.smoothie.images.ImagePicker
 import com.example.smoothie.presentation.viewmodels.AddRecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 @AndroidEntryPoint
 class AddRecipeFragment : Fragment() {
@@ -45,8 +49,10 @@ class AddRecipeFragment : Fragment() {
                 }
             }
         }
+        binding.addButton.setOnClickListener {
+          saveRecipeToDatabase()
+        }
         viewModel.resultNameLiveDataMutable.observe(viewLifecycleOwner) { text ->
-            Log.e("observe", "Сработал слушатель")
             binding.editTextNameRecipe.text.clear()
             binding.editTextNameRecipe.text.append(text)
         }
@@ -55,10 +61,38 @@ class AddRecipeFragment : Fragment() {
     }
 
     override fun onStop() {
-        Log.e("onDestroy","Ща уничтажим activity")
         viewModel.saveName(binding.editTextNameRecipe.text.toString())
         super.onStop()
     }
+
+    //FIXME по возможности перенесте функционал в ViewModel
+
+
+    private fun saveRecipeToDatabase(){
+        if (binding.editTextNameRecipe.text.toString().isEmpty()) {
+            Toast.makeText(context, "Название рецепта не задано!", Toast.LENGTH_SHORT).show()
+        } else if (binding.enteringIngredients.text.toString().isEmpty() &&
+            binding.enteringRecipe.text.toString().isEmpty()
+        ) {
+            Toast.makeText(context, "Задайте рецепт", Toast.LENGTH_SHORT).show()
+        } else {
+            viewModel.addRecipeToDataBase(
+                RecipeEntity(
+                    idRecipe = UUID.randomUUID().toString(),
+                    name = binding.editTextNameRecipe.text.toString(),
+                    ingredients = Ingredients(binding.enteringIngredients.text.toString()),
+                    recipe = binding.enteringRecipe.text.toString(),
+                    description = binding.enteringDescription.text.toString()
+                )
+            )
+            Toast.makeText(context, "Рецепт успешно добавлен", Toast.LENGTH_SHORT).show()
+            binding.editTextNameRecipe.text.clear()
+            binding.enteringIngredients.text?.clear()
+            binding.enteringRecipe.text?.clear()
+            binding.enteringDescription.text?.clear()
+        }
+    }
+
 
     /** Обработка ввода ингридиентов (автоматическая нумерация строк) */
     private fun processingInputIngredients() {

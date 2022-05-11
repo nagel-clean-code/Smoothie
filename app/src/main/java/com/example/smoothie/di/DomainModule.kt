@@ -1,10 +1,7 @@
 package com.example.smoothie.di
 
 import com.example.smoothie.domain.repository.RecipeRepository
-import com.example.smoothie.domain.usecase.GetIngredientsUseCase
-import com.example.smoothie.domain.usecase.GetNameRecipeUseCase
-import com.example.smoothie.domain.usecase.SaveIngredientsUseCase
-import com.example.smoothie.domain.usecase.SaveNameRecipeUseCase
+import com.example.smoothie.domain.usecase.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,5 +24,8 @@ class DomainModule{
 
     @Provides
     fun provideGetNameRecipe(recipeRepository: RecipeRepository) = GetNameRecipeUseCase(recipeRepository)
+
+    @Provides
+    fun provideSaveRecipeToDb(recipeRepository: RecipeRepository) = SaveRecipeToDbUseCase(recipeRepository)
 
 }

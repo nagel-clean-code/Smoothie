@@ -1,8 +1,8 @@
-package com.example.smoothie.data.storage
+package com.example.smoothie.data.storage.sharedprefs
 
 import com.example.smoothie.domain.models.Ingredients
 
-interface RecipeStorage {
+interface RecipeStorageSharPref {
     fun saveNameRecipe(name: String)
     fun getNameRecipe(): String
     fun saveIngredients(ingredients: Ingredients)
