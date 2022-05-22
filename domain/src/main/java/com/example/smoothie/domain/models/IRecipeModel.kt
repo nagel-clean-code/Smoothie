@@ -1,9 +1,11 @@
 package com.example.smoothie.domain.models
 
 interface IRecipeModel {
-    val idRecipe: String
+    var idRecipe: String
     val name: String
-    val ingredients: Ingredients
+    val ingredients: String
     val recipe: String
     val description: String
+    val imageUrl: String
+    fun map(): HashMap<String,String>
 }

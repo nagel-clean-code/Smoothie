@@ -33,4 +33,6 @@
     <string name="next">Следующий</string>
     <string name="add_image">Добавление изображения</string>
     <string name="preview">Превью</string>
+    <string name="error_text_connect">Ошибка!\n Пожалуйста повторите позже</string>
+    <string name="repeat">Повторить</string>
 </resources>

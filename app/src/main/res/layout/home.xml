@@ -31,7 +31,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tab_layout" />
 
         <Button
-            android:id="@+id/what_to_eat"
+            android:id="@+id/button_prev"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_below="@+id/pager_placeholder"
@@ -43,10 +43,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline1"
             app:layout_constraintStart_toStartOf="@+id/guideline3"
-            app:layout_constraintTop_toTopOf="@+id/what_to_eat2" />
+            app:layout_constraintTop_toTopOf="@+id/button_next" />
 
         <Button
-            android:id="@+id/what_to_eat2"
+            android:id="@+id/button_next"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="5sp"

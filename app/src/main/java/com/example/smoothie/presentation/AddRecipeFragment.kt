@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,11 +14,11 @@ import androidx.fragment.app.viewModels
 import coil.load
 import com.example.smoothie.data.storage.models.RecipeEntity
 import com.example.smoothie.databinding.FragmentAddRecipeBinding
-import com.example.smoothie.domain.models.Ingredients
 import com.example.smoothie.images.ImagePicker
 import com.example.smoothie.presentation.viewmodels.AddRecipeViewModel
+import com.example.smoothie.utils.decodeFromBase64IntoDrawable
+import com.example.smoothie.utils.encodeToBase64
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
 
 @AndroidEntryPoint
 class AddRecipeFragment : Fragment() {
@@ -45,6 +44,7 @@ class AddRecipeFragment : Fragment() {
         binding.imageButton.setOnClickListener {
             activity?.activityResultRegistry?.let { it1 ->
                 imagePicker.setupLoadFromGallery(it1) {
+                    viewModel.uriImage = it?.path ?: ""
                     binding.imagePreview.load(it)
                 }
             }
@@ -56,16 +56,23 @@ class AddRecipeFragment : Fragment() {
             binding.editTextNameRecipe.text.clear()
             binding.editTextNameRecipe.text.append(text)
         }
-        viewModel.loadName()
+        viewModel.resultImageLiveDataMutable.observe(viewLifecycleOwner){ image ->
+            binding.imagePreview.load(image)
+        }
+        viewModel.load()
+        viewModel.loadImage(::decodeFromBase64IntoDrawable)
         return binding.root
     }
 
     override fun onStop() {
+        viewModel.resultImageLiveDataMutable.removeObservers(viewLifecycleOwner)
         viewModel.saveName(binding.editTextNameRecipe.text.toString())
+        viewModel.saveIngredients(binding.enteringIngredients.text.toString())
+        if(binding.imagePreview.drawable != null){
+            viewModel.saveImageInSharPref(binding.imagePreview.drawable, ::encodeToBase64)
+        }
         super.onStop()
     }
-
-    //FIXME по возможности перенесте функционал в ViewModel
 
 
     private fun saveRecipeToDatabase(){
@@ -76,11 +83,10 @@ class AddRecipeFragment : Fragment() {
         ) {
             Toast.makeText(context, "Задайте рецепт", Toast.LENGTH_SHORT).show()
         } else {
-            viewModel.addRecipeToDataBase(
+            viewModel.setRecipeToDataBase(
                 RecipeEntity(
-                    idRecipe = UUID.randomUUID().toString(),
                     name = binding.editTextNameRecipe.text.toString(),
-                    ingredients = Ingredients(binding.enteringIngredients.text.toString()),
+                    ingredients = binding.enteringIngredients.text.toString(),
                     recipe = binding.enteringRecipe.text.toString(),
                     description = binding.enteringDescription.text.toString()
                 )
@@ -90,6 +96,7 @@ class AddRecipeFragment : Fragment() {
             binding.enteringIngredients.text?.clear()
             binding.enteringRecipe.text?.clear()
             binding.enteringDescription.text?.clear()
+            binding.imagePreview.setImageResource(0)
         }
     }
 

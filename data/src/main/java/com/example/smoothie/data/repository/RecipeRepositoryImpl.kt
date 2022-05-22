@@ -3,7 +3,6 @@ package com.example.smoothie.data.repository
 import com.example.smoothie.data.storage.databases.RecipeStorageDB
 import com.example.smoothie.data.storage.sharedprefs.RecipeStorageSharPref
 import com.example.smoothie.domain.models.IRecipeModel
-import com.example.smoothie.domain.models.Ingredients
 import com.example.smoothie.domain.repository.RecipeRepository
 
 
@@ -16,6 +15,8 @@ class RecipeRepositoryImpl(
         recipeStorage.saveRecipe(recipe)
     }
 
+    override suspend fun getRandomRecipe(): IRecipeModel = recipeStorage.nextRecipe()
+
     override fun getLastRecipe() {
         TODO("Not yet implemented")
     }
@@ -24,19 +25,26 @@ class RecipeRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override fun saveNameRecipe(name: String) {
+    override fun saveNameRecipeInSharPref(name: String) {
         sharedPrefRecipeStorage.saveNameRecipe(name)
     }
 
-    override fun getIngredients(): Ingredients {
-        return sharedPrefRecipeStorage.getIngredients()
+    override fun getIngredientsFromSharPref() = sharedPrefRecipeStorage.getIngredients()
+
+
+    override fun saveIngredientsInSharPref(textIngredients: String) {
+        sharedPrefRecipeStorage.saveIngredients(textIngredients)
     }
 
-    override fun saveIngredients(ingredients: Ingredients) {
-        sharedPrefRecipeStorage.saveIngredients(ingredients)
+    override fun getNameRecipeFromSharPref() = sharedPrefRecipeStorage.getNameRecipe()
+
+    override fun saveImageFromAddFormInSharPref(imageString: String) {
+        sharedPrefRecipeStorage.saveImageFromAddForm(imageString)
     }
 
-    override fun getNameRecipe(): String {
-        return sharedPrefRecipeStorage.getNameRecipe()
+    override fun getImageFromAddFormFromSharPref() = sharedPrefRecipeStorage.getImageFromAddForm()
+
+    override suspend fun saveImageFromAddFormToDb(imagePatch: String): String {
+        return recipeStorage.saveImage(imagePatch)
     }
 }
