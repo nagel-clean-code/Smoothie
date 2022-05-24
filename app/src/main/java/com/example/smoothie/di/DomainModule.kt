@@ -1,6 +1,7 @@
 package com.example.smoothie.di
 
 import com.example.smoothie.domain.repository.RecipeRepository
+import com.example.smoothie.domain.usecase.database.GetImageFromDBUseCase
 import com.example.smoothie.domain.usecase.database.GetRandomRecipeFromDbUseCase
 import com.example.smoothie.domain.usecase.database.SaveImageInDBUseCase
 import com.example.smoothie.domain.usecase.sharedpref.*
@@ -39,5 +40,8 @@ class DomainModule{
 
     @Provides
     fun provideGetImageFromAddFormSharPrefUseCase(recipeRepository: RecipeRepository) = GetImageFromAddFormSharPrefUseCase(recipeRepository)
+
+    @Provides
+    fun provideGetImageFromDBUseCase(recipeRepository: RecipeRepository) = GetImageFromDBUseCase(recipeRepository)
 
 }

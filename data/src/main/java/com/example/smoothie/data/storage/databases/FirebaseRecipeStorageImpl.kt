@@ -1,7 +1,6 @@
 package com.example.smoothie.data.storage.databases
 
 import android.content.ContentValues.TAG
-import android.net.Uri
 import android.util.Log
 import com.example.smoothie.data.storage.models.RecipeEntity
 import com.example.smoothie.domain.models.IRecipeModel
@@ -12,7 +11,6 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
-import java.io.File
 
 class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB {
     private var countRecipes: Int = 1
@@ -44,7 +42,7 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
     override suspend fun nextRecipe(): IRecipeModel {
         var recipe: RecipeEntity = RecipeEntity("Рецепт не найден", "Ошибка", "", "", "")
         val result =
-            dataBase.collection(userName).whereEqualTo("idRecipe", "${(0..countRecipes).random()}")
+            dataBase.collection(userName).whereEqualTo("idRecipe", "${(1..countRecipes).random()}")
                 .get().addOnSuccessListener { documentSnapshot ->
                     Log.d(TAG, "Количество найденых рецептов: ${documentSnapshot.size()}")
                     recipe = documentSnapshot.documents.first().toObject<RecipeEntity>()!!
@@ -55,14 +53,25 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
         return recipe
     }
 
-    override suspend fun saveImage(imagePatch: String): String {
-        val riversRef = storageRef.reference.child("/hats_recipes/image_${countRecipes+1}")
-        riversRef.putFile(Uri.parse(imagePatch))
-            .addOnFailureListener {
+    override suspend fun saveImage(imageByteArray: ByteArray): String {
+        val riversRef = storageRef.reference.child("hats_recipes/image_${countRecipes + 1}.jpg")
+        val up = riversRef.putBytes(imageByteArray).addOnFailureListener {
                 Log.w(TAG, "Не удалось загрузить изображение в БД: ", it)
-            }.addOnSuccessListener { taskSnapshot ->
+            }.addOnSuccessListener {
                 Log.d(TAG, "Изображение успешно загружено")
             }
-        return riversRef.downloadUrl.await().toString()
+        return "hats_recipes/image_${countRecipes + 1}.jpg"
+    }
+
+    override suspend fun getImageByUrl(url: String): ByteArray {
+        val islandRef = storageRef.reference.child(url)
+
+        val MAX_SIZE_PICTURE: Long = 1024 * 1024 * 20
+        val up = islandRef.getBytes(MAX_SIZE_PICTURE).addOnSuccessListener {
+            Log.d(TAG, "Изображение успешно загружено")
+        }.addOnFailureListener {
+            Log.w(TAG, "Не удалось загрузить изображение из БД")
+        }
+        return up.await()
     }
 }

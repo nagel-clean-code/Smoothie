@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.reflect.KFunction1
 
 
 @HiltViewModel
@@ -32,19 +33,18 @@ class AddRecipeViewModel @Inject constructor(
     private var _nameLiveDataMutable = MutableLiveData<String>()
     val resultNameLiveDataMutable: LiveData<String> = _nameLiveDataMutable
 
-    private var _imageLiveDataMutable = MutableLiveData<Drawable>()
-    val resultImageLiveDataMutable: LiveData<Drawable> = _imageLiveDataMutable
+    private var _imageLiveDataMutable = MutableLiveData<Drawable?>()
+    val resultImageLiveDataMutable: MutableLiveData<Drawable?> = _imageLiveDataMutable
 
-    var uriImage: String = ""
-
-    fun setRecipeToDataBase(recipe: RecipeEntity) {
+    fun setRecipeToDataBase(recipe: RecipeEntity, image: ByteArray) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                if(uriImage.isNotBlank()) {
-                    recipe.imageUrl = saveImageToDataBase()
+                if (!image.contentEquals("".toByteArray())) {
+                    recipe.imageUrl = saveImageToDataBase(image)
                 }
                 saveRecipeToDbUseCase.execute(recipe)
             }
+            _imageLiveDataMutable.value = null
         }
     }
 
@@ -58,17 +58,22 @@ class AddRecipeViewModel @Inject constructor(
         _nameLiveDataMutable.value = text
     }
 
-    fun saveImageInSharPref(image: Drawable, convertImageToString: (Drawable) -> String) {
+    fun saveImageInSharPref(image: Drawable?, convertImageToString: (Drawable) -> String) {
         _imageLiveDataMutable.value = image
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
-                saveImageFromAddFormSharPrefUseCase.execute(convertImageToString(image))
+                if (image == null) {
+                    saveImageFromAddFormSharPrefUseCase.execute("")
+                } else {
+                    saveImageFromAddFormSharPrefUseCase.execute(convertImageToString(image))
+                }
             }
         }
     }
 
-    private suspend fun saveImageToDataBase(): String = saveImageInDBUseCase.execute(uriImage)
-
+    private suspend fun saveImageToDataBase(image: ByteArray): String {
+        return saveImageInDBUseCase.execute(image)
+    }
 
     fun load() {
         loadName()
@@ -83,11 +88,14 @@ class AddRecipeViewModel @Inject constructor(
         _ingredientsLiveDataMutable.value = getIngredientsFromSharPrefUseCase.execute()
     }
 
-    fun loadImage(convertStringToImage: (String) -> Drawable) {
-        val stringImage = getImageFromAddFormSharPrefUseCase.execute()
-        if (stringImage.isNotBlank())
-            _imageLiveDataMutable.value = convertStringToImage(stringImage)
+    fun loadImage(convertStringToImage: KFunction1<String, Drawable>) = viewModelScope.launch {
+        var drawableImage: Drawable? = null
+        withContext(Dispatchers.Default) {
+            val stringImage = getImageFromAddFormSharPrefUseCase.execute()
+            if (stringImage.isNotBlank())
+                drawableImage = convertStringToImage(stringImage)
+        }
+        _imageLiveDataMutable.value = drawableImage
     }
-
 
 }

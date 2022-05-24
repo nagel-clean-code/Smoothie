@@ -12,6 +12,7 @@ interface RecipeRepository {
     fun getNameRecipeFromSharPref(): String
     fun saveImageFromAddFormInSharPref(imageString: String)
     fun getImageFromAddFormFromSharPref(): String
-    suspend fun saveImageFromAddFormToDb(imagePatch: String): String
+    suspend fun saveImageFromAddFormToDb(imageByteArray: ByteArray): String
     suspend fun getRandomRecipe(): IRecipeModel
+    suspend fun getImageFromLinkFromDB(url: String): ByteArray
 }

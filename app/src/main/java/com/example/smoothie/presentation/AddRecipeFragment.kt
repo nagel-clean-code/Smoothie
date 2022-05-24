@@ -9,24 +9,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import coil.load
 import com.example.smoothie.data.storage.models.RecipeEntity
 import com.example.smoothie.databinding.FragmentAddRecipeBinding
 import com.example.smoothie.images.ImagePicker
 import com.example.smoothie.presentation.viewmodels.AddRecipeViewModel
+import com.example.smoothie.utils.convertDrawableToByteArray
 import com.example.smoothie.utils.decodeFromBase64IntoDrawable
 import com.example.smoothie.utils.encodeToBase64
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddRecipeFragment : Fragment() {
+class AddRecipeFragment : BaseFragment() {
 
     private lateinit var binding: FragmentAddRecipeBinding
     private var countIngredient: Int = 2
 
-    private val viewModel: AddRecipeViewModel by viewModels()
+    override val viewModel: AddRecipeViewModel by viewModels()
     private val imagePicker = ImagePicker()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +44,6 @@ class AddRecipeFragment : Fragment() {
         binding.imageButton.setOnClickListener {
             activity?.activityResultRegistry?.let { it1 ->
                 imagePicker.setupLoadFromGallery(it1) {
-                    viewModel.uriImage = it?.path ?: ""
                     binding.imagePreview.load(it)
                 }
             }
@@ -68,9 +67,9 @@ class AddRecipeFragment : Fragment() {
         viewModel.resultImageLiveDataMutable.removeObservers(viewLifecycleOwner)
         viewModel.saveName(binding.editTextNameRecipe.text.toString())
         viewModel.saveIngredients(binding.enteringIngredients.text.toString())
-        if(binding.imagePreview.drawable != null){
+//        if(binding.imagePreview.drawable != null){
             viewModel.saveImageInSharPref(binding.imagePreview.drawable, ::encodeToBase64)
-        }
+//        }
         super.onStop()
     }
 
@@ -89,7 +88,8 @@ class AddRecipeFragment : Fragment() {
                     ingredients = binding.enteringIngredients.text.toString(),
                     recipe = binding.enteringRecipe.text.toString(),
                     description = binding.enteringDescription.text.toString()
-                )
+                ),
+                convertDrawableToByteArray(binding.imagePreview.drawable)
             )
             Toast.makeText(context, "Рецепт успешно добавлен", Toast.LENGTH_SHORT).show()
             binding.editTextNameRecipe.text.clear()
@@ -97,6 +97,7 @@ class AddRecipeFragment : Fragment() {
             binding.enteringRecipe.text?.clear()
             binding.enteringDescription.text?.clear()
             binding.imagePreview.setImageResource(0)
+            focusInputAndAppearanceKeyboard()
         }
     }
 

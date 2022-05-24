@@ -16,6 +16,10 @@ class RecipeRepositoryImpl(
     }
 
     override suspend fun getRandomRecipe(): IRecipeModel = recipeStorage.nextRecipe()
+    
+    override suspend fun getImageFromLinkFromDB(url: String): ByteArray {
+        return recipeStorage.getImageByUrl(url)
+    }
 
     override fun getLastRecipe() {
         TODO("Not yet implemented")
@@ -44,7 +48,7 @@ class RecipeRepositoryImpl(
 
     override fun getImageFromAddFormFromSharPref() = sharedPrefRecipeStorage.getImageFromAddForm()
 
-    override suspend fun saveImageFromAddFormToDb(imagePatch: String): String {
-        return recipeStorage.saveImage(imagePatch)
+    override suspend fun saveImageFromAddFormToDb(imageByteArray: ByteArray): String {
+        return recipeStorage.saveImage(imageByteArray)
     }
 }

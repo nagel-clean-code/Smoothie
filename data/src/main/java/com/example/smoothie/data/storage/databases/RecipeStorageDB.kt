@@ -5,5 +5,6 @@ import com.example.smoothie.domain.models.IRecipeModel
 interface RecipeStorageDB {
     fun saveRecipe(recipe: IRecipeModel)
     suspend fun nextRecipe(): IRecipeModel
-    suspend fun saveImage(imagePatch: String): String
+    suspend fun saveImage(imageByteArray: ByteArray): String
+    suspend fun getImageByUrl(url: String): ByteArray
 }
