@@ -15,8 +15,11 @@ class FindRecipeViewModel @Inject constructor(
     private val recipeRepository: RecipeRepository
 ) : BaseViewModel() {
 
-    val recipes: Flow<PagingData<RecipeEntity>> = Pager(PagingConfig(pageSize = 5),
-        pagingSourceFactory = { RecipesPageSource(recipeRepository) }
+    val recipes: Flow<PagingData<RecipeEntity>> = Pager(PagingConfig(PAGE_SIZE),
+        pagingSourceFactory = { RecipesPageSource(recipeRepository, PAGE_SIZE) }
     ).flow
 
+    companion object{
+        const val PAGE_SIZE = 9
+    }
 }

@@ -24,6 +24,6 @@ fun BaseFragment.convertDrawableToByteArray(imageDrawable: Drawable?): ByteArray
     if(imageDrawable == null) return "".toByteArray()
     val image: Bitmap = (imageDrawable as BitmapDrawable).bitmap
     val baos = ByteArrayOutputStream()
-    image.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+    image.compress(Bitmap.CompressFormat.JPEG, 50, baos)    //FIXME попробовать ниже качество
     return baos.toByteArray()
 }

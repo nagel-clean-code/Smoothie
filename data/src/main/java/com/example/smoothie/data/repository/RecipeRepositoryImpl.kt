@@ -21,8 +21,8 @@ class RecipeRepositoryImpl(
         return recipeStorage.getImageByUrl(url)
     }
 
-    override suspend fun getListRecipe(page: Int, pageSize: Int): List<IRecipeModel> {
-        return recipeStorage.getRecipes(page*pageSize,page*pageSize+pageSize)
+    override suspend fun getListRecipe(start: Int, count: Int): List<IRecipeModel> {
+        return recipeStorage.getRecipes(start, start+count-1)
     }
 
     override fun getLastRecipe() {

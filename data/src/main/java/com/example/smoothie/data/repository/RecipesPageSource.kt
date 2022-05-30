@@ -6,7 +6,8 @@ import com.example.smoothie.data.storage.models.RecipeEntity
 import com.example.smoothie.domain.repository.RecipeRepository
 
 class RecipesPageSource(
-    private val repositoryAPI: RecipeRepository
+    private val repositoryAPI: RecipeRepository,
+    private val pageSize: Int
 ) : PagingSource<Int, RecipeEntity>() {
 
     override fun getRefreshKey(state: PagingState<Int, RecipeEntity>): Int? {
@@ -18,11 +19,11 @@ class RecipesPageSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RecipeEntity> {
         val page = params.key ?: 0
         return try {
-            val pageSize = params.loadSize.coerceAtMost(MAX_PAGE_SIZE)
+//            val pageSize = params.loadSize.coerceAtMost(MAX_PAGE_SIZE)
 
             @Suppress("UNCHECKED_CAST")
             val listRecipe: List<RecipeEntity> =
-                repositoryAPI.getListRecipe(page, pageSize) as List<RecipeEntity>
+                repositoryAPI.getListRecipe(page*pageSize+1, params.loadSize) as List<RecipeEntity>
 
             return LoadResult.Page(
                 data = listRecipe,

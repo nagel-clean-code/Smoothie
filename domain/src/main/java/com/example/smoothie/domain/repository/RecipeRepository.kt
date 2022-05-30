@@ -15,5 +15,5 @@ interface RecipeRepository {
     suspend fun saveImageFromAddFormToDb(imageByteArray: ByteArray): String
     suspend fun getRandomRecipe(): IRecipeModel
     suspend fun getImageFromLinkFromDB(url: String): ByteArray
-    suspend fun getListRecipe(page: Int, pageSize: Int): List<IRecipeModel>
+    suspend fun getListRecipe(start: Int, count: Int): List<IRecipeModel>
 }
