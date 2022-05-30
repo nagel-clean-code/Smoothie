@@ -1,4 +1,4 @@
-package com.example.smoothie.images
+package com.example.smoothie.presentation.images
 
 import android.net.Uri
 import androidx.activity.result.ActivityResultRegistry
@@ -7,9 +7,5 @@ class ImagePicker() {
     fun setupLoadFromGallery(
         activityResultRegistry: ActivityResultRegistry,
         callback: (imageUri: Uri?) -> Unit
-    ) {
-        val loadImageFromGallery = LoadImageFromGallery(activityResultRegistry, callback)
-        loadImageFromGallery.pickImage()
-    }
-
+    ) = LoadImageFromGallery(activityResultRegistry, callback).pickImage()
 }

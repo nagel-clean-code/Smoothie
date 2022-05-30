@@ -13,7 +13,7 @@ import androidx.fragment.app.viewModels
 import coil.load
 import com.example.smoothie.data.storage.models.RecipeEntity
 import com.example.smoothie.databinding.FragmentAddRecipeBinding
-import com.example.smoothie.images.ImagePicker
+import com.example.smoothie.presentation.images.ImagePicker
 import com.example.smoothie.presentation.viewmodels.AddRecipeViewModel
 import com.example.smoothie.utils.convertDrawableToByteArray
 import com.example.smoothie.utils.decodeFromBase64IntoDrawable
@@ -24,15 +24,14 @@ import dagger.hilt.android.AndroidEntryPoint
 class AddRecipeFragment : BaseFragment() {
 
     private lateinit var binding: FragmentAddRecipeBinding
-    private var countIngredient: Int = 2
 
+    private var countIngredient: Int = 2
     override val viewModel: AddRecipeViewModel by viewModels()
     private val imagePicker = ImagePicker()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentAddRecipeBinding.inflate(layoutInflater)
-
     }
 
     override fun onCreateView(
@@ -49,13 +48,13 @@ class AddRecipeFragment : BaseFragment() {
             }
         }
         binding.addButton.setOnClickListener {
-          saveRecipeToDatabase()
+            saveRecipeToDatabase()
         }
         viewModel.resultNameLiveDataMutable.observe(viewLifecycleOwner) { text ->
             binding.editTextNameRecipe.text.clear()
             binding.editTextNameRecipe.text.append(text)
         }
-        viewModel.resultImageLiveDataMutable.observe(viewLifecycleOwner){ image ->
+        viewModel.resultImageLiveDataMutable.observe(viewLifecycleOwner) { image ->
             binding.imagePreview.load(image)
         }
         viewModel.load()
@@ -67,14 +66,12 @@ class AddRecipeFragment : BaseFragment() {
         viewModel.resultImageLiveDataMutable.removeObservers(viewLifecycleOwner)
         viewModel.saveName(binding.editTextNameRecipe.text.toString())
         viewModel.saveIngredients(binding.enteringIngredients.text.toString())
-//        if(binding.imagePreview.drawable != null){
-            viewModel.saveImageInSharPref(binding.imagePreview.drawable, ::encodeToBase64)
-//        }
+        viewModel.saveImageInSharPref(binding.imagePreview.drawable, ::encodeToBase64)
         super.onStop()
     }
 
 
-    private fun saveRecipeToDatabase(){
+    private fun saveRecipeToDatabase() {
         if (binding.editTextNameRecipe.text.toString().isEmpty()) {
             Toast.makeText(context, "Название рецепта не задано!", Toast.LENGTH_SHORT).show()
         } else if (binding.enteringIngredients.text.toString().isEmpty() &&

@@ -27,7 +27,7 @@ class DataModule {
     @Provides
     @Singleton
     fun provideFirebaseRecipeStorage(sharedPrefRecipeStorage: RecipeStorageSharPref): RecipeStorageDB {
-        return FirebaseRecipeStorageImpl(sharedPrefRecipeStorage.getUserName(),)
+        return FirebaseRecipeStorageImpl(sharedPrefRecipeStorage.getUserName())
     }
 
     @Provides

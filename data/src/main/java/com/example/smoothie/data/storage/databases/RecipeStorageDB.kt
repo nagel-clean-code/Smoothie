@@ -7,4 +7,5 @@ interface RecipeStorageDB {
     suspend fun nextRecipe(): IRecipeModel
     suspend fun saveImage(imageByteArray: ByteArray): String
     suspend fun getImageByUrl(url: String): ByteArray
+    suspend fun getRecipes(first: Int, last: Int): List<IRecipeModel>
 }

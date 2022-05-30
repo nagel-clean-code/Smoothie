@@ -38,6 +38,10 @@ class SharedHomeViewModel @Inject constructor(
     }
 
     fun getImage(url: String, convertFromStringToImage: (String)->Drawable){
+        if(url.isBlank()){
+            _imageLiveDataMutable.value = null
+            return
+        }
         viewModelScope.launch {
             val result = withContext(Dispatchers.IO) {
                 return@withContext getImageFromDBUseCase.execute(url)

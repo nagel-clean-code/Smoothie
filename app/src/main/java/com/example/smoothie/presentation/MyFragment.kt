@@ -29,7 +29,7 @@ class MyFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewModel.resultRecipeLiveData.observe(viewLifecycleOwner) { recipe ->
-            viewModel.getImage(recipe.imageUrl,::decodeFromBase64IntoDrawable)
+            viewModel.getImage(recipe.imageUrl, ::decodeFromBase64IntoDrawable)
             binding.headingRecipe.text = recipe.name
             if (recipe.ingredients.isNotBlank()) {
                 binding.textViewIngredients.visibility = VISIBLE
@@ -57,8 +57,12 @@ class MyFragment : BaseFragment() {
             }
         }
 
-        viewModel.resultImageLiveDataMutable.observe(viewLifecycleOwner){
-            binding.banner.setImageDrawable(it)
+        viewModel.resultImageLiveDataMutable.observe(viewLifecycleOwner) {
+            if (it == null) {
+                binding.banner.setImageResource(0)
+            } else {
+                binding.banner.setImageDrawable(it)
+            }
         }
         onTryAgain(binding.root) {  //Установка слушателя на кнопку "Повторить"
             viewModel.tryAgain()

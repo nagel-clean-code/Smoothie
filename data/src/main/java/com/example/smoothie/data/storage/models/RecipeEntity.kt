@@ -5,15 +5,15 @@ import com.google.firebase.database.IgnoreExtraProperties
 
 @IgnoreExtraProperties
 data class RecipeEntity(
-    override var idRecipe: String = "",
+    override var idRecipe: Int = -1,
     override val name: String = "",
-    override val ingredients: String ="",
+    override val ingredients: String = "",
     override val recipe: String = "",
     override val description: String = "",
     override var imageUrl: String = ""
 
 ): IRecipeModel{
-    override fun map(): HashMap<String,String>{
+    override fun map(): HashMap<String,Any>{
         return hashMapOf(
             "idRecipe" to idRecipe,
             "name" to name,

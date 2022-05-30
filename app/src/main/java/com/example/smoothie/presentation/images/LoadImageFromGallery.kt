@@ -1,4 +1,4 @@
-package com.example.smoothie.images
+package com.example.smoothie.presentation.images
 
 import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher

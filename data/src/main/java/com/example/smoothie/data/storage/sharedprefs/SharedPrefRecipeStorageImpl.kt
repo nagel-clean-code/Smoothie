@@ -2,12 +2,6 @@ package com.example.smoothie.data.storage.sharedprefs
 
 import android.content.Context
 
-private const val SHARED_PREFS_ADD_RECIPE_NAME = "SHARED_PREFS_ADD_RECIPE_NAME"
-private const val NAME_RECIPE = "NAME_RECIPE"
-private const val INGREDIENTS = "INGREDIENTS"
-private const val USER_NAME = "USER_NAME"
-private const val IMAGE_FROM_ADD_FORM = "IMAGE_FROM_ADD_FORM"
-
 class SharedPrefRecipeStorageImpl(context: Context) : RecipeStorageSharPref {
 
     private val sharedPreferences =
@@ -46,4 +40,12 @@ class SharedPrefRecipeStorageImpl(context: Context) : RecipeStorageSharPref {
     override fun getIngredients() = sharedPreferences.getString(INGREDIENTS, "Ошибка") ?: ""
 
     override fun getUserName(): String = sharedPreferences.getString(USER_NAME, "no_name") ?: ""
+
+    private companion object{
+        const val SHARED_PREFS_ADD_RECIPE_NAME = "SHARED_PREFS_ADD_RECIPE_NAME"
+        const val NAME_RECIPE = "NAME_RECIPE"
+        const val INGREDIENTS = "INGREDIENTS"
+        const val USER_NAME = "USER_NAME"
+        const val IMAGE_FROM_ADD_FORM = "IMAGE_FROM_ADD_FORM"
+    }
 }
