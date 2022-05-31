@@ -3,12 +3,14 @@ package com.example.smoothie.data.repository
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.smoothie.data.storage.models.RecipeEntity
-import com.example.smoothie.domain.repository.RecipeRepository
+import com.example.smoothie.domain.models.IRecipeModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+typealias RecipesPageLoader = suspend (start: Int, count: Int) -> List<IRecipeModel>
+
 class RecipesPageSource(
-    private val repositoryAPI: RecipeRepository,
+    private val recipesPageLoader: RecipesPageLoader,
     private val pageSize: Int,
     private val searchBy: String?
 ) : PagingSource<Int, RecipeEntity>() {
@@ -24,7 +26,7 @@ class RecipesPageSource(
         return try {
             val listRecipe: List<RecipeEntity> = withContext(Dispatchers.IO) {
                 @Suppress("UNCHECKED_CAST")
-                    return@withContext repositoryAPI.getListRecipe(
+                    return@withContext recipesPageLoader.invoke(
                         page * pageSize + 1,
                         params.loadSize
                     ) as List<RecipeEntity>

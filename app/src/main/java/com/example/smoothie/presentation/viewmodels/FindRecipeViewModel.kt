@@ -9,7 +9,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.smoothie.data.repository.RecipesPageSource
 import com.example.smoothie.data.storage.models.RecipeEntity
-import com.example.smoothie.domain.repository.RecipeRepository
+import com.example.smoothie.domain.usecase.database.GetListRecipeFromDBUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FindRecipeViewModel @Inject constructor(
-    private val recipeRepository: RecipeRepository
+    private val getListRecipeFromDBUseCase: GetListRecipeFromDBUseCase
 ) : BaseViewModel() {
 
     val recipes: Flow<PagingData<RecipeEntity>>
@@ -36,7 +36,7 @@ class FindRecipeViewModel @Inject constructor(
         return Pager(
             PagingConfig(PAGE_SIZE),
             pagingSourceFactory = {
-                RecipesPageSource(recipeRepository, PAGE_SIZE, searchBy.value)
+                RecipesPageSource(getListRecipeFromDBUseCase::execute, PAGE_SIZE, searchBy.value)
             }
         ).flow
     }
