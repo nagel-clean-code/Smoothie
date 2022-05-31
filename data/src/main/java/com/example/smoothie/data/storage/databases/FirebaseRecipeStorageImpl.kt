@@ -76,7 +76,7 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
     }
 
     override suspend fun nextRecipe(): IRecipeModel {
-        var recipe = RecipeEntity(-1, "Ошибка", "", "", "")
+        var recipe = RecipeEntity(-1, "Рецептов нет", "", "", "")
         if (countRecipes == 0)
             return recipe
         val rand = nextRandom()
