@@ -1,10 +1,7 @@
 package com.example.smoothie.di
 
 import com.example.smoothie.domain.repository.RecipeRepository
-import com.example.smoothie.domain.usecase.database.GetImageFromDBUseCase
-import com.example.smoothie.domain.usecase.database.GetListRecipeFromDBUseCase
-import com.example.smoothie.domain.usecase.database.GetRandomRecipeFromDbUseCase
-import com.example.smoothie.domain.usecase.database.SaveImageInDBUseCase
+import com.example.smoothie.domain.usecase.database.*
 import com.example.smoothie.domain.usecase.sharedpref.*
 import dagger.Module
 import dagger.Provides
@@ -47,5 +44,11 @@ class DomainModule{
 
     @Provides
     fun provideGetListRecipeFromDBUseCase(recipeRepository: RecipeRepository) = GetListRecipeFromDBUseCase(recipeRepository)
+
+    @Provides
+    fun provideSaveFavoriteFlagInDbUseCase(recipeRepository: RecipeRepository) = SaveFavoriteFlagInDbUseCase(recipeRepository)
+
+    @Provides
+    fun provideDeleteRecipeInDbUseCase(recipeRepository: RecipeRepository) = DeleteRecipeInDbUseCase(recipeRepository)
 
 }

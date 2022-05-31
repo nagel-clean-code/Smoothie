@@ -12,6 +12,7 @@ import com.example.smoothie.databinding.PartResultBinding
 import com.example.smoothie.presentation.viewmodels.SharedHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import com.example.smoothie.utils.decodeFromBase64IntoDrawable
+import com.example.smoothie.utils.onTryAgain
 
 @AndroidEntryPoint
 class MyFragment : BaseFragment() {

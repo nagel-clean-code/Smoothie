@@ -1,8 +1,12 @@
 package com.example.smoothie.presentation.adapters
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
+import androidx.core.view.isInvisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -12,11 +16,25 @@ import com.example.smoothie.databinding.ItemRecipeBinding
 import com.example.smoothie.presentation.images.GlideApp
 import com.google.firebase.storage.FirebaseStorage
 
-class RecipeAdapter() : PagingDataAdapter<RecipeEntity, RecipeAdapter.RecipeViewHolder>(ArticleDiffItemCallback), View.OnClickListener {
+class RecipeAdapter(
+    private val listener: Listener
+) : PagingDataAdapter<RecipeEntity, RecipeAdapter.RecipeViewHolder>(ArticleDiffItemCallback), View.OnClickListener {
+
+    override fun onClick(p0: View?) {
+        val recipe = p0?.tag as RecipeEntity
+        if (p0.id == R.id.starImageView) {
+            listener.onToggleFavoriteFlag(recipe)
+        } else if (p0.id == R.id.deleteImageView) {
+            listener.onUserDelete(recipe)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
         val inflate = LayoutInflater.from(parent.context)
         val binding = ItemRecipeBinding.inflate(inflate, parent, false)
+
+        binding.starImageView.setOnClickListener(this)
+        binding.deleteImageView.setOnClickListener(this)
 
         binding.root.setOnClickListener(this)
         return RecipeViewHolder(binding)
@@ -41,11 +59,31 @@ class RecipeAdapter() : PagingDataAdapter<RecipeEntity, RecipeAdapter.RecipeView
             } else {
                 image.setImageResource(R.drawable.ic_baseline_image_48)
             }
+            userProgressBar.alpha = if (recipe.inProgress) 1f else 0f
+            starImageView.isInvisible = recipe.inProgress
+            deleteImageView.isInvisible = recipe.inProgress
+
+            setIsFavorite(starImageView, recipe.isFavorite)
+
+            starImageView.tag = recipe
+            deleteImageView.tag = recipe
         }
     }
 
-    override fun onClick(p0: View?) {
-        val recipe = p0?.tag as RecipeEntity
+
+    private fun setIsFavorite(starImageView: ImageView, isFavorite: Boolean) {
+        val context = starImageView.context
+        if (isFavorite) {
+            starImageView.setImageResource(R.drawable.ic_star)
+            starImageView.imageTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(context, R.color.active)
+            )
+        } else {
+            starImageView.setImageResource(R.drawable.ic_star_outline)
+            starImageView.imageTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(context, R.color.inactive)
+            )
+        }
     }
 
     private object ArticleDiffItemCallback : DiffUtil.ItemCallback<RecipeEntity>() {
@@ -64,4 +102,16 @@ class RecipeAdapter() : PagingDataAdapter<RecipeEntity, RecipeAdapter.RecipeView
     class RecipeViewHolder(
         val binding: ItemRecipeBinding
     ) : RecyclerView.ViewHolder(binding.root)
+
+    interface Listener {
+        /**
+         * Called when the user taps the "Delete" button in a list item
+         */
+        fun onUserDelete(recipeEntity: RecipeEntity)
+
+        /**
+         * Called when the user taps the "Star" button in a list item.
+         */
+        fun onToggleFavoriteFlag(recipeEntity: RecipeEntity)
+    }
 }

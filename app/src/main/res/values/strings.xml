@@ -35,4 +35,10 @@
     <string name="preview">Превью</string>
     <string name="error_text_connect">Ошибка!\n Пожалуйста повторите позже</string>
     <string name="repeat">Повторить</string>
+    <string name="error_change_favorite">Не удалось обновить метку</string>
+    <string name="error_delete">Не удалось удалить рецепт</string>
+    <string name="star_button">Star button</string>
+    <string name="delete_button">Delete Button</string>
+
+
 </resources>

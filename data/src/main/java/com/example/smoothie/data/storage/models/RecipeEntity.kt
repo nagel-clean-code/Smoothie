@@ -10,8 +10,10 @@ data class RecipeEntity(
     override val ingredients: String = "",
     override val recipe: String = "",
     override val description: String = "",
-    override var imageUrl: String = ""
+    override var imageUrl: String = "",
+    override var isFavorite: Boolean = false,
 
+    override var inProgress: Boolean = false
 ): IRecipeModel{
     override fun map(): HashMap<String,Any>{
         return hashMapOf(
@@ -20,7 +22,8 @@ data class RecipeEntity(
             "ingredients" to ingredients,
             "recipe" to recipe,
             "description" to description,
-            "imageUrl" to imageUrl
+            "imageUrl" to imageUrl,
+            "isFavorite" to isFavorite
         )
     }
 }

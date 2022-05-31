@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isInvisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +16,8 @@ import com.example.smoothie.presentation.adapters.DefaultLoadStateAdapter
 import com.example.smoothie.presentation.adapters.RecipeAdapter
 import com.example.smoothie.presentation.adapters.TryAgainAction
 import com.example.smoothie.presentation.viewmodels.FindRecipeViewModel
+import com.example.smoothie.utils.observeEvent
+import com.example.smoothie.utils.simpleScan
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -47,11 +50,13 @@ class FindRecipeFragment : BaseFragment() {
 
         handleScrollingToTopWhenSearching()
         handleListVisibility()
+        observeErrorMessages()
+        observeInvalidationEvents()
         return binding.root
     }
 
     private fun setupRecipeList() {
-        recipeAdapter = RecipeAdapter()
+        recipeAdapter = RecipeAdapter(viewModel)
         val tryAgainAction: TryAgainAction = { recipeAdapter.retry() }
         val footerAdapter = DefaultLoadStateAdapter(tryAgainAction)
         val adapterWithLoadState =
@@ -113,7 +118,7 @@ class FindRecipeFragment : BaseFragment() {
 
     private fun observeRecipe() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.recipes.collectLatest {
+            viewModel.recipesFlow.collectLatest {
                 recipeAdapter.submitData(it)
             }
         }
@@ -127,4 +132,15 @@ class FindRecipeFragment : BaseFragment() {
         }
     }
 
+    private fun observeErrorMessages() {
+        viewModel.errorEvents.observeEvent(this) { messageRes ->
+            Toast.makeText(context, messageRes, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun observeInvalidationEvents() {
+        viewModel.invalidateEvents.observeEvent(this) {
+            recipeAdapter.refresh()
+        }
+    }
 }

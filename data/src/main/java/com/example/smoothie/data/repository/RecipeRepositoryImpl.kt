@@ -25,6 +25,14 @@ class RecipeRepositoryImpl(
         return recipeStorage.getRecipes(start, start+count-1)
     }
 
+    override suspend fun saveFavoriteFlag(idRecipe: Int, flag: Boolean) {
+        recipeStorage.saveFavoriteFlag(idRecipe, flag)
+    }
+
+    override suspend fun deleteRecipe(idRecipe: Int) {
+        recipeStorage.deleteRecipe(idRecipe)
+    }
+
     override fun getLastRecipe() {
         TODO("Not yet implemented")
     }

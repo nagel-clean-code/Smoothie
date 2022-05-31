@@ -1,4 +1,4 @@
-package com.example.smoothie.presentation
+package com.example.smoothie.utils
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

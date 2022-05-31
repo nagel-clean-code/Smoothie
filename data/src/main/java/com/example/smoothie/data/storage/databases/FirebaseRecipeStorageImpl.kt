@@ -16,7 +16,7 @@ import java.util.*
 class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB {
     private var countRecipes: Int = 1
     private val dataBaseCounter: DatabaseReference = FirebaseDatabase.getInstance().reference
-    private val dataBase: FirebaseFirestore = Firebase.firestore
+    private val firestore: FirebaseFirestore = Firebase.firestore
     private val storageRef = FirebaseStorage.getInstance("gs://smoothie-40dd3.appspot.com")
     private var firstInitCount = false
     private lateinit var linkedList1: MutableList<Int>
@@ -71,7 +71,7 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
 
     override fun saveRecipe(recipe: IRecipeModel) {
         recipe.idRecipe = countRecipes + 1
-        dataBase.collection(userName).add(recipe.map())
+        firestore.collection(userName).add(recipe.map())
         dataBaseCounter.child(userName).setValue(countRecipes + 1)
     }
 
@@ -82,7 +82,7 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
         val rand = nextRandom()
         Log.d(TAG, "Random:$rand")
         val result =
-            dataBase.collection(userName).whereEqualTo("idRecipe", rand)
+            firestore.collection(userName).whereEqualTo("idRecipe", rand)
                 .get().addOnSuccessListener { documentSnapshot ->
                     Log.d(TAG, "Количество найденых рецептов: ${documentSnapshot.size()}")
                     recipe = documentSnapshot.documents.first().toObject<RecipeEntity>()!!
@@ -120,11 +120,14 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
             return recipe
 
         val result =
-            dataBase.collection(userName)
+            firestore.collection(userName)
                 .whereGreaterThanOrEqualTo("idRecipe", first)
                 .whereLessThanOrEqualTo("idRecipe", last)
                 .get().addOnSuccessListener { documentSnapshot ->
-                    Log.d(TAG, "Количество найденых рецептов для RecycleView: ${documentSnapshot.size()}")
+                    Log.d(
+                        TAG,
+                        "Количество найденых рецептов для RecycleView: ${documentSnapshot.size()}"
+                    )
                     for (document in documentSnapshot) {
                         recipe.add(document.toObject())
                     }
@@ -135,7 +138,57 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
         return recipe
     }
 
-    private companion object{
+    override suspend fun saveFavoriteFlag(idRecipe: Int, flag: Boolean) {
+        val result =
+            firestore.collection(userName)
+            .whereEqualTo("idRecipe", idRecipe)
+            .get().addOnSuccessListener {
+                if (it.documents.size == 0) {
+                    Log.d(TAG, "Документ с таким id:($idRecipe) не найден!")
+                    throw Exception("Документ с таким id:($idRecipe) не найден!")
+
+                } else {
+                    it.documents.first().reference.update("isFavorite", flag)
+                        .addOnSuccessListener { Log.d(TAG, "Документ id($idRecipe) обновлён") }
+                        .addOnFailureListener { e ->
+                            Log.w(TAG, "Не удалось обновить документ id($idRecipe)", e)
+                            throw Exception("Не удалось обновить документ id($idRecipe)",e)
+                        }
+                }
+            }.addOnFailureListener { e ->
+                Log.w(TAG, "Не удалось сделать поиск по id: $idRecipe", e)
+                throw Exception("Не удалось сделать поиск по id: $idRecipe",e)
+            }
+        result.await()
+    }
+
+    override suspend fun deleteRecipe(idRecipe: Int) {  //FIXME добавить удаление картинки
+        val result =
+            firestore.collection(userName)
+            .whereEqualTo("idRecipe", idRecipe)
+            .get().addOnSuccessListener {
+                if (it.documents.size == 0) {
+                    Log.d(TAG, "Документ с таким id:($idRecipe) не найден!")
+                    throw Exception("Документ с таким id:($idRecipe) не найден!")
+                } else {
+                    it.documents.first().reference.delete()
+                        .addOnSuccessListener {
+                            Log.d(TAG, "Документ id($idRecipe) удалён!")
+                            dataBaseCounter.child(userName).setValue(countRecipes - 1)
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w(TAG, "Не удалось удалить документ id($idRecipe)", e)
+                            throw Exception("Не удалось удалить документ id($idRecipe)",e)
+                        }
+                }
+            }.addOnFailureListener { e ->
+                Log.w(TAG, "Не удалось сделать поиск по id: $idRecipe, для удаления", e)
+                throw Exception("Не удалось сделать поиск по id: $idRecipe, для удаления",e)
+            }
+        result.await()
+    }
+
+    private companion object {
         const val MAX_SIZE_PICTURE: Long = 1024 * 1024 * 2
     }
 }
