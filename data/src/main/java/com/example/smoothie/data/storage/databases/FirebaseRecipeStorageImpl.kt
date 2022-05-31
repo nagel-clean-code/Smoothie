@@ -32,7 +32,12 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
                     linkedList1 = (1 until countRecipes).toMutableList()
                     linkedList2 = LinkedList()
                 } else {
-                    linkedList1.add(countRecipes)
+                    if(countRecipes < linkedList1.size + linkedList2.size){
+                        linkedList1.remove(countRecipes+1)
+                        linkedList2.remove(countRecipes+1)
+                    }else{
+                        linkedList1.add(countRecipes)
+                    }
                 }
             }
 
@@ -44,24 +49,16 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
         dataBaseCounter.addListenerForSingleValueEvent(obj)
     }
 
-    //FIXME Плохо работает на малом количестве данных
-    private val linkedList3 = LinkedList<Int>()
+    private var prevNumber = -1
     private fun nextRandom(): Int {
-        val number = linkedList1.random()
-        val ca = countRecipes * 0.20
-        val siz = linkedList1.size
-        if (linkedList1.size < countRecipes * 0.20) { //если в массиве осталось всего 20% от первоначального
-            linkedList3.add(number) // последние 20% сохраняем в резервный список
-        } else {
-            linkedList2.add(number)
-        }
+        var number: Int
+        do {
+            number = linkedList1.random()
+        } while (linkedList1.size != 1 && number == prevNumber)
+        prevNumber = number
+        linkedList2.add(number)
         linkedList1.remove(number)
-        if (linkedList3.isNotEmpty()) { //Если есть резервные числа с последнего набора (с конца списка - 20%)
-            if (linkedList1.size > (countRecipes * 0.20) && (linkedList1.size < countRecipes * 0.60)) {  // Если уже первые 20% нового списка отработали (новый список без последних 20%)
-                linkedList1.addAll(linkedList3) //Добавляем в конец резервные 20%
-                linkedList3.clear()             //очищаем резерв
-            }
-        }
+
         if (linkedList1.isEmpty()) {
             linkedList1.addAll(linkedList2)
             linkedList2.clear()
@@ -114,13 +111,13 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
         return up.await()
     }
 
-    private fun deleteImage(url: String){
-        if(url.isBlank()) return
+    private fun deleteImage(url: String) {
+        if (url.isBlank()) return
 
         val imageRef = storageRef.reference.child(url)
         imageRef.delete().addOnSuccessListener {
             Log.d(TAG, "Изображение успешно удалено, url:$url")
-        }.addOnFailureListener{
+        }.addOnFailureListener {
             Log.w(TAG, "Не удалось удалить изображение, url:$url", it)
             throw Exception("Не удалось удалить изображение, url:$url")
         }
@@ -155,52 +152,77 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
     override suspend fun saveFavoriteFlag(idRecipe: Int, flag: Boolean) {
         val result =
             firestore.collection(userName)
-            .whereEqualTo("idRecipe", idRecipe)
-            .get().addOnSuccessListener {
-                if (it.documents.size == 0) {
-                    Log.d(TAG, "Документ с таким id:($idRecipe) не найден!")
-                    throw Exception("Документ с таким id:($idRecipe) не найден!")
+                .whereEqualTo("idRecipe", idRecipe)
+                .get().addOnSuccessListener {
+                    if (it.documents.size == 0) {
+                        Log.d(TAG, "Документ с таким id:($idRecipe) не найден!")
+                        throw Exception("Документ с таким id:($idRecipe) не найден!")
 
-                } else {
-                    it.documents.first().reference.update("isFavorite", flag)
-                        .addOnSuccessListener { Log.d(TAG, "Документ id($idRecipe) обновлён") }
-                        .addOnFailureListener { e ->
-                            Log.w(TAG, "Не удалось обновить документ id($idRecipe)", e)
-                            throw Exception("Не удалось обновить документ id($idRecipe)",e)
-                        }
+                    } else {
+                        it.documents.first().reference.update("isFavorite", flag)
+                            .addOnSuccessListener { Log.d(TAG, "Документ id($idRecipe) обновлён") }
+                            .addOnFailureListener { e ->
+                                Log.w(TAG, "Не удалось обновить документ id($idRecipe)", e)
+                                throw Exception("Не удалось обновить документ id($idRecipe)", e)
+                            }
+                    }
+                }.addOnFailureListener { e ->
+                    Log.w(TAG, "Не удалось сделать поиск по id: $idRecipe", e)
+                    throw Exception("Не удалось сделать поиск по id: $idRecipe", e)
                 }
-            }.addOnFailureListener { e ->
-                Log.w(TAG, "Не удалось сделать поиск по id: $idRecipe", e)
-                throw Exception("Не удалось сделать поиск по id: $idRecipe",e)
-            }
         result.await()
+    }
+
+    private fun updateIndexes(deleteIx: Int) {
+        if (deleteIx == countRecipes) return
+
+        firestore.collection(userName)
+            .whereEqualTo("idRecipe", countRecipes)
+            .get().addOnSuccessListener {
+                if (it.documents.size > 0) {
+                    Log.d(TAG, "Документ для индексирования найден")
+                    it.documents.first().reference.update("idRecipe", deleteIx)
+                        .addOnSuccessListener { Log.d(TAG, "Успешная переиндексация") }
+                        .addOnFailureListener {
+                            Log.w(TAG, "Ошибка при обновлении индекса в процессе индексации")
+                            throw Exception("Не удалось выполнить переиндексацию")
+                        }
+                } else {
+                    Log.w(TAG, "Документ для индексирования не найден")
+                    throw Exception("Не удалось выполнить переиндексацию")
+                }
+            }
+            .addOnFailureListener {
+                throw Exception("Ошибка при запросе поиска элемента в базе")
+            }
     }
 
     override suspend fun deleteRecipe(idRecipe: Int) {
         val result =
             firestore.collection(userName)
-            .whereEqualTo("idRecipe", idRecipe)
-            .get().addOnSuccessListener {
-                if (it.documents.size == 0) {
-                    Log.d(TAG, "Документ с таким id:($idRecipe) не найден!")
-                    throw Exception("Документ с таким id:($idRecipe) не найден!")
-                } else {
-                    val doc = it.documents.first()
-                    doc.getString("imageUrl")?.let { it1 -> deleteImage(it1) }
-                    doc.reference.delete()
-                        .addOnSuccessListener {
-                            Log.d(TAG, "Документ id($idRecipe) удалён!")
-                            dataBaseCounter.child(userName).setValue(countRecipes - 1)
-                        }
-                        .addOnFailureListener { e ->
-                            Log.w(TAG, "Не удалось удалить документ id($idRecipe)", e)
-                            throw Exception("Не удалось удалить документ id($idRecipe)",e)
-                        }
+                .whereEqualTo("idRecipe", idRecipe)
+                .get().addOnSuccessListener {
+                    if (it.documents.size == 0) {
+                        Log.d(TAG, "Документ с таким id:($idRecipe) не найден!")
+                        throw Exception("Документ с таким id:($idRecipe) не найден!")
+                    } else {
+                        val doc = it.documents.first()
+                        updateIndexes(idRecipe)
+                        doc.getString("imageUrl")?.let { it1 -> deleteImage(it1) }
+                        doc.reference.delete()
+                            .addOnSuccessListener {
+                                Log.d(TAG, "Документ удалён!")
+                                dataBaseCounter.child(userName).setValue(countRecipes - 1)
+                            }
+                            .addOnFailureListener { e ->
+                                Log.w(TAG, "Не удалось удалить документ id($idRecipe)", e)
+                                throw Exception("Не удалось удалить документ id($idRecipe)", e)
+                            }
+                    }
+                }.addOnFailureListener { e ->
+                    Log.w(TAG, "Не удалось сделать поиск по id: $idRecipe, для удаления", e)
+                    throw Exception("Не удалось сделать поиск по id: $idRecipe, для удаления", e)
                 }
-            }.addOnFailureListener { e ->
-                Log.w(TAG, "Не удалось сделать поиск по id: $idRecipe, для удаления", e)
-                throw Exception("Не удалось сделать поиск по id: $idRecipe, для удаления",e)
-            }
         result.await()
     }
 
