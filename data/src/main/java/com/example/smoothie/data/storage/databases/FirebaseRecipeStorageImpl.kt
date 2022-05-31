@@ -115,9 +115,9 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
     }
 
     override suspend fun getRecipes(first: Int, last: Int): List<IRecipeModel> {
-        val recipe = mutableListOf<RecipeEntity>()
+        val recipes = mutableListOf<RecipeEntity>()
         if (countRecipes == 0)
-            return recipe
+            return recipes
 
         val result =
             firestore.collection(userName)
@@ -129,13 +129,15 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
                         "Количество найденых рецептов для RecycleView: ${documentSnapshot.size()}"
                     )
                     for (document in documentSnapshot) {
-                        recipe.add(document.toObject())
+                        val recipe: RecipeEntity = document.toObject()  //Почему то isFavorite не преобразовывалась, пришлось вручную
+                        recipe.isFavorite = document.data["isFavorite"] as Boolean
+                        recipes.add(recipe)
                     }
                 }.addOnFailureListener { exception ->
                     Log.w(TAG, "Error getting documents: ", exception)
                 }
         result.await()
-        return recipe
+        return recipes
     }
 
     override suspend fun saveFavoriteFlag(idRecipe: Int, flag: Boolean) {
