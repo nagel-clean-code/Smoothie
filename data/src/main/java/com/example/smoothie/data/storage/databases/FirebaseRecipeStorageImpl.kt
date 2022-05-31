@@ -104,14 +104,26 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
     }
 
     override suspend fun getImageByUrl(url: String): ByteArray {
-        val islandRef = storageRef.reference.child(url)
+        val imageRef = storageRef.reference.child(url)
 
-        val up = islandRef.getBytes(MAX_SIZE_PICTURE).addOnSuccessListener {
+        val up = imageRef.getBytes(MAX_SIZE_PICTURE).addOnSuccessListener {
             Log.d(TAG, "Изображение успешно загружено")
         }.addOnFailureListener {
             Log.w(TAG, "Не удалось загрузить изображение из БД")
         }
         return up.await()
+    }
+
+    private fun deleteImage(url: String){
+        if(url.isBlank()) return
+
+        val imageRef = storageRef.reference.child(url)
+        imageRef.delete().addOnSuccessListener {
+            Log.d(TAG, "Изображение успешно удалено, url:$url")
+        }.addOnFailureListener{
+            Log.w(TAG, "Не удалось удалить изображение, url:$url", it)
+            throw Exception("Не удалось удалить изображение, url:$url")
+        }
     }
 
     override suspend fun getRecipes(first: Int, last: Int): List<IRecipeModel> {
@@ -164,7 +176,7 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
         result.await()
     }
 
-    override suspend fun deleteRecipe(idRecipe: Int) {  //FIXME добавить удаление картинки
+    override suspend fun deleteRecipe(idRecipe: Int) {
         val result =
             firestore.collection(userName)
             .whereEqualTo("idRecipe", idRecipe)
@@ -173,7 +185,9 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
                     Log.d(TAG, "Документ с таким id:($idRecipe) не найден!")
                     throw Exception("Документ с таким id:($idRecipe) не найден!")
                 } else {
-                    it.documents.first().reference.delete()
+                    val doc = it.documents.first()
+                    doc.getString("imageUrl")?.let { it1 -> deleteImage(it1) }
+                    doc.reference.delete()
                         .addOnSuccessListener {
                             Log.d(TAG, "Документ id($idRecipe) удалён!")
                             dataBaseCounter.child(userName).setValue(countRecipes - 1)
