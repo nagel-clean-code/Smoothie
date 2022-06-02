@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class FindRecipeViewModel @Inject constructor(
+class SharedFindRecipeViewModel @Inject constructor(
     private val getListRecipeFromDBUseCase: GetListRecipeFromDBUseCase,
     private val saveFavoriteFlagInDbUseCase: SaveFavoriteFlagInDbUseCase,
     private val deleteRecipeInDbUseCase: DeleteRecipeInDbUseCase

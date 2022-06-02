@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.smoothie.R
 
-class StandardFragment : Fragment() {
+class HomeStandardFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

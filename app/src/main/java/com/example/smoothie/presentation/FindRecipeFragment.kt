@@ -15,7 +15,7 @@ import com.example.smoothie.databinding.FragmentFindRecipeBinding
 import com.example.smoothie.presentation.adapters.DefaultLoadStateAdapter
 import com.example.smoothie.presentation.adapters.RecipeAdapter
 import com.example.smoothie.presentation.adapters.TryAgainAction
-import com.example.smoothie.presentation.viewmodels.FindRecipeViewModel
+import com.example.smoothie.presentation.viewmodels.SharedFindRecipeViewModel
 import com.example.smoothie.utils.observeEvent
 import com.example.smoothie.utils.simpleScan
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,7 +32,7 @@ class FindRecipeFragment : BaseFragment() {
     private lateinit var recipeAdapter: RecipeAdapter
     private lateinit var loadStateHolder: DefaultLoadStateAdapter.Holder
 
-    override val viewModel: FindRecipeViewModel by viewModels()
+    val viewModelShared: SharedFindRecipeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +56,7 @@ class FindRecipeFragment : BaseFragment() {
     }
 
     private fun setupRecipeList() {
-        recipeAdapter = RecipeAdapter(viewModel)
+        recipeAdapter = RecipeAdapter(viewModelShared)
         val tryAgainAction: TryAgainAction = { recipeAdapter.retry() }
         val footerAdapter = DefaultLoadStateAdapter(tryAgainAction)
         val adapterWithLoadState =
@@ -112,13 +112,13 @@ class FindRecipeFragment : BaseFragment() {
 
     private fun setupSwipeToRefresh() {
         binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.refresh()
+            viewModelShared.refresh()
         }
     }
 
     private fun observeRecipe() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.recipesFlow.collectLatest {
+            viewModelShared.recipesFlow.collectLatest {
                 recipeAdapter.submitData(it)
             }
         }
@@ -133,13 +133,13 @@ class FindRecipeFragment : BaseFragment() {
     }
 
     private fun observeErrorMessages() {
-        viewModel.errorEvents.observeEvent(this) { messageRes ->
+        viewModelShared.errorEvents.observeEvent(this) { messageRes ->
             Toast.makeText(context, messageRes, Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun observeInvalidationEvents() {
-        viewModel.invalidateEvents.observeEvent(this) {
+        viewModelShared.invalidateEvents.observeEvent(this) {
             recipeAdapter.refresh()
         }
     }

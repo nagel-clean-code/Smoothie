@@ -15,7 +15,7 @@ import com.example.smoothie.utils.decodeFromBase64IntoDrawable
 import com.example.smoothie.utils.onTryAgain
 
 @AndroidEntryPoint
-class MyFragment : BaseFragment() {
+class HomeMyFragment : BaseFragment() {
 
     private lateinit var binding: FragmentMyBinding
     override val viewModel: SharedHomeViewModel by activityViewModels()
