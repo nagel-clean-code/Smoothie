@@ -9,6 +9,7 @@
     <!-- Preference Titles -->
     <string name="settings_profile_header">Настройки профиля</string>
     <string name="settings_random">Настройки рандома</string>
+    <string name="search_by">Найди рецепт</string>
 
     <!-- Messages Preferences -->
     <string name="nickname_header">Уникальное имя пользователя:</string>

@@ -40,6 +40,8 @@ class SharedFindRecipeViewModel @Inject constructor(
     private var _invalidateEvents = MutableLiveEvent<Unit>()
     val invalidateEvents = _invalidateEvents.share()
 
+    private val _scrollEvents = MutableLiveEvent<Unit>()
+    val scrollEvents = _scrollEvents.share()
 
     init {
         val originalRecipesFlow = searchBy.asFlow()
@@ -52,6 +54,16 @@ class SharedFindRecipeViewModel @Inject constructor(
             localChangesFlow.debounce(50),
             this::merge
         )
+    }
+
+    fun setSearchBy(value: String) {
+        if (this.searchBy.value == value) return
+        this.searchBy.value = value
+        scrollListToTop()
+    }
+
+    private fun scrollListToTop() {
+        _scrollEvents.publishEvent(Unit)
     }
 
     private fun getPager(): Flow<PagingData<RecipeEntity>> {

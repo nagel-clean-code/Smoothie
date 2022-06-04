@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isInvisible
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -31,10 +32,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class FindMyFragment : BaseFragment() {
+class FindMyFragment(private val indexPager: Int) : BaseFragment() {
 
-
-    private lateinit var binding: FragmentFindRecipeBinding
+    private lateinit var binding: FragmentFindMyBinding
     private lateinit var recipeAdapter: RecipeAdapter
     private lateinit var loadStateHolder: DefaultLoadStateAdapter.Holder
 
@@ -42,7 +42,7 @@ class FindMyFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = FragmentFindRecipeBinding.inflate(layoutInflater)
+        binding = FragmentFindMyBinding.inflate(layoutInflater)
         setupRecipeList()
     }
 
@@ -54,11 +54,18 @@ class FindMyFragment : BaseFragment() {
         observeLoadState()
         setupSwipeToRefresh()
 
+        setupSearchInput()
         handleScrollingToTopWhenSearching()
         handleListVisibility()
         observeErrorMessages()
         observeInvalidationEvents()
         return binding.root
+    }
+
+    private fun setupSearchInput() {
+        binding.searchEditText.addTextChangedListener {
+            viewModel.setSearchBy(it.toString())
+        }
     }
 
     private fun setupRecipeList() {
@@ -80,8 +87,6 @@ class FindMyFragment : BaseFragment() {
             tryAgainAction,
             binding.swipeRefreshLayout
         )
-
-
     }
 
     private fun handleScrollingToTopWhenSearching() = viewLifecycleOwner.lifecycleScope.launch {
@@ -90,7 +95,8 @@ class FindMyFragment : BaseFragment() {
         getRefreshLoadStateFlow()
             .simpleScan(count = 2)
             .collectLatest { (previousState, currentState) ->
-                if (previousState is LoadState.Loading && currentState is LoadState.NotLoading) {
+                if (previousState is LoadState.Loading && currentState is LoadState.NotLoading
+                    && viewModel.scrollEvents.value?.get() != null) {
                     binding.recyclerView.scrollToPosition(0)
                 }
             }

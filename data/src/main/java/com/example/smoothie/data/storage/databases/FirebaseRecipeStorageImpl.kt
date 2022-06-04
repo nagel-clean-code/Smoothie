@@ -123,25 +123,29 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
         }
     }
 
-    override suspend fun getRecipes(first: Int, last: Int): List<IRecipeModel> {
+    override suspend fun getRecipes(searchBy: String, first: Int, last: Int): List<IRecipeModel> {
         val recipes = mutableListOf<RecipeEntity>()
         if (countRecipes == 0)
             return recipes
 
         val result =
             firestore.collection(userName)
-                .whereGreaterThanOrEqualTo("idRecipe", first)
-                .whereLessThanOrEqualTo("idRecipe", last)
+                .whereGreaterThanOrEqualTo("name", searchBy)
                 .get().addOnSuccessListener { documentSnapshot ->
-                    Log.d(
-                        TAG,
-                        "Количество найденых рецептов для RecycleView: ${documentSnapshot.size()}"
-                    )
-                    for (document in documentSnapshot) {
-                        val recipe: RecipeEntity = document.toObject()  //Почему то isFavorite не преобразовывалась, пришлось вручную
-                        recipe.isFavorite = document.data["isFavorite"] as Boolean
-                        recipes.add(recipe)
+                    Log.d(TAG, "Количество найденых рецептов для RecycleView: ${documentSnapshot.size()}")
+                    for (i in first-1 until last) {
+                        if(i >= documentSnapshot.documents.size)
+                            break
+                        val currentDocument = documentSnapshot.documents[i]
+                        val recipe: RecipeEntity? = currentDocument.toObject()  //Почему то isFavorite не преобразовывалась, пришлось вручную
+                        recipe?.isFavorite = currentDocument.data?.get("isFavorite") as Boolean
+                        if (recipe != null) {
+                            recipes.add(recipe)
+                        }else{
+                            Log.w(TAG,"Не удалось распарсить рецепт!")
+                        }
                     }
+                    Log.d(TAG, "Возвращаю ${recipes.size} рцептов")
                 }.addOnFailureListener { exception ->
                     Log.w(TAG, "Error getting documents: ", exception)
                 }

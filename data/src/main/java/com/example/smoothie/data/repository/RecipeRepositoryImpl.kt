@@ -21,8 +21,8 @@ class RecipeRepositoryImpl(
         return recipeStorage.getImageByUrl(url)
     }
 
-    override suspend fun getListRecipe(start: Int, count: Int): List<IRecipeModel> {
-        return recipeStorage.getRecipes(start, start+count-1)
+    override suspend fun getListRecipe(searchBy: String, start: Int, count: Int): List<IRecipeModel> {
+        return recipeStorage.getRecipes(searchBy, start, start+count-1)
     }
 
     override suspend fun saveFavoriteFlag(idRecipe: Int, flag: Boolean) {

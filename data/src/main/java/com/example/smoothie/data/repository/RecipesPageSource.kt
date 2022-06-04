@@ -7,7 +7,7 @@ import com.example.smoothie.domain.models.IRecipeModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-typealias RecipesPageLoader = suspend (start: Int, count: Int) -> List<IRecipeModel>
+typealias RecipesPageLoader = suspend (search: String,start: Int, count: Int) -> List<IRecipeModel>
 
 class RecipesPageSource(
     private val recipesPageLoader: RecipesPageLoader,
@@ -26,10 +26,9 @@ class RecipesPageSource(
         return try {
             val listRecipe: List<RecipeEntity> = withContext(Dispatchers.IO) {
                 @Suppress("UNCHECKED_CAST")
-                    return@withContext recipesPageLoader.invoke(
-                        page * pageSize + 1,
-                        params.loadSize
-                    ) as List<RecipeEntity>
+                    return@withContext searchBy?.let {
+                        recipesPageLoader.invoke(it, page * pageSize + 1, params.loadSize)
+                    } as List<RecipeEntity>
             }
             return LoadResult.Page(
                 data = listRecipe,
