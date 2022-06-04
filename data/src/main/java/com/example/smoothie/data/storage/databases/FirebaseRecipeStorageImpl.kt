@@ -134,8 +134,7 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
                 .get().addOnSuccessListener { documentSnapshot ->
                     Log.d(TAG, "Количество найденых рецептов для RecycleView: ${documentSnapshot.size()}")
                     for (i in first-1 until last) {
-                        if(i >= documentSnapshot.documents.size)
-                            break
+                        if(i >= documentSnapshot.documents.size) break
                         val currentDocument = documentSnapshot.documents[i]
                         val recipe: RecipeEntity? = currentDocument.toObject()  //Почему то isFavorite не преобразовывалась, пришлось вручную
                         recipe?.isFavorite = currentDocument.data?.get("isFavorite") as Boolean
