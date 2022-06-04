@@ -12,8 +12,8 @@ class HomePagerAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
 
     override fun createFragment(position: Int): Fragment {
         return when(position){
-            0 -> MyFragment()
-            1 -> StandardFragment()
+            0 -> MyFragment(0)
+            1 -> MyFragment(1)
             else -> throw IllegalArgumentException("Нет такой вкладки")
         }
     }

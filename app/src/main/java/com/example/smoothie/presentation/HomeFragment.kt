@@ -24,7 +24,7 @@ class HomeFragment() : BaseFragment() {
     ): View {
         binding = HomeBinding.inflate(layoutInflater)
         binding.buttonNext.setOnClickListener {
-            viewModel.nextRecipe()
+            viewModel.nextRecipe(binding.tabLayout.selectedTabPosition)
         }
         return binding.root
     }

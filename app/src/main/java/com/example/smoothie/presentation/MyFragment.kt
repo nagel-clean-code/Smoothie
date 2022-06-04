@@ -15,7 +15,7 @@ import com.example.smoothie.utils.decodeFromBase64IntoDrawable
 import com.example.smoothie.utils.onTryAgain
 
 @AndroidEntryPoint
-class MyFragment : BaseFragment() {
+class MyFragment(private val indexPager: Int) : BaseFragment() {
 
     private lateinit var binding: FragmentMyBinding
     override val viewModel: SharedHomeViewModel by activityViewModels()
@@ -29,8 +29,10 @@ class MyFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel.resultRecipeLiveData.observe(viewLifecycleOwner) { recipe ->
-            viewModel.getImage(recipe.imageUrl, ::decodeFromBase64IntoDrawable)
+        viewModel.resultRecipeLiveData.observe(viewLifecycleOwner) { recipeResult ->
+            if(recipeResult.second != indexPager) return@observe
+            val recipe = recipeResult.first
+            viewModel.getImage(recipe.imageUrl, indexPager, ::decodeFromBase64IntoDrawable)
             binding.headingRecipe.text = recipe.name
             if (recipe.ingredients.isNotBlank()) {
                 binding.textViewIngredients.visibility = VISIBLE
@@ -59,14 +61,15 @@ class MyFragment : BaseFragment() {
         }
 
         viewModel.resultImageLiveDataMutable.observe(viewLifecycleOwner) {
+            if(it.second != indexPager) return@observe
             if (it == null) {
                 binding.banner.setImageResource(0)
             } else {
-                binding.banner.setImageDrawable(it)
+                binding.banner.setImageDrawable(it.first)
             }
         }
         onTryAgain(binding.root) {  //Установка слушателя на кнопку "Повторить"
-            viewModel.tryAgain()
+            viewModel.tryAgain(indexPager)
         }
 
         val resultBinding = PartResultBinding.bind(binding.root)
