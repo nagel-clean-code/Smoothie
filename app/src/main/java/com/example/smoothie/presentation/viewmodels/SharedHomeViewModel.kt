@@ -20,38 +20,42 @@ class SharedHomeViewModel @Inject constructor(
     private val getImageFromDBUseCase: GetImageFromDBUseCase
 ) : BaseViewModel() {
 
-    private var _recipeMutableLiveData = MutableLiveData<IRecipeModel>()
-    val resultRecipeLiveData: LiveData<IRecipeModel> = _recipeMutableLiveData
+    private var _recipeMutableLiveData = MutableLiveData<Pair<IRecipeModel, Int>>()
+    val resultRecipeLiveData: LiveData<Pair<IRecipeModel, Int>> = _recipeMutableLiveData
 
-    private val _loadResultMutableLiveData = MutableLiveResult<IRecipeModel>(SuccessResult(RecipeEntity()))
+    private val _loadResultMutableLiveData =
+        MutableLiveResult<IRecipeModel>(SuccessResult(RecipeEntity()))
     val loadResultLiveData: LiveResult<IRecipeModel> = _loadResultMutableLiveData
 
-    private var _imageLiveDataMutable = MutableLiveData<Drawable?>()
-    val resultImageLiveDataMutable: MutableLiveData<Drawable?> = _imageLiveDataMutable
+    private var _imageLiveDataMutable = MutableLiveData<Pair<Drawable?, Int>>()
+    val resultImageLiveDataMutable: MutableLiveData<Pair<Drawable?, Int>> = _imageLiveDataMutable
 
-    fun nextRecipe() = into(_loadResultMutableLiveData){
+    fun nextRecipe(pos: Int) = into(_loadResultMutableLiveData) {
         val result = withContext(Dispatchers.IO) {
-                return@withContext getRandomRecipeFromDbUseCase.execute()
+            return@withContext getRandomRecipeFromDbUseCase.execute()
         }
-        _recipeMutableLiveData.value = result
+        _recipeMutableLiveData.value = Pair(result, pos)
         return@into result
     }
 
-    fun getImage(url: String, convertFromStringToImage: (String)->Drawable){
-        if(url.isBlank()){
-            _imageLiveDataMutable.value = null
+    fun getImage(url: String, indexPager: Int, convertFromStringToImage: (String) -> Drawable) {
+        if (url.isBlank()) {
+            _imageLiveDataMutable.value = Pair(null, indexPager)
             return
         }
         viewModelScope.launch {
             val result = withContext(Dispatchers.IO) {
                 return@withContext getImageFromDBUseCase.execute(url)
             }
-            _imageLiveDataMutable.value = convertFromStringToImage(Base64.encodeToString(result, Base64.DEFAULT))
+            _imageLiveDataMutable.value = Pair(
+                convertFromStringToImage(Base64.encodeToString(result, Base64.DEFAULT)),
+                indexPager
+            )
         }
     }
 
-    fun tryAgain() {
-        nextRecipe()
+    fun tryAgain(indexPager: Int) {
+        nextRecipe(indexPager)
     }
 
 }
