@@ -29,6 +29,52 @@ class HomeMyFragment(private val indexPager: Int) : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        listenerCurrentRecipes()
+        viewModel.resultImageLiveDataMutable.observe(viewLifecycleOwner) {
+            if(it.second != indexPager) return@observe
+            if (it == null) {
+                binding.banner.setImageResource(0)
+            } else {
+                binding.banner.setImageDrawable(it.first)
+            }
+        }
+        onTryAgain(binding.root) {  //Установка слушателя на кнопку "Повторить"
+            viewModel.tryAgain(indexPager)
+        }
+
+        listenerResults()
+
+//        viewModel.nextRecipe() //FIXME Переделать на загрузки из шаредпрефенса
+        return binding.root
+    }
+
+    private fun listenerResults(){
+        val resultBinding = PartResultBinding.bind(binding.root)
+        viewModel.loadResultLiveData.observe(viewLifecycleOwner) { result ->
+            renderResult(
+                root = binding.root,
+                result = result,
+                onSuccessResult = {
+                    binding.ConstraintLayoutPart.visibility = GONE
+                    binding.scrollView.visibility = VISIBLE
+                },
+                onPending = {
+                    binding.ConstraintLayoutPart.visibility = VISIBLE
+                    binding.scrollView.visibility = GONE
+                    resultBinding.errorContainer.visibility = GONE
+                    resultBinding.progressBar.visibility = VISIBLE
+                },
+                onError = {
+                    binding.ConstraintLayoutPart.visibility = VISIBLE
+                    binding.scrollView.visibility = GONE
+                    resultBinding.errorContainer.visibility = VISIBLE
+                    resultBinding.progressBar.visibility = GONE
+                }
+            )
+        }
+    }
+
+    private fun listenerCurrentRecipes(){
         viewModel.resultRecipeLiveData.observe(viewLifecycleOwner) { recipeResult ->
             if(recipeResult.second != indexPager) return@observe
             val recipe = recipeResult.first
@@ -60,44 +106,6 @@ class HomeMyFragment(private val indexPager: Int) : BaseFragment() {
             }
         }
 
-        viewModel.resultImageLiveDataMutable.observe(viewLifecycleOwner) {
-            if(it.second != indexPager) return@observe
-            if (it == null) {
-                binding.banner.setImageResource(0)
-            } else {
-                binding.banner.setImageDrawable(it.first)
-            }
-        }
-        onTryAgain(binding.root) {  //Установка слушателя на кнопку "Повторить"
-            viewModel.tryAgain(indexPager)
-        }
-
-        val resultBinding = PartResultBinding.bind(binding.root)
-        viewModel.loadResultLiveData.observe(viewLifecycleOwner) { result ->
-            renderResult(
-                root = binding.root,
-                result = result,
-                onSuccessResult = {
-                    binding.ConstraintLayoutPart.visibility = GONE
-                    binding.scrollView.visibility = VISIBLE
-                },
-                onPending = {
-                    binding.ConstraintLayoutPart.visibility = VISIBLE
-                    binding.scrollView.visibility = GONE
-                    resultBinding.errorContainer.visibility = GONE
-                    resultBinding.progressBar.visibility = VISIBLE
-                },
-                onError = {
-                    binding.ConstraintLayoutPart.visibility = VISIBLE
-                    binding.scrollView.visibility = GONE
-                    resultBinding.errorContainer.visibility = VISIBLE
-                    resultBinding.progressBar.visibility = GONE
-                }
-            )
-        }
-
-//        viewModel.nextRecipe() //FIXME Переделать на загрузки из шаредпрефенса
-        return binding.root
     }
 
 }

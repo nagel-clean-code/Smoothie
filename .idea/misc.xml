@@ -13,13 +13,14 @@
         <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/font/open_sans.xml" value="0.15807560137457044" />
         <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/font/open_sans_italic.xml" value="0.23958333333333334" />
         <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/layout/activity_main.xml" value="0.16" />
-        <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/layout/fragment_add_recipe.xml" value="0.16" />
+        <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/layout/fragment_add_recipe.xml" value="0.25" />
+        <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/layout/fragment_display_recipe.xml" value="0.21" />
         <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/layout/fragment_find_my.xml" value="0.13958333333333334" />
         <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/layout/fragment_find_recipe.xml" value="0.16" />
         <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/layout/fragment_find_standart.xml" value="0.13958333333333334" />
         <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/layout/fragment_my.xml" value="0.18" />
         <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/layout/fragment_standart.xml" value="0.209375" />
-        <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/layout/home.xml" value="0.14" />
+        <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/layout/home.xml" value="0.22" />
         <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/layout/item_recipe.xml" value="0.21" />
         <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/layout/item_user.xml" value="0.13958333333333334" />
         <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/layout/part_default_load_state.xml" value="0.1" />

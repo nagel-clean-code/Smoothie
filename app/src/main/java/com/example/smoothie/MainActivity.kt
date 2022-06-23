@@ -3,6 +3,7 @@ package com.example.smoothie
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.smoothie.databinding.ActivityMainBinding
@@ -10,22 +11,27 @@ import com.example.smoothie.presentation.AddRecipeFragment
 import com.example.smoothie.presentation.FindRecipeFragment
 import com.example.smoothie.presentation.HomeFragment
 import com.example.smoothie.presentation.SettingsFragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity() : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if(savedInstanceState == null)
+        if (savedInstanceState == null)
             replaceFragment(HomeFragment())
 
         binding.bottomNavigationView.setOnItemSelectedListener {
-            val bufFragment = when(it.itemId){
+            val bufFragment = when (it.itemId) {
                 R.id.home -> HomeFragment()
                 R.id.settings -> SettingsFragment()
                 R.id.add_recipe -> AddRecipeFragment()
@@ -36,10 +42,34 @@ class MainActivity() : AppCompatActivity() {
             true
         }
         settingKeyboard()
+        auth = Firebase.auth
+        val currentUser = auth.currentUser
+        signWhyAnonymous()
+        updateUI(currentUser)
     }
 
-    /** Скрытие поднятого меню над клавиатурой при вводе текста */
-    private fun settingKeyboard(){
+    private fun updateUI(user: FirebaseUser?) {
+        if(user == null){
+            Toast.makeText(this,"Не авторизирован", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun signWhyAnonymous(){
+        auth.signInAnonymously()
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(this,"Sign in success", Toast.LENGTH_LONG).show()
+                    val user = auth.currentUser
+                    updateUI(user)
+                } else {
+                    Toast.makeText(this,"sign in fails", Toast.LENGTH_LONG).show()
+                    updateUI(null)
+                }
+            }
+    }
+
+        /** Скрытие поднятого меню над клавиатурой при вводе текста */
+    private fun settingKeyboard() {
         binding.bottomNavigationView.viewTreeObserver.addOnGlobalLayoutListener {
             val r = Rect()
             binding.root.getWindowVisibleDisplayFrame(r)
@@ -51,11 +81,10 @@ class MainActivity() : AppCompatActivity() {
         }
     }
 
-    private fun replaceFragment(fragment: Fragment){
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frame_layout_placeholder, fragment)
-        fragmentTransaction.commit()
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.frame_layout_placeholder, fragment)
+            .commit()
     }
 
 }

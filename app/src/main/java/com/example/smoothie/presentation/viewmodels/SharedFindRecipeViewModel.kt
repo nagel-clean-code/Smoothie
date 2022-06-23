@@ -43,6 +43,8 @@ class SharedFindRecipeViewModel @Inject constructor(
     private val _scrollEvents = MutableLiveEvent<Unit>()
     val scrollEvents = _scrollEvents.share()
 
+    val chooseElement = MutableLiveData<RecipeEntity>()
+
     init {
         val originalRecipesFlow = searchBy.asFlow()
             .debounce(500)
@@ -79,8 +81,9 @@ class SharedFindRecipeViewModel @Inject constructor(
         searchBy.postValue(searchBy.value)
     }
 
-    override fun onUserDelete(recipeEntity: RecipeEntity) {
+    override fun onRecipeDelete(recipeEntity: RecipeEntity) {
         if (isInProgress(recipeEntity)) return
+
         viewModelScope.launch {
             try {
                 setProgress(recipeEntity, true)
@@ -105,6 +108,10 @@ class SharedFindRecipeViewModel @Inject constructor(
                 setProgress(recipeEntity, false)
             }
         }
+    }
+
+    override fun displayChooseElement(recipeEntity: RecipeEntity) {
+        chooseElement.value = recipeEntity
     }
 
     private fun showError(@StringRes errorMessage: Int) {

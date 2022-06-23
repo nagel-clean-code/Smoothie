@@ -25,7 +25,9 @@ class RecipeAdapter(
         if (p0.id == R.id.starImageView) {
             listener.onToggleFavoriteFlag(recipe)
         } else if (p0.id == R.id.deleteImageView) {
-            listener.onUserDelete(recipe)
+            listener.onRecipeDelete(recipe)
+        }else{
+            listener.displayChooseElement(recipe)
         }
     }
 
@@ -107,11 +109,13 @@ class RecipeAdapter(
         /**
          * Called when the user taps the "Delete" button in a list item
          */
-        fun onUserDelete(recipeEntity: RecipeEntity)
+        fun onRecipeDelete(recipeEntity: RecipeEntity)
 
         /**
          * Called when the user taps the "Star" button in a list item.
          */
         fun onToggleFavoriteFlag(recipeEntity: RecipeEntity)
+
+        fun displayChooseElement(recipeEntity: RecipeEntity)
     }
 }

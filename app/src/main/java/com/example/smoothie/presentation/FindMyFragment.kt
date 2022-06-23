@@ -8,22 +8,18 @@ import android.widget.Toast
 import androidx.core.view.isInvisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.smoothie.Constants
 import com.example.smoothie.databinding.FragmentFindMyBinding
-import com.example.smoothie.databinding.FragmentFindRecipeBinding
 import com.example.smoothie.presentation.adapters.DefaultLoadStateAdapter
-import com.example.smoothie.presentation.adapters.HomePagerAdapter
 import com.example.smoothie.presentation.adapters.RecipeAdapter
 import com.example.smoothie.presentation.adapters.TryAgainAction
+import com.example.smoothie.presentation.images.GlideApp
 import com.example.smoothie.presentation.viewmodels.SharedFindRecipeViewModel
 import com.example.smoothie.utils.observeEvent
 import com.example.smoothie.utils.simpleScan
-import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -38,10 +34,10 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
     private lateinit var recipeAdapter: RecipeAdapter
     private lateinit var loadStateHolder: DefaultLoadStateAdapter.Holder
 
-    override val viewModel: SharedFindRecipeViewModel by viewModels()
+    override val viewModel: SharedFindRecipeViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState)  
         binding = FragmentFindMyBinding.inflate(layoutInflater)
         setupRecipeList()
     }
@@ -96,7 +92,8 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
             .simpleScan(count = 2)
             .collectLatest { (previousState, currentState) ->
                 if (previousState is LoadState.Loading && currentState is LoadState.NotLoading
-                    && viewModel.scrollEvents.value?.get() != null) {
+                    && viewModel.scrollEvents.value?.get() != null
+                ) {
                     binding.recyclerView.scrollToPosition(0)
                 }
             }
@@ -153,6 +150,14 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
     private fun observeInvalidationEvents() {
         viewModel.invalidateEvents.observeEvent(this) {
             recipeAdapter.refresh()
+
+            //FIXME Переделать на потоки
+            // must run on main thread
+            GlideApp.get(requireActivity().applicationContext).clearMemory();
+
+            // must run in background thread
+            GlideApp.get(requireActivity().applicationContext).clearDiskCache();
+
         }
     }
 }

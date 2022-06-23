@@ -5,7 +5,7 @@ import android.content.Context
 class SharedPrefRecipeStorageImpl(context: Context) : RecipeStorageSharPref {
 
     private val sharedPreferences =
-        context.getSharedPreferences(SHARED_PREFS_ADD_RECIPE_NAME, Context.MODE_PRIVATE)
+        context.getSharedPreferences(SHARED_PREFS_ADD_RECIPE, Context.MODE_PRIVATE)
 
     override fun saveNameRecipe(name: String) {
         sharedPreferences.edit()
@@ -42,7 +42,7 @@ class SharedPrefRecipeStorageImpl(context: Context) : RecipeStorageSharPref {
     override fun getUserName(): String = sharedPreferences.getString(USER_NAME, "no_name") ?: ""
 
     private companion object{
-        const val SHARED_PREFS_ADD_RECIPE_NAME = "SHARED_PREFS_ADD_RECIPE_NAME"
+        const val SHARED_PREFS_ADD_RECIPE = "SHARED_PREFS_ADD_RECIPE"
         const val NAME_RECIPE = "NAME_RECIPE"
         const val INGREDIENTS = "INGREDIENTS"
         const val USER_NAME = "USER_NAME"

@@ -2,11 +2,13 @@ package com.example.smoothie.presentation.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.smoothie.Constants
 import com.example.smoothie.presentation.FindMyFragment
 
-class FindPagerAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
+
+class FindPagerAdapter(childFragmentManager: FragmentManager, fa: FragmentActivity): FragmentStateAdapter(childFragmentManager, fa.lifecycle) {
     override fun getItemCount() = Constants.COUNT_FRAGMENT_VIEW
 
     override fun createFragment(position: Int): Fragment {
