@@ -16,6 +16,12 @@ class DomainModule{
     fun provideSaveIngredients(recipeRepository: RecipeRepository) = SaveIngredientsInSharPrefUseCase(recipeRepository)
 
     @Provides
+    fun provideSaveRecipeSharPrefUseCase(recipeRepository: RecipeRepository) = SaveRecipeSharPrefUseCase(recipeRepository)
+
+    @Provides
+    fun provideGetRecipeFromSharPrefUseCase(recipeRepository: RecipeRepository) = GetRecipeFromSharPrefUseCase(recipeRepository)
+
+    @Provides
     fun provideGetIngredients(recipeRepository: RecipeRepository) = GetIngredientsFromSharPrefUseCase(recipeRepository)
 
     @Provides

@@ -4,9 +4,10 @@ import com.example.smoothie.domain.models.IRecipeModel
 
 interface RecipeRepository {
     fun saveRecipeDataBase(recipe: IRecipeModel)
-    fun getLastRecipe()
     fun getRecipeById(id: Long)
     fun saveNameRecipeInSharPref(name: String)
+    fun saveRecipeInSharPref(recipe: IRecipeModel, key: String)
+    fun getRecipeFromSharPref(key: String): IRecipeModel?
     fun getIngredientsFromSharPref(): String
     fun saveIngredientsInSharPref(textIngredients: String)
     fun getNameRecipeFromSharPref(): String

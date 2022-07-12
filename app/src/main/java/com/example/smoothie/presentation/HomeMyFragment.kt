@@ -30,6 +30,15 @@ class HomeMyFragment(private val indexPager: Int) : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         listenerCurrentRecipes()
+        listenerResultImage()
+        onTryAgain(binding.root) { viewModel.tryAgain(indexPager) }
+        listenerResults()
+
+        viewModel.loadLastRecipe(indexPager)
+        return binding.root
+    }
+
+    private fun listenerResultImage(){
         viewModel.resultImageLiveDataMutable.observe(viewLifecycleOwner) {
             if(it.second != indexPager) return@observe
             if (it == null) {
@@ -37,15 +46,8 @@ class HomeMyFragment(private val indexPager: Int) : BaseFragment() {
             } else {
                 binding.banner.setImageDrawable(it.first)
             }
+            binding.progressBar.visibility = GONE
         }
-        onTryAgain(binding.root) {  //Установка слушателя на кнопку "Повторить"
-            viewModel.tryAgain(indexPager)
-        }
-
-        listenerResults()
-
-//        viewModel.nextRecipe() //FIXME Переделать на загрузки из шаредпрефенса
-        return binding.root
     }
 
     private fun listenerResults(){
@@ -77,6 +79,8 @@ class HomeMyFragment(private val indexPager: Int) : BaseFragment() {
     private fun listenerCurrentRecipes(){
         viewModel.resultRecipeLiveData.observe(viewLifecycleOwner) { recipeResult ->
             if(recipeResult.second != indexPager) return@observe
+            binding.banner.setImageResource(0)
+            binding.progressBar.visibility = VISIBLE
             val recipe = recipeResult.first
             viewModel.getImage(recipe.imageUrl, indexPager, ::decodeFromBase64IntoDrawable)
             binding.headingRecipe.text = recipe.name

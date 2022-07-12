@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.smoothie.data.storage.models.RecipeEntity
 import com.example.smoothie.domain.usecase.database.SaveImageInDBUseCase
+import com.example.smoothie.domain.usecase.database.SaveRecipeToDbUseCase
 import com.example.smoothie.domain.usecase.sharedpref.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

@@ -16,13 +16,17 @@ class RecipeRepositoryImpl(
     }
 
     override suspend fun getRandomRecipe(): IRecipeModel = recipeStorage.nextRecipe()
-    
+
     override suspend fun getImageFromLinkFromDB(url: String): ByteArray {
         return recipeStorage.getImageByUrl(url)
     }
 
-    override suspend fun getListRecipe(searchBy: String, start: Int, count: Int): List<IRecipeModel> {
-        return recipeStorage.getRecipes(searchBy, start, start+count-1)
+    override suspend fun getListRecipe(
+        searchBy: String,
+        start: Int,
+        count: Int
+    ): List<IRecipeModel> {
+        return recipeStorage.getRecipes(searchBy, start, start + count - 1)
     }
 
     override suspend fun saveFavoriteFlag(idRecipe: Int, flag: Boolean) {
@@ -33,30 +37,33 @@ class RecipeRepositoryImpl(
         recipeStorage.deleteRecipe(idRecipe)
     }
 
-    override fun getLastRecipe() {
-        TODO("Not yet implemented")
-    }
-
     override fun getRecipeById(id: Long) {
         TODO("Not yet implemented")
     }
 
-    override fun saveNameRecipeInSharPref(name: String) {
+    override fun saveNameRecipeInSharPref(name: String) =
         sharedPrefRecipeStorage.saveNameRecipe(name)
-    }
+
+    override fun saveRecipeInSharPref(recipe: IRecipeModel, key: String) =
+        sharedPrefRecipeStorage.saveRecipe(recipe, key)
+
+
+    override fun getRecipeFromSharPref(key: String): IRecipeModel? =
+        sharedPrefRecipeStorage.getRecipe(key)
+
 
     override fun getIngredientsFromSharPref() = sharedPrefRecipeStorage.getIngredients()
 
 
-    override fun saveIngredientsInSharPref(textIngredients: String) {
+    override fun saveIngredientsInSharPref(textIngredients: String) =
         sharedPrefRecipeStorage.saveIngredients(textIngredients)
-    }
+
 
     override fun getNameRecipeFromSharPref() = sharedPrefRecipeStorage.getNameRecipe()
 
-    override fun saveImageFromAddFormInSharPref(imageString: String) {
+    override fun saveImageFromAddFormInSharPref(imageString: String) =
         sharedPrefRecipeStorage.saveImageFromAddForm(imageString)
-    }
+
 
     override fun getImageFromAddFormFromSharPref() = sharedPrefRecipeStorage.getImageFromAddForm()
 

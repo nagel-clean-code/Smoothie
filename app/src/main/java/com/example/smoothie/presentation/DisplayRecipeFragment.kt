@@ -1,12 +1,10 @@
 package com.example.smoothie.presentation
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.example.smoothie.Constants
+import androidx.fragment.app.Fragment
 import com.example.smoothie.Constants.Companion.RECIPE_ENTiTY_KEY
 import com.example.smoothie.R
 import com.example.smoothie.data.storage.models.RecipeEntity
@@ -15,7 +13,7 @@ import com.example.smoothie.presentation.adapters.RecipeAdapter
 import com.example.smoothie.presentation.images.GlideApp
 
 
-class DisplayRecipe : Fragment() {
+class DisplayRecipeFragment : Fragment() {
 
     private lateinit var binding: FragmentDisplayRecipeBinding
 
@@ -47,7 +45,7 @@ class DisplayRecipe : Fragment() {
     }
 
     companion object {
-        fun getNewInstance(recipeEntity: RecipeEntity) = DisplayRecipe().apply {
+        fun getNewInstance(recipeEntity: RecipeEntity) = DisplayRecipeFragment().apply {
             arguments = Bundle().apply {
                 putParcelable(RECIPE_ENTiTY_KEY, recipeEntity)
             }

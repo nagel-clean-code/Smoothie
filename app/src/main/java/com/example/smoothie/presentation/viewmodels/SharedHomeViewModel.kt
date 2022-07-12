@@ -5,11 +5,14 @@ import android.util.Base64
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.smoothie.Constants.Companion.LAST_RECIPE
 import com.example.smoothie.data.storage.models.RecipeEntity
 import com.example.smoothie.domain.usecase.database.GetRandomRecipeFromDbUseCase
 import com.example.smoothie.data.storage.models.states.SuccessResult
 import com.example.smoothie.domain.models.IRecipeModel
 import com.example.smoothie.domain.usecase.database.GetImageFromDBUseCase
+import com.example.smoothie.domain.usecase.sharedpref.GetRecipeFromSharPrefUseCase
+import com.example.smoothie.domain.usecase.sharedpref.SaveRecipeSharPrefUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -17,7 +20,9 @@ import javax.inject.Inject
 @HiltViewModel
 class SharedHomeViewModel @Inject constructor(
     private val getRandomRecipeFromDbUseCase: GetRandomRecipeFromDbUseCase,
-    private val getImageFromDBUseCase: GetImageFromDBUseCase
+    private val getImageFromDBUseCase: GetImageFromDBUseCase,
+    private val saveRecipeSharPrefUseCase: SaveRecipeSharPrefUseCase,
+    private val getRecipeFromSharPrefUseCase: GetRecipeFromSharPrefUseCase
 ) : BaseViewModel() {
 
     private var _recipeMutableLiveData = MutableLiveData<Pair<IRecipeModel, Int>>()
@@ -35,7 +40,14 @@ class SharedHomeViewModel @Inject constructor(
             return@withContext getRandomRecipeFromDbUseCase.execute()
         }
         _recipeMutableLiveData.value = Pair(result, pos)
+        saveRecipeSharPrefUseCase.execute(result, LAST_RECIPE)
         return@into result
+    }
+
+    fun loadLastRecipe(indexPage: Int){
+        val displayRecipe: IRecipeModel = getRecipeFromSharPrefUseCase.execute(LAST_RECIPE)
+            ?: return
+        _recipeMutableLiveData.value = Pair(displayRecipe, indexPage)
     }
 
     fun getImage(url: String, indexPager: Int, convertFromStringToImage: (String) -> Drawable) {

@@ -7,5 +7,6 @@ class Constants {
         const val STANDARDS = "Стандартные"
         const val MIMETYPE_IMAGE = "image/*"
         const val RECIPE_ENTiTY_KEY = "RECIPE_ENTiTY_KEY"
+        const val LAST_RECIPE = "LAST_RECIPE"
     }
 }

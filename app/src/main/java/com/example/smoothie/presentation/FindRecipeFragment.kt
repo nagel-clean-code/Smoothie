@@ -1,7 +1,6 @@
 package com.example.smoothie.presentation
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,7 +59,7 @@ class FindRecipeFragment : BaseFragment() {
                 parentFragmentManager
                     .beginTransaction()
                     .addToBackStack(null)
-                    .replace(R.id.frame_layout_placeholder, DisplayRecipe.getNewInstance(it1))
+                    .replace(R.id.frame_layout_placeholder, DisplayRecipeFragment.getNewInstance(it1))
                     .commit()
                 viewModel.chooseElement.postValue(null)
             }
