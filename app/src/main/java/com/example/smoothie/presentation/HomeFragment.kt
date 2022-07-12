@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.example.smoothie.Constants
-import com.example.smoothie.databinding.HomeBinding
+import com.example.smoothie.databinding.FragmentHomeBinding
 import com.example.smoothie.presentation.adapters.HomePagerAdapter
 import com.example.smoothie.presentation.viewmodels.SharedHomeViewModel
 import com.google.android.material.tabs.TabLayoutMediator
@@ -15,14 +15,14 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeFragment() : BaseFragment() {
 
-    private lateinit var binding: HomeBinding
+    private lateinit var binding: FragmentHomeBinding
     override val viewModel: SharedHomeViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = HomeBinding.inflate(layoutInflater)
+        binding = FragmentHomeBinding.inflate(layoutInflater)
         binding.buttonNext.setOnClickListener {
             viewModel.nextRecipe(binding.tabLayout.selectedTabPosition)
         }

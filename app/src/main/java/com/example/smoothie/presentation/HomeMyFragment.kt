@@ -6,6 +6,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import com.example.smoothie.databinding.FragmentMyBinding
 import com.example.smoothie.databinding.PartResultBinding
@@ -38,19 +39,19 @@ class HomeMyFragment(private val indexPager: Int) : BaseFragment() {
         return binding.root
     }
 
-    private fun listenerResultImage(){
+    private fun listenerResultImage() {
         viewModel.resultImageLiveDataMutable.observe(viewLifecycleOwner) {
-            if(it.second != indexPager) return@observe
+            if (it.second != indexPager) return@observe
             if (it == null) {
                 binding.banner.setImageResource(0)
             } else {
                 binding.banner.setImageDrawable(it.first)
             }
-            binding.progressBar.visibility = GONE
+            binding.progressBarImage.visibility = GONE
         }
     }
 
-    private fun listenerResults(){
+    private fun listenerResults() {
         val resultBinding = PartResultBinding.bind(binding.root)
         viewModel.loadResultLiveData.observe(viewLifecycleOwner) { result ->
             renderResult(
@@ -76,13 +77,19 @@ class HomeMyFragment(private val indexPager: Int) : BaseFragment() {
         }
     }
 
-    private fun listenerCurrentRecipes(){
+    private fun listenerCurrentRecipes() {
         viewModel.resultRecipeLiveData.observe(viewLifecycleOwner) { recipeResult ->
-            if(recipeResult.second != indexPager) return@observe
+            if (recipeResult.second != indexPager) return@observe
             binding.banner.setImageResource(0)
-            binding.progressBar.visibility = VISIBLE
+            binding.progressBarImage.visibility = VISIBLE
             val recipe = recipeResult.first
-            viewModel.getImage(recipe.imageUrl, indexPager, ::decodeFromBase64IntoDrawable)
+            if (recipe.imageUrl.isNotBlank()) {
+                binding.banner.visibility = VISIBLE
+                viewModel.getImage(recipe.imageUrl, indexPager, ::decodeFromBase64IntoDrawable)
+            } else {
+                binding.banner.visibility = GONE
+                binding.progressBarImage.visibility = GONE
+            }
             binding.headingRecipe.text = recipe.name
             if (recipe.ingredients.isNotBlank()) {
                 binding.textViewIngredients.visibility = VISIBLE
