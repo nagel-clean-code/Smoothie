@@ -67,7 +67,6 @@ class RecipeRepositoryImpl(
 
     override fun getImageFromAddFormFromSharPref() = sharedPrefRecipeStorage.getImageFromAddForm()
 
-    override suspend fun saveImageFromAddFormToDb(imageByteArray: ByteArray): String {
-        return recipeStorage.saveImage(imageByteArray)
-    }
+    override suspend fun saveImageFromAddFormToDb(imageByteArray: ByteArray): String =
+        recipeStorage.saveImage(imageByteArray)
 }

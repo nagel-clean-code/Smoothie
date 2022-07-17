@@ -1,5 +1,7 @@
 package com.example.smoothie.presentation.viewmodels
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
@@ -16,8 +18,8 @@ import com.example.smoothie.utils.MutableLiveEvent
 import com.example.smoothie.utils.publishEvent
 import com.example.smoothie.utils.share
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -83,14 +85,15 @@ class SharedFindRecipeViewModel @Inject constructor(
 
     override fun onRecipeDelete(recipeEntity: RecipeEntity) {
         if (isInProgress(recipeEntity)) return
-
-        viewModelScope.launch {
-            try {
-                setProgress(recipeEntity, true)
+        setProgress(recipeEntity, true)
+        val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            Log.w(TAG, throwable)
+            showError(R.string.error_delete)
+            setProgress(recipeEntity, false)
+        }
+        viewModelScope.launch(exceptionHandler) {
+            withContext(Dispatchers.IO) {
                 delete(recipeEntity)
-            } catch (e: Exception) {
-                showError(R.string.error_delete)
-            } finally {
                 setProgress(recipeEntity, false)
             }
         }
@@ -127,7 +130,11 @@ class SharedFindRecipeViewModel @Inject constructor(
 
     private suspend fun delete(recipeEntity: RecipeEntity) {
         deleteRecipeInDbUseCase.execute(recipeEntity.idRecipe)
-        invalidateList()
+        viewModelScope.launch {
+            withContext(Dispatchers.Main) {
+                invalidateList()
+            }
+        }
     }
 
     private fun isInProgress(recipeEntity: RecipeEntity) =

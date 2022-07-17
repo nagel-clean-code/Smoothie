@@ -1,6 +1,8 @@
 package com.example.smoothie.presentation
 
+import android.content.ContentValues
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.smoothie.R
 import com.example.smoothie.databinding.FragmentFindMyBinding
 import com.example.smoothie.presentation.adapters.DefaultLoadStateAdapter
 import com.example.smoothie.presentation.adapters.RecipeAdapter
@@ -21,11 +24,12 @@ import com.example.smoothie.presentation.viewmodels.SharedFindRecipeViewModel
 import com.example.smoothie.utils.observeEvent
 import com.example.smoothie.utils.simpleScan
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
+import kotlin.coroutines.coroutineContext
 
 @AndroidEntryPoint
 class FindMyFragment(private val indexPager: Int) : BaseFragment() {
@@ -151,13 +155,10 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
         viewModel.invalidateEvents.observeEvent(this) {
             recipeAdapter.refresh()
 
-            //FIXME Переделать на потоки
-            // must run on main thread
             GlideApp.get(requireActivity().applicationContext).clearMemory();
-
-            // must run in background thread
-            GlideApp.get(requireActivity().applicationContext).clearDiskCache();
-
+            CoroutineScope(Dispatchers.IO).launch{
+                GlideApp.get(requireActivity().applicationContext).clearDiskCache();
+            }
         }
     }
 }

@@ -21,6 +21,7 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
     private var firstInitCount = false
     private lateinit var linkedList1: MutableList<Int>
     private lateinit var linkedList2: MutableList<Int>
+    private var errorResult: String = ""
 
     init {
         //FIXME переделать на firestore, .update("population", FieldValue.increment(50))
@@ -32,10 +33,10 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
                     linkedList1 = (1 until countRecipes).toMutableList()
                     linkedList2 = LinkedList()
                 } else {
-                    if(countRecipes < linkedList1.size + linkedList2.size){
-                        linkedList1.remove(countRecipes+1)
-                        linkedList2.remove(countRecipes+1)
-                    }else{
+                    if (countRecipes < linkedList1.size + linkedList2.size) {
+                        linkedList1.remove(countRecipes + 1)
+                        linkedList2.remove(countRecipes + 1)
+                    } else {
                         linkedList1.add(countRecipes)
                     }
                 }
@@ -91,13 +92,14 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
     }
 
     override suspend fun saveImage(imageByteArray: ByteArray): String {
-        val riversRef = storageRef.reference.child("hats_recipes/image_${countRecipes + 1}.jpg")
-        val up = riversRef.putBytes(imageByteArray).addOnFailureListener {
+        val urlImage = "hats_recipes/image_${UUID.randomUUID()}.jpg"
+        val riversRef = storageRef.reference.child(urlImage)
+        riversRef.putBytes(imageByteArray).addOnFailureListener {
             Log.w(TAG, "Не удалось загрузить изображение в БД: ", it)
         }.addOnSuccessListener {
             Log.d(TAG, "Изображение успешно загружено")
         }
-        return "hats_recipes/image_${countRecipes + 1}.jpg"
+        return urlImage
     }
 
     override suspend fun getImageByUrl(url: String): ByteArray {
@@ -117,8 +119,7 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
         imageRef.delete().addOnSuccessListener {
             Log.d(TAG, "Изображение успешно удалено, url:$url")
         }.addOnFailureListener {
-            Log.w(TAG, "Не удалось удалить изображение, url:$url", it)
-            throw Exception("Не удалось удалить изображение, url:$url")
+            errorResult = "Не удалось удалить изображение, url:$url"
         }
     }
 
@@ -131,16 +132,20 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
             firestore.collection(userName)
                 .whereGreaterThanOrEqualTo("name", searchBy)
                 .get().addOnSuccessListener { documentSnapshot ->
-                    Log.d(TAG, "Количество найденых рецептов для RecycleView: ${documentSnapshot.size()}")
-                    for (i in first-1 until last) {
-                        if(i >= documentSnapshot.documents.size) break
+                    Log.d(
+                        TAG,
+                        "Количество найденых рецептов для RecycleView: ${documentSnapshot.size()}"
+                    )
+                    for (i in first - 1 until last) {
+                        if (i >= documentSnapshot.documents.size) break
                         val currentDocument = documentSnapshot.documents[i]
-                        val recipe: RecipeEntity? = currentDocument.toObject()  //Почему то isFavorite не преобразовывалась, пришлось вручную
+                        val recipe: RecipeEntity? =
+                            currentDocument.toObject()  //Почему то isFavorite не преобразовывалась, пришлось вручную
                         recipe?.isFavorite = currentDocument.data?.get("isFavorite") as Boolean
                         if (recipe != null) {
                             recipes.add(recipe)
-                        }else{
-                            Log.w(TAG,"Не удалось распарсить рецепт!")
+                        } else {
+                            Log.w(TAG, "Не удалось распарсить рецепт!")
                         }
                     }
                     Log.d(TAG, "Возвращаю ${recipes.size} рцептов")
@@ -157,46 +162,23 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
                 .whereEqualTo("idRecipe", idRecipe)
                 .get().addOnSuccessListener {
                     if (it.documents.size == 0) {
-                        Log.d(TAG, "Документ с таким id:($idRecipe) не найден!")
-                        throw Exception("Документ с таким id:($idRecipe) не найден!")
-
+                        errorResult = "Документ с таким id:($idRecipe) не найден!"
                     } else {
                         it.documents.first().reference.update("isFavorite", flag)
                             .addOnSuccessListener { Log.d(TAG, "Документ id($idRecipe) обновлён") }
                             .addOnFailureListener { e ->
-                                Log.w(TAG, "Не удалось обновить документ id($idRecipe)", e)
-                                throw Exception("Не удалось обновить документ id($idRecipe)", e)
+                                errorResult = "Не удалось обновить документ id($idRecipe)"
                             }
                     }
                 }.addOnFailureListener { e ->
-                    Log.w(TAG, "Не удалось сделать поиск по id: $idRecipe", e)
-                    throw Exception("Не удалось сделать поиск по id: $idRecipe", e)
+                    errorResult = "Не удалось сделать поиск по id: $idRecipe"
                 }
         result.await()
-    }
-
-    private fun updateIndexes(deleteIx: Int) {
-        if (deleteIx == countRecipes) return
-
-        firestore.collection(userName)
-            .whereEqualTo("idRecipe", countRecipes)
-            .get().addOnSuccessListener {
-                if (it.documents.size > 0) {
-                    Log.d(TAG, "Документ для индексирования найден")
-                    it.documents.first().reference.update("idRecipe", deleteIx)
-                        .addOnSuccessListener { Log.d(TAG, "Успешная переиндексация") }
-                        .addOnFailureListener {
-                            Log.w(TAG, "Ошибка при обновлении индекса в процессе индексации")
-                            throw Exception("Не удалось выполнить переиндексацию")
-                        }
-                } else {
-                    Log.w(TAG, "Документ для индексирования не найден")
-                    throw Exception("Не удалось выполнить переиндексацию")
-                }
-            }
-            .addOnFailureListener {
-                throw Exception("Ошибка при запросе поиска элемента в базе")
-            }
+        if (errorResult.isNotBlank()) {
+            Log.d(TAG, errorResult)
+            val buf = errorResult
+            throw Exception(buf)
+        }
     }
 
     override suspend fun deleteRecipe(idRecipe: Int) {
@@ -205,11 +187,9 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
                 .whereEqualTo("idRecipe", idRecipe)
                 .get().addOnSuccessListener {
                     if (it.documents.size == 0) {
-                        Log.d(TAG, "Документ с таким id:($idRecipe) не найден!")
-                        throw Exception("Документ с таким id:($idRecipe) не найден!")
+                        errorResult = "Документ с таким id:($idRecipe) не найден!"
                     } else {
                         val doc = it.documents.first()
-                        updateIndexes(idRecipe)
                         doc.getString("imageUrl")?.let { it1 -> deleteImage(it1) }
                         doc.reference.delete()
                             .addOnSuccessListener {
@@ -217,15 +197,18 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
                                 dataBaseCounter.child(userName).setValue(countRecipes - 1)
                             }
                             .addOnFailureListener { e ->
-                                Log.w(TAG, "Не удалось удалить документ id($idRecipe)", e)
-                                throw Exception("Не удалось удалить документ id($idRecipe)", e)
+                                errorResult = "Не удалось удалить документ id($idRecipe)"
                             }
                     }
                 }.addOnFailureListener { e ->
-                    Log.w(TAG, "Не удалось сделать поиск по id: $idRecipe, для удаления", e)
-                    throw Exception("Не удалось сделать поиск по id: $idRecipe, для удаления", e)
+                    errorResult = "Не удалось сделать поиск по id: $idRecipe, для удаления"
                 }
         result.await()
+        if (errorResult.isNotBlank()) {
+            Log.d(TAG, errorResult)
+            val buf = errorResult
+            throw Exception(buf)
+        }
     }
 
     private companion object {
