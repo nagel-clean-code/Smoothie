@@ -1,19 +1,19 @@
 package com.example.smoothie.presentation
 
 import android.os.Bundle
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import com.example.smoothie.databinding.FragmentMyBinding
 import com.example.smoothie.databinding.PartResultBinding
 import com.example.smoothie.presentation.viewmodels.SharedHomeViewModel
-import dagger.hilt.android.AndroidEntryPoint
 import com.example.smoothie.utils.decodeFromBase64IntoDrawable
 import com.example.smoothie.utils.onTryAgain
+import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeMyFragment(private val indexPager: Int) : BaseFragment() {
@@ -31,24 +31,11 @@ class HomeMyFragment(private val indexPager: Int) : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         listenerCurrentRecipes()
-        listenerResultImage()
         onTryAgain(binding.root) { viewModel.tryAgain(indexPager) }
         listenerResults()
 
         viewModel.loadLastRecipe(indexPager)
         return binding.root
-    }
-
-    private fun listenerResultImage() {
-        viewModel.resultImageLiveDataMutable.observe(viewLifecycleOwner) {
-            if (it.second != indexPager) return@observe
-            if (it == null) {
-                binding.banner.setImageResource(0)
-            } else {
-                binding.banner.setImageDrawable(it.first)
-            }
-            binding.progressBarImage.visibility = GONE
-        }
     }
 
     private fun listenerResults() {
@@ -75,21 +62,48 @@ class HomeMyFragment(private val indexPager: Int) : BaseFragment() {
                 }
             )
         }
+
+        viewModel.loadImageLiveData.observe(viewLifecycleOwner) { result ->
+            renderResult(
+                root = binding.root,
+                result = result,
+                onSuccessResult = {
+                    binding.textErrorLoadImage.visibility = GONE
+                    if (it.second == -1) {
+                        binding.banner.setImageResource(0)
+                        binding.banner.visibility = GONE
+                    }
+                    if (it.second != indexPager) return@renderResult
+                    binding.banner.setImageDrawable(
+                        decodeFromBase64IntoDrawable(
+                            Base64.encodeToString(
+                                it.first,
+                                Base64.DEFAULT
+                            )
+                        )
+                    )
+                    binding.progressBarImage.visibility = GONE
+                },
+                onPending = {
+                    binding.progressBarImage.visibility = VISIBLE
+                    binding.banner.setImageResource(0)
+                    binding.textErrorLoadImage.visibility = GONE
+                },
+                onError = {
+                    binding.banner.setImageResource(0)
+                    binding.textErrorLoadImage.visibility = VISIBLE
+                    binding.progressBarImage.visibility = GONE
+                }
+            )
+        }
     }
 
     private fun listenerCurrentRecipes() {
         viewModel.resultRecipeLiveData.observe(viewLifecycleOwner) { recipeResult ->
             if (recipeResult.second != indexPager) return@observe
-            binding.banner.setImageResource(0)
-            binding.progressBarImage.visibility = VISIBLE
             val recipe = recipeResult.first
-            if (recipe.imageUrl.isNotBlank()) {
-                binding.banner.visibility = VISIBLE
-                viewModel.getImage(recipe.imageUrl, indexPager, ::decodeFromBase64IntoDrawable)
-            } else {
-                binding.banner.visibility = GONE
-                binding.progressBarImage.visibility = GONE
-            }
+            binding.banner.visibility = VISIBLE
+            viewModel.getImage(recipe.imageUrl, indexPager)
             binding.headingRecipe.text = recipe.name
             if (recipe.ingredients.isNotBlank()) {
                 binding.textViewIngredients.visibility = VISIBLE

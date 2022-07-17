@@ -102,7 +102,6 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
 
     override suspend fun getImageByUrl(url: String): ByteArray {
         val imageRef = storageRef.reference.child(url)
-
         val up = imageRef.getBytes(MAX_SIZE_PICTURE).addOnSuccessListener {
             Log.d(TAG, "Изображение успешно загружено")
         }.addOnFailureListener {

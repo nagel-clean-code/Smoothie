@@ -1,20 +1,18 @@
 package com.example.smoothie.presentation.viewmodels
 
-import android.graphics.drawable.Drawable
-import android.util.Base64
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.example.smoothie.Constants.Companion.LAST_RECIPE
 import com.example.smoothie.data.storage.models.RecipeEntity
-import com.example.smoothie.domain.usecase.database.GetRandomRecipeFromDbUseCase
 import com.example.smoothie.data.storage.models.states.SuccessResult
 import com.example.smoothie.domain.models.IRecipeModel
 import com.example.smoothie.domain.usecase.database.GetImageFromDBUseCase
+import com.example.smoothie.domain.usecase.database.GetRandomRecipeFromDbUseCase
 import com.example.smoothie.domain.usecase.sharedpref.GetRecipeFromSharPrefUseCase
 import com.example.smoothie.domain.usecase.sharedpref.SaveRecipeSharPrefUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,8 +30,8 @@ class SharedHomeViewModel @Inject constructor(
         MutableLiveResult<IRecipeModel>(SuccessResult(RecipeEntity()))
     val loadResultLiveData: LiveResult<IRecipeModel> = _loadResultMutableLiveData
 
-    private var _imageLiveDataMutable = MutableLiveData<Pair<Drawable?, Int>>()
-    val resultImageLiveDataMutable: MutableLiveData<Pair<Drawable?, Int>> = _imageLiveDataMutable
+    private val _loadImageMutableLiveData = MutableLiveResult(SuccessResult(Pair(ByteArray(0), -1)))
+    val loadImageLiveData: LiveResult<Pair<ByteArray, Int>> = _loadImageMutableLiveData
 
     fun nextRecipe(pos: Int) = into(_loadResultMutableLiveData) {
         val result = withContext(Dispatchers.IO) {
@@ -44,25 +42,22 @@ class SharedHomeViewModel @Inject constructor(
         return@into result
     }
 
-    fun loadLastRecipe(indexPage: Int){
+    fun loadLastRecipe(indexPage: Int) {
         val displayRecipe: IRecipeModel = getRecipeFromSharPrefUseCase.execute(LAST_RECIPE)
             ?: return
         _recipeMutableLiveData.value = Pair(displayRecipe, indexPage)
     }
 
-    fun getImage(url: String, indexPager: Int, convertFromStringToImage: (String) -> Drawable) {
+    fun getImage(url: String, indexPager: Int) {
         if (url.isBlank()) {
-            _imageLiveDataMutable.value = Pair(null, indexPager)
+            _loadImageMutableLiveData.value = SuccessResult(Pair(ByteArray(0), -1))
             return
         }
-        viewModelScope.launch {
+        into(_loadImageMutableLiveData) {
             val result = withContext(Dispatchers.IO) {
                 return@withContext getImageFromDBUseCase.execute(url)
             }
-            _imageLiveDataMutable.value = Pair(
-                convertFromStringToImage(Base64.encodeToString(result, Base64.DEFAULT)),
-                indexPager
-            )
+            Pair(result, indexPager)
         }
     }
 

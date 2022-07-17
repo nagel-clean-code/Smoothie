@@ -40,6 +40,7 @@
     <string name="error_delete">Не удалось удалить рецепт</string>
     <string name="star_button">Star button</string>
     <string name="delete_button">Delete Button</string>
+    <string name="error_load_image">Не удалось загрузить изображение!</string>
 
 
 </resources>

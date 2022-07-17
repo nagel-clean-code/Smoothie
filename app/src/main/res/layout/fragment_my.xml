@@ -48,6 +48,20 @@
                 app:layout_constraintEnd_toEndOf="@+id/banner"
                 app:layout_constraintStart_toStartOf="@+id/banner"
                 app:layout_constraintTop_toTopOf="@+id/banner" />
+
+            <TextView
+                android:id="@+id/textErrorLoadImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/error_load_image"
+                android:textSize="20sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/banner"
+                app:layout_constraintEnd_toEndOf="@+id/banner"
+                app:layout_constraintStart_toStartOf="@+id/banner"
+                app:layout_constraintTop_toTopOf="@+id/banner" />
+
             <ImageView
                 android:id="@+id/banner"
                 android:layout_width="match_parent"
