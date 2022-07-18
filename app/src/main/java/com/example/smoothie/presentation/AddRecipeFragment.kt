@@ -94,7 +94,6 @@ class AddRecipeFragment : BaseFragment() {
             binding.enteringRecipe.text?.clear()
             binding.enteringDescription.text?.clear()
             binding.imagePreview.setImageResource(0)
-            focusInputAndAppearanceKeyboard()
         }
     }
 

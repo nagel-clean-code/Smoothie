@@ -86,7 +86,7 @@ class SharedFindRecipeViewModel @Inject constructor(
     override fun onRecipeDelete(recipeEntity: RecipeEntity) {
         if (isInProgress(recipeEntity)) return
         setProgress(recipeEntity, true)
-        val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+        val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
             Log.w(TAG, throwable)
             showError(R.string.error_delete)
             setProgress(recipeEntity, false)
@@ -94,8 +94,10 @@ class SharedFindRecipeViewModel @Inject constructor(
         viewModelScope.launch(exceptionHandler) {
             withContext(Dispatchers.IO) {
                 delete(recipeEntity)
-                setProgress(recipeEntity, false)
             }
+        }.invokeOnCompletion {
+            invalidateList()
+            setProgress(recipeEntity, false)
         }
     }
 
@@ -130,11 +132,6 @@ class SharedFindRecipeViewModel @Inject constructor(
 
     private suspend fun delete(recipeEntity: RecipeEntity) {
         deleteRecipeInDbUseCase.execute(recipeEntity.idRecipe)
-        viewModelScope.launch {
-            withContext(Dispatchers.Main) {
-                invalidateList()
-            }
-        }
     }
 
     private fun isInProgress(recipeEntity: RecipeEntity) =

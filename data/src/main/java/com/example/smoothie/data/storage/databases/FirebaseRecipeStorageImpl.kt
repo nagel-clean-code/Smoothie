@@ -83,11 +83,20 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
             firestore.collection(userName).whereEqualTo("idRecipe", rand)
                 .get().addOnSuccessListener { documentSnapshot ->
                     Log.d(TAG, "Количество найденых рецептов: ${documentSnapshot.size()}")
-                    recipe = documentSnapshot.documents.first().toObject<RecipeEntity>()!!
+                    try {
+                        recipe = documentSnapshot.documents.first().toObject<RecipeEntity>()!!
+                    }catch (e: Exception){
+                        errorResult = e.message!!
+                    }
                 }.addOnFailureListener { exception ->
                     Log.w(TAG, "Error getting documents: ", exception)
                 }
         result.await()
+        if (errorResult.isNotBlank()) {
+            Log.d(TAG, errorResult)
+            val buf = errorResult
+            throw Exception(buf)
+        }
         return recipe
     }
 
@@ -181,6 +190,28 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
         }
     }
 
+    private fun updateIndexes(deleteIx: Int) {
+        if (deleteIx == countRecipes) return
+
+        firestore.collection(userName)
+            .whereEqualTo("idRecipe", countRecipes)
+            .get().addOnSuccessListener {
+                if (it.documents.size > 0) {
+                    Log.d(TAG, "Документ для индексирования найден")
+                    it.documents.first().reference.update("idRecipe", deleteIx)
+                        .addOnSuccessListener { Log.d(TAG, "Успешная переиндексация") }
+                        .addOnFailureListener {
+                            errorResult = "Ошибка при обновлении индекса в процессе индексации"
+                        }
+                } else {
+                    errorResult = "Документ для индексирования не найден"
+                }
+            }
+            .addOnFailureListener {
+                errorResult = "Ошибка при запросе поиска элемента в базе"
+            }
+    }
+
     override suspend fun deleteRecipe(idRecipe: Int) {
         val result =
             firestore.collection(userName)
@@ -190,6 +221,7 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
                         errorResult = "Документ с таким id:($idRecipe) не найден!"
                     } else {
                         val doc = it.documents.first()
+                        updateIndexes(idRecipe)
                         doc.getString("imageUrl")?.let { it1 -> deleteImage(it1) }
                         doc.reference.delete()
                             .addOnSuccessListener {

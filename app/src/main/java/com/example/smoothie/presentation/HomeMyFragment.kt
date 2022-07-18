@@ -7,6 +7,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.example.smoothie.databinding.FragmentMyBinding
 import com.example.smoothie.databinding.PartResultBinding
@@ -55,6 +56,7 @@ class HomeMyFragment(private val indexPager: Int) : BaseFragment() {
                     resultBinding.progressBar.visibility = VISIBLE
                 },
                 onError = {
+                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
                     binding.ConstraintLayoutPart.visibility = VISIBLE
                     binding.scrollView.visibility = GONE
                     resultBinding.errorContainer.visibility = VISIBLE
