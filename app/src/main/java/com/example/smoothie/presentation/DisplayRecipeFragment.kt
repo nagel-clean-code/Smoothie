@@ -28,18 +28,18 @@ class DisplayRecipeFragment : Fragment() {
     ): View? {
         val recipe = arguments?.getParcelable<RecipeEntity>(RECIPE_ENTiTY_KEY)
         binding.headingRecipe.text = recipe?.name
-        binding.ingredients.text = recipe?.ingredients
         binding.recipe.text = recipe?.recipe
-        binding.description.text = recipe?.description
 
-        if (recipe?.imageUrl != null && recipe.imageUrl.isNotBlank()) {
-            val ref = RecipeAdapter.ref.child(recipe.imageUrl)
-            GlideApp.with(binding.banner.context)
-                .load(ref)
-                .centerCrop()
-                .placeholder(R.drawable.smoothie)
-                .error(R.drawable.ic_baseline_broken_image_48)
-                .into(binding.banner)
+        recipe?.imageUrl?.let {
+            if (recipe.imageUrl!!.isNotBlank()) {
+                val ref = RecipeAdapter.ref.child(recipe.imageUrl!!)
+                GlideApp.with(binding.banner.context)
+                    .load(ref)
+                    .centerCrop()
+                    .placeholder(R.drawable.smoothie)
+                    .error(R.drawable.ic_baseline_broken_image_48)
+                    .into(binding.banner)
+            }
         }
         return binding.root
     }

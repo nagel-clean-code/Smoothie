@@ -1,0 +1,38 @@
+ /** Обработка ввода ингридиентов (автоматическая нумерация строк) */
+    private fun processingInputIngredients() {
+        val twTextWatcher = object : TextWatcher {
+            private var lengthPrev: Int = 0
+            private var prevSymbol: Int = -1
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (p0?.length!! > 0) {
+                    lengthPrev = p0.length
+                    prevSymbol = p0.last().code
+                }
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (binding.enteringIngredientsLayout.editText?.text?.isEmpty() == true) {
+                    binding.enteringIngredientsLayout.editText?.text?.append("1. ")
+                }
+                if (lengthPrev > s?.length!!) {
+                    if (prevSymbol == 10) {
+                        --countIngredient
+                    }
+                    return
+                }
+                if (s.last().code == 10) {
+                    binding.enteringIngredientsLayout.editText?.text?.append("${countIngredient++}. ")
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {}
+        }
+        binding.enteringIngredientsLayout.editText?.addTextChangedListener(twTextWatcher)
+
+        binding.enteringIngredients.onFocusChangeListener =
+            View.OnFocusChangeListener { _, _ ->
+                if (binding.enteringIngredientsLayout.editText?.text?.isEmpty() == true) {
+                    binding.enteringIngredientsLayout.editText?.text?.append("1. ")
+                }
+            }
+    }

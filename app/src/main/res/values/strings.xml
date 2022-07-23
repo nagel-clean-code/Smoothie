@@ -25,7 +25,7 @@
     <string name="hint_name_recipe">Название рецепта</string>
     <string name="ingredients">Ингредиенты:</string>
     <string name="hint_input_ingredients">Задайте ингредиенты</string>
-    <string name="recipe">Рецепт:</string>
+    <string name="recipe">Рецепт</string>
     <string name="hint_input_recipe">Опешите рецепт</string>
     <string name="description">Описание:</string>
     <string name="hint_short_description">Кратко опишите полученное блюдо</string>
@@ -41,6 +41,7 @@
     <string name="star_button">Star button</string>
     <string name="delete_button">Delete Button</string>
     <string name="error_load_image">Не удалось загрузить изображение!</string>
+    <string name="add_mark_for_find">Добавте катеогрии для поиска</string>
 
 
 </resources>

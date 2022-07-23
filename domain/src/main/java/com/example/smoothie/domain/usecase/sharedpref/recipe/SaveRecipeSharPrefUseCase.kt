@@ -1,4 +1,4 @@
-package com.example.smoothie.domain.usecase.sharedpref
+package com.example.smoothie.domain.usecase.sharedpref.recipe
 
 import com.example.smoothie.domain.models.IRecipeModel
 import com.example.smoothie.domain.repository.RecipeRepository

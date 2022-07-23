@@ -51,9 +51,9 @@ class RecipeAdapter(
         with(holder.binding) {
             holder.itemView.tag = recipe
             nameRecipe.text = recipe.name
-            if (recipe.imageUrl.isNotBlank()) {
+            if (recipe.imageUrl!!.isNotBlank()) {
                 GlideApp.with(image.context)
-                    .load(ref.child(recipe.imageUrl))
+                    .load(ref.child(recipe.imageUrl!!))
                     .centerCrop()
                     .placeholder(R.drawable.ic_baseline_image_48)
                     .error(R.drawable.ic_baseline_broken_image_48)

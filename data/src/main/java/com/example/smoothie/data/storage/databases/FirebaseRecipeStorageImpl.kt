@@ -74,7 +74,7 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
     }
 
     override suspend fun nextRecipe(): IRecipeModel {
-        var recipe = RecipeEntity(-1, "Рецептов нет", "", "", "")
+        var recipe = RecipeEntity(name = "Рецептов нет")
         if (countRecipes == 0)
             return recipe
         val rand = nextRandom()
@@ -181,11 +181,11 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
                     } else {
                         it.documents.first().reference.update("isFavorite", flag)
                             .addOnSuccessListener { Log.d(TAG, "Документ id($idRecipe) обновлён") }
-                            .addOnFailureListener { e ->
+                            .addOnFailureListener {
                                 errorResult = "Не удалось обновить документ id($idRecipe)"
                             }
                     }
-                }.addOnFailureListener { e ->
+                }.addOnFailureListener {
                     errorResult = "Не удалось сделать поиск по id: $idRecipe"
                 }
         result.await()
@@ -230,11 +230,11 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
                                 Log.d(TAG, "Документ удалён!")
                                 dataBaseCounter.child(userName).setValue(countRecipes - 1)
                             }
-                            .addOnFailureListener { e ->
+                            .addOnFailureListener {
                                 errorResult = "Не удалось удалить документ id($idRecipe)"
                             }
                     }
-                }.addOnFailureListener { e ->
+                }.addOnFailureListener {
                     errorResult = "Не удалось сделать поиск по id: $idRecipe, для удаления"
                 }
         result.await()

@@ -8,8 +8,8 @@ import com.example.smoothie.data.storage.models.states.SuccessResult
 import com.example.smoothie.domain.models.IRecipeModel
 import com.example.smoothie.domain.usecase.database.GetImageFromDBUseCase
 import com.example.smoothie.domain.usecase.database.GetRandomRecipeFromDbUseCase
-import com.example.smoothie.domain.usecase.sharedpref.GetRecipeFromSharPrefUseCase
-import com.example.smoothie.domain.usecase.sharedpref.SaveRecipeSharPrefUseCase
+import com.example.smoothie.domain.usecase.sharedpref.recipe.GetRecipeFromSharPrefUseCase
+import com.example.smoothie.domain.usecase.sharedpref.recipe.SaveRecipeSharPrefUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

@@ -8,5 +8,7 @@ class Constants {
         const val MIMETYPE_IMAGE = "image/*"
         const val RECIPE_ENTiTY_KEY = "RECIPE_ENTiTY_KEY"
         const val LAST_RECIPE = "LAST_RECIPE"
+        const val FORM_ADD_RECIPE = "FORM_ADD_RECIPE"
+
     }
 }

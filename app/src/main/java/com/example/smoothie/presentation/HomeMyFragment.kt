@@ -75,7 +75,7 @@ class HomeMyFragment(private val indexPager: Int) : BaseFragment() {
                         binding.banner.setImageResource(0)
                         binding.banner.visibility = GONE
                     }
-                    if (it.second != indexPager){
+                    if (it.second != indexPager) {
                         binding.progressBarImage.visibility = GONE
                         return@renderResult
                     }
@@ -108,32 +108,12 @@ class HomeMyFragment(private val indexPager: Int) : BaseFragment() {
             if (recipeResult.second != indexPager) return@observe
             val recipe = recipeResult.first
             binding.banner.visibility = VISIBLE
-            viewModel.getImage(recipe.imageUrl, indexPager)
+            viewModel.getImage(recipe.imageUrl!!, indexPager)
             binding.headingRecipe.text = recipe.name
-            if (recipe.ingredients.isNotBlank()) {
-                binding.textViewIngredients.visibility = VISIBLE
-                binding.ingredients.visibility = VISIBLE
-                binding.ingredients.text = recipe.ingredients
-            } else {
-                binding.textViewIngredients.visibility = GONE
-                binding.ingredients.visibility = GONE
-            }
-            if (recipe.recipe.isNotBlank()) {
-                binding.textViewRecipe.visibility = VISIBLE
-                binding.recipe.visibility = VISIBLE
-                binding.recipe.text = recipe.recipe
-            } else {
-                binding.textViewRecipe.visibility = GONE
-                binding.recipe.visibility = GONE
-            }
-            if (recipe.description.isNotBlank()) {
-                binding.textViewDescription.visibility = VISIBLE
-                binding.description.visibility = VISIBLE
-                binding.description.text = recipe.description
-            } else {
-                binding.textViewDescription.visibility = GONE
-                binding.description.visibility = GONE
-            }
+
+            binding.textViewRecipe.visibility = VISIBLE
+            binding.recipe.visibility = VISIBLE
+            binding.recipe.text = recipe.recipe
         }
 
     }

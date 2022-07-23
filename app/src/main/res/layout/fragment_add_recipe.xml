@@ -10,19 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/add_button"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="20dp"
-            android:textAllCaps="false"
-            android:textSize="20sp"
-            android:text="@string/add_button"
-            app:cornerRadius="24dp"
-            app:layout_constraintDimensionRatio="1:0.381"
-            app:layout_constraintEnd_toEndOf="@+id/guideline_button_end"
-            app:layout_constraintStart_toStartOf="@+id/guideline_button_start"
-            app:layout_constraintTop_toBottomOf="@+id/entering_description_Layout" />
 
         <EditText
             android:id="@+id/editText_name_recipe"
@@ -83,16 +70,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/editText_name_recipe" />
 
-        <TextView
-            android:id="@+id/textView_ingredients"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/oswald"
-            android:text="@string/ingredients"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/guideline_headers"
-            app:layout_constraintTop_toBottomOf="@+id/image_button" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_headers"
@@ -100,24 +77,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.03" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/entering_ingredients_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_ingredients">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/entering_ingredients"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:hint="@string/hint_input_ingredients"
-                android:inputType="textCapSentences|textMultiLine"
-                android:textSize="18sp" />
-        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/textView_recipe"
@@ -128,8 +87,9 @@
             android:text="@string/recipe"
             android:textSize="24sp"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/guideline_headers"
-            app:layout_constraintTop_toBottomOf="@+id/entering_ingredients_layout" />
+            app:layout_constraintTop_toBottomOf="@+id/image_button" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/entering_recipe_Layout"
@@ -150,33 +110,61 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/textView_description"
+            android:id="@+id/add_mark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20sp"
+            android:layout_marginTop="20dp"
             android:fontFamily="@font/oswald"
-            android:text="@string/description"
+            android:text="@string/add_mark_for_find"
             android:textSize="24sp"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/guideline_headers"
             app:layout_constraintTop_toBottomOf="@+id/entering_recipe_Layout" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/entering_description_Layout"
-            android:layout_width="match_parent"
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/add_button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/add_button"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            app:cornerRadius="24dp"
+            app:layout_constraintDimensionRatio="1:0.381"
+            app:layout_constraintEnd_toEndOf="@+id/guideline_button_end"
+            app:layout_constraintStart_toStartOf="@+id/guideline_button_start"
+            app:layout_constraintTop_toBottomOf="@+id/barrierCategory" />
+
+        <ListView
+            android:id="@+id/listView1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/middle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_mark" />
+
+        <ListView
+            android:id="@+id/listView2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_description">
+            app:layout_constraintStart_toEndOf="@id/middle"
+            app:layout_constraintTop_toBottomOf="@+id/add_mark" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/entering_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:hint="@string/hint_short_description"
-                android:inputType="textCapSentences|textMultiLine"
-                android:textSize="18sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/middle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierCategory"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="listView1,listView2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

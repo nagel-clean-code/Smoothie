@@ -75,32 +75,6 @@
                 app:layout_constraintTop_toBottomOf="@id/heading_recipe" />
 
             <TextView
-                android:id="@+id/textView_ingredients"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/oswald"
-                android:text="@string/ingredients"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/guideline_headers"
-                app:layout_constraintTop_toBottomOf="@+id/banner" />
-
-            <TextView
-                android:id="@+id/ingredients"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_italic"
-                android:text="@string/test_text_ingredients"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constrainedHeight="true"
-                app:layout_constrainedWidth="true"
-                app:layout_constraintEnd_toStartOf="@+id/guideline_text_end"
-                app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintStart_toEndOf="@+id/guideline_text_start"
-                app:layout_constraintTop_toBottomOf="@+id/textView_ingredients" />
-
-            <TextView
                 android:id="@+id/textView_recipe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -108,8 +82,9 @@
                 android:text="@string/recipe"
                 android:textSize="24sp"
                 android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_text_end"
                 app:layout_constraintStart_toEndOf="@+id/guideline_headers"
-                app:layout_constraintTop_toBottomOf="@+id/ingredients" />
+                app:layout_constraintTop_toBottomOf="@+id/banner" />
 
             <TextView
                 android:id="@+id/recipe"
@@ -134,32 +109,6 @@
                 app:barrierDirection="bottom"
                 app:constraint_referenced_ids="recipe,textView_recipe"
                 app:layout_constraintTop_toBottomOf="@id/recipe" />
-
-            <TextView
-                android:id="@+id/textView_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/oswald"
-                android:text="@string/description"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/guideline_headers"
-                app:layout_constraintTop_toBottomOf="@+id/barrier_recipe" />
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_italic"
-                android:text="@string/test_text_description"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constrainedHeight="true"
-                app:layout_constrainedWidth="true"
-                app:layout_constraintEnd_toStartOf="@+id/guideline_text_end"
-                app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintStart_toEndOf="@+id/guideline_text_start"
-                app:layout_constraintTop_toBottomOf="@+id/textView_description" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_headers"

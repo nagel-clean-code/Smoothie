@@ -29,44 +29,20 @@ class RecipeRepositoryImpl(
         return recipeStorage.getRecipes(searchBy, start, start + count - 1)
     }
 
-    override suspend fun saveFavoriteFlag(idRecipe: Int, flag: Boolean) {
-        recipeStorage.saveFavoriteFlag(idRecipe, flag)
-    }
+    override suspend fun saveFavoriteFlag(idRecipe: Int, flag: Boolean) = recipeStorage.saveFavoriteFlag(idRecipe, flag)
 
     override suspend fun deleteRecipe(idRecipe: Int) {
         recipeStorage.deleteRecipe(idRecipe)
     }
 
-    override fun getRecipeById(id: Long) {
-        TODO("Not yet implemented")
-    }
+    override fun saveRecipeInSharPref(recipe: IRecipeModel, key: String) = sharedPrefRecipeStorage.saveRecipe(recipe, key)
 
-    override fun saveNameRecipeInSharPref(name: String) =
-        sharedPrefRecipeStorage.saveNameRecipe(name)
+    override fun getRecipeFromSharPref(key: String): IRecipeModel? = sharedPrefRecipeStorage.getRecipe(key)
 
-    override fun saveRecipeInSharPref(recipe: IRecipeModel, key: String) =
-        sharedPrefRecipeStorage.saveRecipe(recipe, key)
-
-
-    override fun getRecipeFromSharPref(key: String): IRecipeModel? =
-        sharedPrefRecipeStorage.getRecipe(key)
-
-
-    override fun getIngredientsFromSharPref() = sharedPrefRecipeStorage.getIngredients()
-
-
-    override fun saveIngredientsInSharPref(textIngredients: String) =
-        sharedPrefRecipeStorage.saveIngredients(textIngredients)
-
-
-    override fun getNameRecipeFromSharPref() = sharedPrefRecipeStorage.getNameRecipe()
-
-    override fun saveImageFromAddFormInSharPref(imageString: String) =
-        sharedPrefRecipeStorage.saveImageFromAddForm(imageString)
+    override fun saveImageFromAddFormInSharPref(imageString: String) = sharedPrefRecipeStorage.saveImageFromAddForm(imageString)
 
 
     override fun getImageFromAddFormFromSharPref() = sharedPrefRecipeStorage.getImageFromAddForm()
 
-    override suspend fun saveImageFromAddFormToDb(imageByteArray: ByteArray): String =
-        recipeStorage.saveImage(imageByteArray)
+    override suspend fun saveImageFromAddFormToDb(imageByteArray: ByteArray): String = recipeStorage.saveImage(imageByteArray)
 }
