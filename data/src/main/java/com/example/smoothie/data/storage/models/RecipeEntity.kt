@@ -9,20 +9,19 @@ data class RecipeEntity(
     override val uniqueId: String? = "",                         //userName_$id
     override val name: String? = "",
     override val recipe: String? = "",
-    override val listCategory1: List<String>? = mutableListOf(), //Завтрак, обед, ужин
-    override val listCategory2: List<String>? = mutableListOf(), //Торты, салаты, бутерброды, десерт, супы, каши, смузи
+    override val listCategory: List<Int>? = mutableListOf(),
     override var imageUrl: String? = "",
     override var isFavorite: Boolean = false,
     override var inProgress: Boolean = false
 ): IRecipeModel, Parcelable{
+
 
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
-        parcel.createStringArrayList(),
-        parcel.createStringArrayList(),
+        mutableListOf(),
         parcel.readString(),
         parcel.readByte() != 0.toByte(),
         parcel.readByte() != 0.toByte()
@@ -35,16 +34,10 @@ data class RecipeEntity(
             "uniqueId" to uniqueId!!,
             "name" to name!!,
             "recipe" to recipe!!,
-            "listCategory1" to listCategory1!!,
-            "listCategory2" to listCategory2!!,
+            "listCategory1" to listCategory!!,
             "imageUrl" to imageUrl!!,
             "isFavorite" to isFavorite
         )
-    }
-
-
-    override fun describeContents(): Int {
-        return 0
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -52,11 +45,13 @@ data class RecipeEntity(
         parcel.writeString(uniqueId)
         parcel.writeString(name)
         parcel.writeString(recipe)
-        parcel.writeStringList(listCategory1)
-        parcel.writeStringList(listCategory2)
         parcel.writeString(imageUrl)
         parcel.writeByte(if (isFavorite) 1 else 0)
         parcel.writeByte(if (inProgress) 1 else 0)
+    }
+
+    override fun describeContents(): Int {
+        return 0
     }
 
     companion object CREATOR : Parcelable.Creator<RecipeEntity> {
@@ -68,4 +63,6 @@ data class RecipeEntity(
             return arrayOfNulls(size)
         }
     }
+
+
 }

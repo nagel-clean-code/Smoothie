@@ -31,8 +31,8 @@ class DisplayRecipeFragment : Fragment() {
         binding.recipe.text = recipe?.recipe
 
         recipe?.imageUrl?.let {
-            if (recipe.imageUrl!!.isNotBlank()) {
-                val ref = RecipeAdapter.ref.child(recipe.imageUrl!!)
+            if (it.isNotBlank()) {
+                val ref = RecipeAdapter.ref.child(it)
                 GlideApp.with(binding.banner.context)
                     .load(ref)
                     .centerCrop()

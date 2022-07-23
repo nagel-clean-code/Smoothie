@@ -78,26 +78,14 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.03" />
 
-        <TextView
-            android:id="@+id/textView_recipe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20sp"
-            android:fontFamily="@font/oswald"
-            android:text="@string/recipe"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/guideline_headers"
-            app:layout_constraintTop_toBottomOf="@+id/image_button" />
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/entering_recipe_Layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_recipe">
+            app:layout_constraintTop_toBottomOf="@+id/image_button">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/entering_recipe"
@@ -109,18 +97,36 @@
                 android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TableLayout
+            android:id="@+id/table"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/entering_recipe_Layout">
+
+        </TableLayout>
+
         <TextView
             android:id="@+id/add_mark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="5dp"
             android:fontFamily="@font/oswald"
             android:text="@string/add_mark_for_find"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/guideline_headers"
-            app:layout_constraintTop_toBottomOf="@+id/entering_recipe_Layout" />
+            app:layout_constraintTop_toBottomOf="@+id/table" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/middle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
 
 
         <com.google.android.material.button.MaterialButton
@@ -135,36 +141,7 @@
             app:layout_constraintDimensionRatio="1:0.381"
             app:layout_constraintEnd_toEndOf="@+id/guideline_button_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_button_start"
-            app:layout_constraintTop_toBottomOf="@+id/barrierCategory" />
-
-        <ListView
-            android:id="@+id/listView1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/middle"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_mark" />
 
-        <ListView
-            android:id="@+id/listView2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/middle"
-            app:layout_constraintTop_toBottomOf="@+id/add_mark" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/middle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrierCategory"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="listView1,listView2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

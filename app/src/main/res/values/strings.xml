@@ -41,7 +41,8 @@
     <string name="star_button">Star button</string>
     <string name="delete_button">Delete Button</string>
     <string name="error_load_image">Не удалось загрузить изображение!</string>
-    <string name="add_mark_for_find">Добавте катеогрии для поиска</string>
+    <string name="add_mark_for_find">Выберите катеогрии для поиска</string>
+    <string name="supper">Ужин</string>
 
 
 </resources>
