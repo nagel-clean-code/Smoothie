@@ -92,12 +92,17 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
                     Log.w(TAG, "Error getting documents: ", exception)
                 }
         result.await()
+        checkErrors()
+        return recipe
+    }
+
+    private fun checkErrors(){
         if (errorResult.isNotBlank()) {
             Log.d(TAG, errorResult)
             val buf = errorResult
+            errorResult = ""
             throw Exception(buf)
         }
-        return recipe
     }
 
     override suspend fun saveImage(imageByteArray: ByteArray): String {
@@ -154,14 +159,15 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
                         if (recipe != null) {
                             recipes.add(recipe)
                         } else {
-                            Log.w(TAG, "Не удалось распарсить рецепт!")
+                            errorResult = "Не удалось распарсить рецепт!"
                         }
                     }
                     Log.d(TAG, "Возвращаю ${recipes.size} рцептов")
                 }.addOnFailureListener { exception ->
-                    Log.w(TAG, "Error getting documents: ", exception)
+                    errorResult = "Error getting documents: $exception"
                 }
         result.await()
+        checkErrors()
         return recipes
     }
 
@@ -183,11 +189,7 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
                     errorResult = "Не удалось сделать поиск по id: $idRecipe"
                 }
         result.await()
-        if (errorResult.isNotBlank()) {
-            Log.d(TAG, errorResult)
-            val buf = errorResult
-            throw Exception(buf)
-        }
+        checkErrors()
     }
 
     private fun updateIndexes(deleteIx: Int) {
@@ -236,11 +238,7 @@ class FirebaseRecipeStorageImpl(private val userName: String) : RecipeStorageDB 
                     errorResult = "Не удалось сделать поиск по id: $idRecipe, для удаления"
                 }
         result.await()
-        if (errorResult.isNotBlank()) {
-            Log.d(TAG, errorResult)
-            val buf = errorResult
-            throw Exception(buf)
-        }
+        checkErrors()
     }
 
     private companion object {

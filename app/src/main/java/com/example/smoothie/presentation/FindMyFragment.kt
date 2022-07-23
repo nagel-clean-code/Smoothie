@@ -1,8 +1,6 @@
 package com.example.smoothie.presentation
 
-import android.content.ContentValues
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.smoothie.R
 import com.example.smoothie.databinding.FragmentFindMyBinding
 import com.example.smoothie.presentation.adapters.DefaultLoadStateAdapter
 import com.example.smoothie.presentation.adapters.RecipeAdapter
@@ -24,12 +21,13 @@ import com.example.smoothie.presentation.viewmodels.SharedFindRecipeViewModel
 import com.example.smoothie.utils.observeEvent
 import com.example.smoothie.utils.simpleScan
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
-import kotlin.coroutines.coroutineContext
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FindMyFragment(private val indexPager: Int) : BaseFragment() {
@@ -41,7 +39,7 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
     override val viewModel: SharedFindRecipeViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)  
+        super.onCreate(savedInstanceState)
         binding = FragmentFindMyBinding.inflate(layoutInflater)
         setupRecipeList()
     }
@@ -60,6 +58,11 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
         observeErrorMessages()
         observeInvalidationEvents()
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refresh()
     }
 
     private fun setupSearchInput() {
@@ -156,7 +159,7 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
             recipeAdapter.refresh()
 
             GlideApp.get(requireActivity().applicationContext).clearMemory();
-            CoroutineScope(Dispatchers.IO).launch{
+            CoroutineScope(Dispatchers.IO).launch {
                 GlideApp.get(requireActivity().applicationContext).clearDiskCache();
             }
         }

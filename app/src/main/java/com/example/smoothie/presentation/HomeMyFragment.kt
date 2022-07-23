@@ -75,7 +75,10 @@ class HomeMyFragment(private val indexPager: Int) : BaseFragment() {
                         binding.banner.setImageResource(0)
                         binding.banner.visibility = GONE
                     }
-                    if (it.second != indexPager) return@renderResult
+                    if (it.second != indexPager){
+                        binding.progressBarImage.visibility = GONE
+                        return@renderResult
+                    }
                     binding.banner.setImageDrawable(
                         decodeFromBase64IntoDrawable(
                             Base64.encodeToString(

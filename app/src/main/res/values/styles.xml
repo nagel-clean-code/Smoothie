@@ -8,4 +8,8 @@
         <item name="android:background">@drawable/button_random</item>
     </style>
     <style name="MyStyle">my_style</style>
+
+    <style name="Theme.Smoothie.Launcher">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
 </resources>
