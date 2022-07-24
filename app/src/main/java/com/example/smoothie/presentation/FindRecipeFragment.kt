@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SimpleAdapter
 import androidx.fragment.app.activityViewModels
 import com.example.smoothie.Constants
 import com.example.smoothie.R
@@ -40,6 +41,31 @@ class FindRecipeFragment : BaseFragment() {
     override fun onPause() {
         super.onPause()
         viewModel.chooseElement.removeObservers(viewLifecycleOwner)
+    }
+
+
+    private fun initLists() {
+        val data1 = listOf(
+            mapOf(
+                KEY_TITLE to "Завттрак"
+            ),
+            mapOf(
+                KEY_TITLE to "Ужин"
+            )
+        )
+        val adapter = SimpleAdapter(
+            context,
+            data1,
+            android.R.layout.simple_list_item_1,
+            arrayOf(KEY_TITLE),
+            intArrayOf(android.R.id.text1)
+        )
+//        binding.listStandardCategories.adapter = adapter
+
+    }
+
+    companion object {
+        const val KEY_TITLE = "KEY_TITLE"
     }
 
     private fun settingPagerAdapter() {
