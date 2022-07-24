@@ -7,10 +7,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.smoothie.databinding.ActivityMainBinding
-import com.example.smoothie.presentation.AddRecipeFragment
-import com.example.smoothie.presentation.FindRecipeFragment
-import com.example.smoothie.presentation.HomeFragment
-import com.example.smoothie.presentation.SettingsFragment
+import com.example.smoothie.presentation.fragments.AddRecipeFragment
+import com.example.smoothie.presentation.fragments.FindRecipeFragment
+import com.example.smoothie.presentation.fragments.HomeFragment
+import com.example.smoothie.presentation.fragments.SettingsFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
