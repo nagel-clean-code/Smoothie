@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.smoothie.Constants
-import com.example.smoothie.presentation.HomeMyFragment
+import com.example.smoothie.presentation.fragments.HomeMyFragment
 
 class HomePagerAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
     override fun getItemCount() = Constants.COUNT_FRAGMENT_VIEW

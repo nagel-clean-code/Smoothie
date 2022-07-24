@@ -6,7 +6,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.Base64
 import androidx.core.graphics.drawable.toDrawable
-import com.example.smoothie.presentation.BaseFragment
+import com.example.smoothie.presentation.fragments.BaseFragment
 import java.io.ByteArrayOutputStream
 
 fun BaseFragment.decodeFromBase64IntoDrawable(imageString: String): Drawable {

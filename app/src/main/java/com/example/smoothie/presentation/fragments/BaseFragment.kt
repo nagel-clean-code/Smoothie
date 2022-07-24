@@ -1,4 +1,4 @@
-package com.example.smoothie.presentation
+package com.example.smoothie.presentation.fragments
 
 import android.view.View
 import androidx.fragment.app.Fragment

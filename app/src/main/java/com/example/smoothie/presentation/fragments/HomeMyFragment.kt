@@ -1,4 +1,4 @@
-package com.example.smoothie.presentation
+package com.example.smoothie.presentation.fragments
 
 import android.os.Bundle
 import android.util.Base64
