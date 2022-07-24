@@ -1,8 +1,11 @@
 package com.example.smoothie.presentation.fragments
 
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -12,6 +15,7 @@ import coil.load
 import com.example.smoothie.Category
 import com.example.smoothie.data.storage.models.RecipeEntity
 import com.example.smoothie.databinding.CategoryItemBinding
+import com.example.smoothie.databinding.DialogAddCategoryBinding
 import com.example.smoothie.databinding.FragmentAddRecipeBinding
 import com.example.smoothie.domain.models.IRecipeModel
 import com.example.smoothie.presentation.images.ImagePicker
@@ -20,7 +24,11 @@ import com.example.smoothie.utils.convertDrawableToByteArray
 import com.example.smoothie.utils.decodeFromBase64IntoDrawable
 import com.example.smoothie.utils.encodeToBase64
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.concurrent.schedule
 
 
 @AndroidEntryPoint
@@ -30,7 +38,7 @@ class AddRecipeFragment : BaseFragment() {
 
     override val viewModel: AddRecipeViewModel by viewModels()
     private val imagePicker = ImagePicker()
-    private val listCategory: MutableList<Int> = mutableListOf()
+    private var timer: Timer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +59,6 @@ class AddRecipeFragment : BaseFragment() {
         }
         binding.addButton.setOnClickListener {
             saveRecipeToDatabase()
-            clearTable()
-            displayCategories()
         }
         viewModel.recipeDisplayLiveDataMutable.observe(viewLifecycleOwner) { recipe ->
             recipe?.let {
@@ -63,6 +69,7 @@ class AddRecipeFragment : BaseFragment() {
             binding.imagePreview.load(image)
         }
         viewModel.load()
+        viewModel.updateSelectedCategoriesFromSharPrefs()
         viewModel.loadImage(::decodeFromBase64IntoDrawable)
         displayCategories()
         return binding.root
@@ -72,24 +79,29 @@ class AddRecipeFragment : BaseFragment() {
         viewModel.resultImageLiveDataMutable.removeObservers(viewLifecycleOwner)
         viewModel.saveRecipeInSharedPrefs(recipeBuild())
         viewModel.saveImageInSharPref(binding.imagePreview.drawable, ::encodeToBase64)
+        viewModel.saveSelectedCategoriesInSharPrefs()
         super.onStop()
     }
 
     private fun displayCategories() {
         Category.values().forEach {
-            addSelectedCategory(it)
+            addCategoryTable(it.named)
         }
+        viewModel.listCustomCategories.forEach {
+            addCategoryTable(it)
+        }
+        addCategoryTable("+")
     }
 
     private fun clearTable() {
         binding.table.removeAllViews()
-        listCategory.clear()
+        viewModel.listCategorySelected.clear()
         countSelectedCategories = 0
     }
 
     private var countSelectedCategories: Int = 0
     private lateinit var currentRow: TableRow
-    private fun addSelectedCategory(item: Category) {
+    private fun addCategoryTable(item: String) {
         countSelectedCategories++
         if (countSelectedCategories % COUNT_ROWS_CATEGORIES == 1) {
             currentRow = TableRow(context)
@@ -101,37 +113,93 @@ class AddRecipeFragment : BaseFragment() {
         }
 
         val bindingCurrentItem = CategoryItemBinding.inflate(layoutInflater)
-        bindingCurrentItem.textView.text = item.named
+        bindingCurrentItem.textView.text = item
         bindingCurrentItem.textView.tag = item
-        bindingCurrentItem.textView.setOnClickListener {
-            val tag = (it.tag as Category)
-            if (!listCategory.contains(tag.id)) {
-                listCategory.add(tag.id)
-                it.setBackgroundResource(com.example.smoothie.R.drawable.category_pressed)
-            } else {
-                listCategory.remove(tag.id)
-                it.setBackgroundResource(com.example.smoothie.R.drawable.category)
-            }
+        if (viewModel.listCategorySelected.contains(item)) {
+            bindingCurrentItem.textView.setBackgroundResource(com.example.smoothie.R.drawable.category_pressed)
         }
 
-        currentRow.addView(bindingCurrentItem.root, 0)
+        initEventsCategory(bindingCurrentItem)
+
+        currentRow.addView(bindingCurrentItem.root, (countSelectedCategories - 1) % COUNT_ROWS_CATEGORIES)
         if (countSelectedCategories % COUNT_ROWS_CATEGORIES == 1) {
-            binding.table.addView(currentRow, countSelectedCategories / 3)
+            binding.table.addView(currentRow, countSelectedCategories / COUNT_ROWS_CATEGORIES)
         }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initEventsCategory(bindingCurrentItem: CategoryItemBinding){
+        bindingCurrentItem.textView.setOnClickListener {
+            val tag = (it.tag as String)
+            if (tag == "+") {
+                showDialogAddCategory()
+            } else {
+                if (!viewModel.listCategorySelected.contains(tag)) {
+                    viewModel.listCategorySelected.add(tag)
+                    it.setBackgroundResource(com.example.smoothie.R.drawable.category_pressed)
+                } else {
+                    viewModel.listCategorySelected.remove(tag)
+                    it.setBackgroundResource(com.example.smoothie.R.drawable.category)
+                }
+            }
+        }
+        if (viewModel.listCustomCategories.contains(bindingCurrentItem.textView.tag)) {
+            bindingCurrentItem.textView.setOnTouchListener { view, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    timer = Timer("DeleteCategory", false)
+                    timer?.schedule(DOWN_TIME_DELETE_CATEGORY) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            this@AddRecipeFragment.deleteCategory(view)
+                            Toast.makeText(context, "Категория удалена", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                if (event.action == MotionEvent.ACTION_UP) {
+                    timer?.cancel()
+                }
+                true
+            }
+        }
+    }
+
+    private fun deleteCategory(view: View) {
+        viewModel.deleteCustomCategoryInSharPrefs(view.tag as String)
+        updateTable()
+    }
+
+    private fun showDialogAddCategory() {
+        val dialogBinding = DialogAddCategoryBinding.inflate(layoutInflater)
+        AlertDialog.Builder(context)
+            .setTitle("Создание категории")
+            .setView(dialogBinding.root)
+            .setPositiveButton("Добавить") { _, _ ->
+                val nameCategory = dialogBinding.textInput.text.toString()
+                if (nameCategory.isNotBlank()) {
+                    viewModel.saveCategoryInSharPrefs(nameCategory)
+                    updateTable()
+                }
+            }
+            .create().show()
+    }
+
+    private fun updateTable() {
+        binding.table.removeAllViews()
+        countSelectedCategories = 0
+        displayCategories()
     }
 
     private fun recipeDisplay(recipe: IRecipeModel) {
         binding.editTextNameRecipe.text.clear()
         binding.editTextNameRecipe.text.append(recipe.name)
         binding.enteringRecipe.text?.clear()
-        binding.enteringRecipe.text?.append(recipe.recipe)  //FIXME сделать ещё подгрузку маркировок
+        binding.enteringRecipe.text?.append(recipe.recipe)
     }
 
     private fun recipeBuild(): IRecipeModel = RecipeEntity(
         uniqueId = "${viewModel.getUserName()}_${UUID.randomUUID()}",
         name = binding.editTextNameRecipe.text.toString(),
         recipe = binding.enteringRecipe.text.toString(),
-        listCategory = listCategory
+        listCategory = viewModel.listCategorySelected
     )
 
 
@@ -149,6 +217,8 @@ class AddRecipeFragment : BaseFragment() {
             binding.editTextNameRecipe.text.clear()
             binding.enteringRecipe.text?.clear()
             binding.imagePreview.setImageResource(0)
+            clearTable()
+            displayCategories()
         }
     }
 
@@ -166,5 +236,6 @@ class AddRecipeFragment : BaseFragment() {
 
     companion object {
         const val COUNT_ROWS_CATEGORIES = 3
+        const val DOWN_TIME_DELETE_CATEGORY = 3000L
     }
 }

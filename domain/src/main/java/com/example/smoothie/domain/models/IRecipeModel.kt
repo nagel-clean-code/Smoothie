@@ -5,7 +5,7 @@ interface IRecipeModel {
     val uniqueId: String?
     val name: String?
     val recipe: String?
-    val listCategory: List<Int>?
+    val listCategory: List<String>?
     var imageUrl: String?
     var isFavorite: Boolean
     var inProgress: Boolean

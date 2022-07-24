@@ -3,10 +3,7 @@ package com.example.smoothie.di
 import com.example.smoothie.domain.repository.RecipeRepository
 import com.example.smoothie.domain.repository.SessionRepository
 import com.example.smoothie.domain.usecase.database.*
-import com.example.smoothie.domain.usecase.sharedpref.recipe.GetImageFromAddFormSharPrefUseCase
-import com.example.smoothie.domain.usecase.sharedpref.recipe.GetRecipeFromSharPrefUseCase
-import com.example.smoothie.domain.usecase.sharedpref.recipe.SaveImageFromAddFormSharPrefUseCase
-import com.example.smoothie.domain.usecase.sharedpref.recipe.SaveRecipeSharPrefUseCase
+import com.example.smoothie.domain.usecase.sharedpref.recipe.*
 import com.example.smoothie.domain.usecase.sharedpref.sesion.GetUserNameFromSharPrefUseCase
 import com.example.smoothie.domain.usecase.sharedpref.sesion.SaveUserNameSharPrefUseCase
 import dagger.Module
@@ -16,7 +13,7 @@ import dagger.hilt.android.components.ViewModelComponent
 
 @Module
 @InstallIn(ViewModelComponent::class)
-class DomainModule{
+class DomainModule {
 
     @Provides
     fun provideSaveRecipeSharPrefUseCase(recipeRepository: RecipeRepository) = SaveRecipeSharPrefUseCase(recipeRepository)
@@ -52,10 +49,19 @@ class DomainModule{
     fun provideGetRecipeFromSharPrefUseCase(recipeRepository: RecipeRepository) = GetRecipeFromSharPrefUseCase(recipeRepository)
 
     @Provides
+    fun provideSaveCostumeCategoriesListSharPrefsUseCase(recipeRepository: RecipeRepository) =
+        SaveCostumeCategoriesListSharPrefsUseCase(recipeRepository)
+
+    @Provides
+    fun provideGetCustomCategoriesListFromSharPrefsUseCase(recipeRepository: RecipeRepository) =
+        GetCustomCategoriesListFromSharPrefsUseCase(recipeRepository)
+
+
+    @Provides
     fun provideSaveUserNameSharPrefUseCase(sessionRepository: SessionRepository) = SaveUserNameSharPrefUseCase(sessionRepository)
 
     @Provides
-    fun provideGetUserNameFromSharPrefUseCase(sessionRepository: SessionRepository):GetUserNameFromSharPrefUseCase =
+    fun provideGetUserNameFromSharPrefUseCase(sessionRepository: SessionRepository): GetUserNameFromSharPrefUseCase =
         GetUserNameFromSharPrefUseCase(sessionRepository)
 
 }

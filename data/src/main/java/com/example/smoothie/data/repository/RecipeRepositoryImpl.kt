@@ -41,6 +41,11 @@ class RecipeRepositoryImpl(
 
     override fun saveImageFromAddFormInSharPref(imageString: String) = sharedPrefRecipeStorage.saveImageFromAddForm(imageString)
 
+    override fun saveCustomCategoriesListInSharPrefs(categories: List<String>, key: String?) =
+        sharedPrefRecipeStorage.saveCustomCategories(categories, key)
+
+    override fun getCustomCategoriesListInSharPrefs(key: String?): MutableList<String>? = sharedPrefRecipeStorage.getCustomCategories(key)
+
 
     override fun getImageFromAddFormFromSharPref() = sharedPrefRecipeStorage.getImageFromAddForm()
 

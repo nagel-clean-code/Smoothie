@@ -7,6 +7,8 @@ interface RecipeRepository {
     fun saveRecipeInSharPref(recipe: IRecipeModel, key: String)
     fun getRecipeFromSharPref(key: String): IRecipeModel?
     fun saveImageFromAddFormInSharPref(imageString: String)
+    fun saveCustomCategoriesListInSharPrefs(categories: List<String>, key: String?)
+    fun getCustomCategoriesListInSharPrefs(key: String?): MutableList<String>?
     fun getImageFromAddFormFromSharPref(): String
     suspend fun saveImageFromAddFormToDb(imageByteArray: ByteArray): String
     suspend fun getRandomRecipe(): IRecipeModel

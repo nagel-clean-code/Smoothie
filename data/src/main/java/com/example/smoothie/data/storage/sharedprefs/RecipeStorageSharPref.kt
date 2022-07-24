@@ -7,4 +7,6 @@ interface RecipeStorageSharPref {
     fun getRecipe(key: String): IRecipeModel?
     fun saveImageFromAddForm(imageString: String)
     fun getImageFromAddForm(): String
+    fun saveCustomCategories(list: List<String>, key: String?)
+    fun getCustomCategories(key: String?): MutableList<String>?
 }
