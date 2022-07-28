@@ -14,6 +14,7 @@
             android:id="@+id/textInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="textCapSentences"
             android:background="@color/white"
             android:hint="@string/input_name_category" />
 

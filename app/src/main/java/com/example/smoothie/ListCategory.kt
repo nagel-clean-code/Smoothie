@@ -1,6 +1,6 @@
 package com.example.smoothie
 
-enum class Category(
+enum class ListCategory(
     val named: String
 ) {
     LUNCH("Обед"),

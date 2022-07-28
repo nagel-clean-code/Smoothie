@@ -10,6 +10,7 @@ import com.example.smoothie.domain.usecase.database.SaveImageInDBUseCase
 import com.example.smoothie.domain.usecase.database.SaveRecipeToDbUseCase
 import com.example.smoothie.domain.usecase.sharedpref.recipe.*
 import com.example.smoothie.domain.usecase.sharedpref.sesion.GetUserNameFromSharPrefUseCase
+import com.example.smoothie.presentation.views.ApiWorkWithDataForBordCategories
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,21 +30,13 @@ class AddRecipeViewModel @Inject constructor(
     private val saveImageFromAddFormSharPrefUseCase: SaveImageFromAddFormSharPrefUseCase,
     private val getImageFromAddFormSharPrefUseCase: GetImageFromAddFormSharPrefUseCase,
     private val saveImageInDBUseCase: SaveImageInDBUseCase
-) : BaseViewModel() {
+) : BaseViewModel(), ApiWorkWithDataForBordCategories {
 
     private var _recipeDisplayLiveDataMutable = MutableLiveData<IRecipeModel>()
     val recipeDisplayLiveDataMutable: LiveData<IRecipeModel> = _recipeDisplayLiveDataMutable
 
     private var _imageLiveDataMutable = MutableLiveData<Drawable?>()
     val resultImageLiveDataMutable: MutableLiveData<Drawable?> = _imageLiveDataMutable
-
-    lateinit var listCustomCategories: MutableList<String>
-    lateinit var listCategorySelected: MutableList<String>
-
-    init {
-        updateListCustomCategories()
-        updateSelectedCategoriesFromSharPrefs()
-    }
 
     fun setRecipeToDataBase(recipe: IRecipeModel, image: ByteArray) {
         viewModelScope.launch {
@@ -57,8 +50,8 @@ class AddRecipeViewModel @Inject constructor(
         }
     }
 
-    private fun updateListCustomCategories(){
-        listCustomCategories = getCustomCategoriesListFromSharPrefsUseCase.execute() ?: mutableListOf()
+    override fun getListCustomCategoriesFromSharPrefs(): MutableList<String> {
+        return getCustomCategoriesListFromSharPrefsUseCase.execute() ?: mutableListOf()
     }
 
     fun getUserName() = getUserNameFromSharPrefUseCase.execute()
@@ -97,24 +90,18 @@ class AddRecipeViewModel @Inject constructor(
         _imageLiveDataMutable.value = drawableImage
     }
 
-    fun saveCategoryInSharPrefs(nowCategoryItem: String) {
-        listCustomCategories.add(nowCategoryItem)
-        saveCostumeCategoriesListSharPrefsUseCase.execute(listCustomCategories)
+    override fun saveCategoryInSharPrefs(list: List<String>) {
+        saveCostumeCategoriesListSharPrefsUseCase.execute(list)
     }
 
-    fun deleteCustomCategoryInSharPrefs(delCategory: String){
-        listCustomCategories.remove(delCategory)
-        saveCostumeCategoriesListSharPrefsUseCase.execute(listCustomCategories)
+    override fun saveSelectedCategoriesInSharPrefs(list: List<String>) =
+        saveCostumeCategoriesListSharPrefsUseCase.execute(list, SAVE_LAST_CATEGORY_SHAR_PREFS)
+
+    override fun getSelectedCategoriesFromSharPrefs(): MutableList<String> {
+        return getCustomCategoriesListFromSharPrefsUseCase.execute(SAVE_LAST_CATEGORY_SHAR_PREFS) ?: mutableListOf()
     }
 
-    fun saveSelectedCategoriesInSharPrefs() =
-        saveCostumeCategoriesListSharPrefsUseCase.execute(listCategorySelected, SAVE_LAST_CATEGORY_SHAR_PREFS)
-
-    fun updateSelectedCategoriesFromSharPrefs(){
-        listCategorySelected = getCustomCategoriesListFromSharPrefsUseCase.execute(SAVE_LAST_CATEGORY_SHAR_PREFS) ?: mutableListOf()
-    }
-
-    companion object{
-        const val SAVE_LAST_CATEGORY_SHAR_PREFS = "SAVE_LAST_CATEGORY_SHAR_PREFS"
+    companion object {
+        const val SAVE_LAST_CATEGORY_SHAR_PREFS = "SAVE_LAST_CATEGORY_SHAR_PREFS_FRAGMENT_ADD"
     }
 }
