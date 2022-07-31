@@ -3,6 +3,8 @@
     <array name="preloaded_fonts" translatable="false">
         <item>@font/francois_one</item>
         <item>@font/merriweather_black_italic</item>
+        <item>@font/montserrat_alternates_medium</item>
+        <item>@font/montserrat_thin</item>
         <item>@font/open_sans</item>
         <item>@font/open_sans_condensed_light_italic</item>
         <item>@font/open_sans_italic</item>

@@ -16,37 +16,44 @@ import dagger.hilt.android.components.ViewModelComponent
 class DomainModule {
 
     @Provides
-    fun provideSaveRecipeSharPrefUseCase(recipeRepository: RecipeRepository) = SaveRecipeSharPrefUseCase(recipeRepository)
+    fun provideSaveRecipeSharPrefUseCase(recipeRepository: RecipeRepository) =
+        SaveRecipeSharPrefUseCase(recipeRepository)
 
     @Provides
     fun provideSaveRecipeToDb(recipeRepository: RecipeRepository) = SaveRecipeToDbUseCase(recipeRepository)
 
     @Provides
-    fun provideGetRandomRecipeFromDb(recipeRepository: RecipeRepository) = GetRandomRecipeFromDbUseCase(recipeRepository)
+    fun provideGetRandomRecipeFromDb(recipeRepository: RecipeRepository) =
+        GetRandomRecipeFromDbUseCase(recipeRepository)
 
     @Provides
-    fun provideSaveImageSharPrefUseCase(recipeRepository: RecipeRepository) = SaveImageFromAddFormSharPrefUseCase(recipeRepository)
+    fun provideSaveImageSharPrefUseCase(recipeRepository: RecipeRepository) =
+        SaveImageFromAddFormSharPrefUseCase(recipeRepository)
 
     @Provides
     fun provideSaveImageInDBUseCase(recipeRepository: RecipeRepository) = SaveImageInDBUseCase(recipeRepository)
 
     @Provides
-    fun provideGetImageFromAddFormSharPrefUseCase(recipeRepository: RecipeRepository) = GetImageFromAddFormSharPrefUseCase(recipeRepository)
+    fun provideGetImageFromAddFormSharPrefUseCase(recipeRepository: RecipeRepository) =
+        GetImageFromAddFormSharPrefUseCase(recipeRepository)
 
     @Provides
     fun provideGetImageFromDBUseCase(recipeRepository: RecipeRepository) = GetImageFromDBUseCase(recipeRepository)
 
     @Provides
-    fun provideGetListRecipeFromDBUseCase(recipeRepository: RecipeRepository) = GetListRecipeFromDBUseCase(recipeRepository)
+    fun provideGetListRecipeFromDBUseCase(recipeRepository: RecipeRepository) =
+        GetListRecipeFromDBUseCase(recipeRepository)
 
     @Provides
-    fun provideSaveFavoriteFlagInDbUseCase(recipeRepository: RecipeRepository) = SaveFavoriteFlagInDbUseCase(recipeRepository)
+    fun provideSaveFavoriteFlagInDbUseCase(recipeRepository: RecipeRepository) =
+        SaveFavoriteFlagInDbUseCase(recipeRepository)
 
     @Provides
     fun provideDeleteRecipeInDbUseCase(recipeRepository: RecipeRepository) = DeleteRecipeInDbUseCase(recipeRepository)
 
     @Provides
-    fun provideGetRecipeFromSharPrefUseCase(recipeRepository: RecipeRepository) = GetRecipeFromSharPrefUseCase(recipeRepository)
+    fun provideGetRecipeFromSharPrefUseCase(recipeRepository: RecipeRepository) =
+        GetRecipeFromSharPrefUseCase(recipeRepository)
 
     @Provides
     fun provideSaveCostumeCategoriesListSharPrefsUseCase(recipeRepository: RecipeRepository) =
@@ -58,10 +65,15 @@ class DomainModule {
 
 
     @Provides
-    fun provideSaveUserNameSharPrefUseCase(sessionRepository: SessionRepository) = SaveUserNameSharPrefUseCase(sessionRepository)
+    fun provideSaveUserNameSharPrefUseCase(sessionRepository: SessionRepository) =
+        SaveUserNameSharPrefUseCase(sessionRepository)
 
     @Provides
     fun provideGetUserNameFromSharPrefUseCase(sessionRepository: SessionRepository): GetUserNameFromSharPrefUseCase =
         GetUserNameFromSharPrefUseCase(sessionRepository)
+
+    @Provides
+    fun provideCreateNewAccountDbUseCase(sessionRepository: SessionRepository): CreateNewAccountDbUseCase =
+        CreateNewAccountDbUseCase(sessionRepository)
 
 }
