@@ -63,6 +63,7 @@ class AddRecipeFragment : BaseFragment() {
         viewModel.loadImage(::decodeFromBase64IntoDrawable)
         table = binding.table
         table.setupApi(viewModel)
+        table.displayCategories()
         return binding.root
     }
 

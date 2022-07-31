@@ -73,12 +73,9 @@ class SharedFindRecipeViewModel @Inject constructor(
         saveCostumeCategoriesListSharPrefsUseCase.execute(list)
     }
 
-    override fun saveSelectedCategoriesInSharPrefs(list: List<String>) =
-        saveCostumeCategoriesListSharPrefsUseCase.execute(list, SAVE_LAST_CATEGORY_SHAR_PREFS_FRAGMENT_FIND)
+    override fun saveSelectedCategoriesInSharPrefs(list: List<String>) = Unit
 
-    override fun getSelectedCategoriesFromSharPrefs(): MutableList<String> {
-        return getCustomCategoriesListFromSharPrefsUseCase.execute(SAVE_LAST_CATEGORY_SHAR_PREFS_FRAGMENT_FIND) ?: mutableListOf()
-    }
+    override fun getSelectedCategoriesFromSharPrefs(): MutableList<String> = arrayListOf()
 
     fun setSearchBy(value: String) {
         if (this.searchBy.value == value) return
@@ -206,6 +203,5 @@ class SharedFindRecipeViewModel @Inject constructor(
 
     companion object {
         const val PAGE_SIZE = 9
-        const val SAVE_LAST_CATEGORY_SHAR_PREFS_FRAGMENT_FIND = "SAVE_LAST_CATEGORY_SHAR_PREFS_FRAGMENT_FIND"
     }
 }

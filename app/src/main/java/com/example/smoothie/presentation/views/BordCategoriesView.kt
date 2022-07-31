@@ -54,7 +54,6 @@ class BordCategoriesView(
         this.externalAPI = api
         listCustomCategories = externalAPI.getListCustomCategoriesFromSharPrefs()
         listCategorySelected = externalAPI.getSelectedCategoriesFromSharPrefs()
-        displayCategories()
     }
 
     private fun initialAttributes(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int){

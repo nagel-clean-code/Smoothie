@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.view.isInvisible
 import androidx.core.widget.addTextChangedListener
@@ -12,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.smoothie.ListCategory
 import com.example.smoothie.databinding.FragmentFindMyBinding
 import com.example.smoothie.presentation.adapters.DefaultLoadStateAdapter
 import com.example.smoothie.presentation.adapters.RecipeAdapter
@@ -61,7 +62,6 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
         observeErrorMessages()
         observeInvalidationEvents()
         initFilterBorder()
-        binding.table.visibility = View.VISIBLE
         table = binding.table
         table.setupApi(viewModel)
         return binding.root
@@ -72,16 +72,44 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
         viewModel.refresh()
         table.clearTable()
         table.displayCategories()
+        CoroutineScope(Dispatchers.Main).launch {   //Костыльно решил проблему с расширение таблицы на весь экран
+            binding.table.visibility = View.GONE
+        }
     }
 
-    private fun initFilterBorder(){
+    private fun initFilterBorder() {
         binding.openFilter.setOnClickListener {
-            if(binding.table.visibility == View.VISIBLE){
-                binding.table.visibility = View.GONE
-            }else{
-                binding.table.visibility = View.VISIBLE
+            if (binding.table.visibility == View.VISIBLE) {
+                animationPopExit()
+            } else {
+                animationPopEnter()
             }
         }
+    }
+
+    private fun animationPopEnter(){
+        val animation = AnimationUtils.loadAnimation(context, com.example.smoothie.R.anim.pop_enter)
+        animation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+                binding.table.visibility = View.VISIBLE
+            }
+            override fun onAnimationEnd(animation: Animation?) {}
+
+            override fun onAnimationRepeat(animation: Animation?) {}
+        })
+        binding.table.startAnimation(animation)
+    }
+
+    private fun animationPopExit(){
+        val animation = AnimationUtils.loadAnimation(context, com.example.smoothie.R.anim.pop_exit)
+        animation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {}
+            override fun onAnimationEnd(animation: Animation?) {
+                binding.table.visibility = View.GONE
+            }
+            override fun onAnimationRepeat(animation: Animation?) {}
+        })
+        binding.table.startAnimation(animation)
     }
 
     override fun onStop() {
