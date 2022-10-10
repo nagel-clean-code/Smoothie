@@ -43,6 +43,8 @@
     <string name="error_load_image">Не удалось загрузить изображение!</string>
     <string name="add_mark_for_find">Выберите катеогрии для поиска</string>
     <string name="supper">Ужин</string>
+    <string name="input_name_category">Введите название категории</string>
+    <string name="delete_category_help">(Для удаления категории зажимайте её на 3 секунды)</string>
 
 
 </resources>

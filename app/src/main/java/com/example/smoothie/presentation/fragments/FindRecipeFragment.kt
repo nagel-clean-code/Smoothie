@@ -43,31 +43,6 @@ class FindRecipeFragment : BaseFragment() {
         viewModel.chooseElement.removeObservers(viewLifecycleOwner)
     }
 
-
-    private fun initLists() {
-        val data1 = listOf(
-            mapOf(
-                KEY_TITLE to "Завттрак"
-            ),
-            mapOf(
-                KEY_TITLE to "Ужин"
-            )
-        )
-        val adapter = SimpleAdapter(
-            context,
-            data1,
-            android.R.layout.simple_list_item_1,
-            arrayOf(KEY_TITLE),
-            intArrayOf(android.R.id.text1)
-        )
-//        binding.listStandardCategories.adapter = adapter
-
-    }
-
-    companion object {
-        const val KEY_TITLE = "KEY_TITLE"
-    }
-
     private fun settingPagerAdapter() {
         binding.pagerPlaceholder.adapter = activity?.let { FindPagerAdapter(childFragmentManager, it) }
         binding.tabLayout.tabIconTint = null        //TODo нужно узнать подробнее что это делает

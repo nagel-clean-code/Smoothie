@@ -98,16 +98,14 @@
                 android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TableLayout
+        <com.example.smoothie.presentation.views.BordCategoriesView
             android:id="@+id/table"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/entering_recipe_Layout">
-
-        </TableLayout>
+            app:layout_constraintTop_toBottomOf="@+id/entering_recipe_Layout" />
 
         <TextView
             android:id="@+id/add_mark"

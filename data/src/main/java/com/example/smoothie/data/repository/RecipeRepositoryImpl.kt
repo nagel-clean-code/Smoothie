@@ -11,7 +11,7 @@ class RecipeRepositoryImpl(
     private val sharedPrefRecipeStorage: RecipeStorageSharPref
 ) : RecipeRepository {
 
-    override fun saveRecipeDataBase(recipe: IRecipeModel) {
+    override suspend fun saveRecipeDataBase(recipe: IRecipeModel) {
         recipeStorage.saveRecipe(recipe)
     }
 
@@ -35,14 +35,23 @@ class RecipeRepositoryImpl(
         recipeStorage.deleteRecipe(idRecipe)
     }
 
-    override fun saveRecipeInSharPref(recipe: IRecipeModel, key: String) = sharedPrefRecipeStorage.saveRecipe(recipe, key)
+    override fun saveRecipeInSharPref(recipe: IRecipeModel, key: String) =
+        sharedPrefRecipeStorage.saveRecipe(recipe, key)
 
     override fun getRecipeFromSharPref(key: String): IRecipeModel? = sharedPrefRecipeStorage.getRecipe(key)
 
-    override fun saveImageFromAddFormInSharPref(imageString: String) = sharedPrefRecipeStorage.saveImageFromAddForm(imageString)
+    override fun saveImageFromAddFormInSharPref(imageString: String) =
+        sharedPrefRecipeStorage.saveImageFromAddForm(imageString)
+
+    override fun saveCustomCategoriesListInSharPrefs(categories: List<String>, key: String?) =
+        sharedPrefRecipeStorage.saveCustomCategories(categories, key)
+
+    override fun getCustomCategoriesListInSharPrefs(key: String?): MutableList<String>? =
+        sharedPrefRecipeStorage.getCustomCategories(key)
 
 
     override fun getImageFromAddFormFromSharPref() = sharedPrefRecipeStorage.getImageFromAddForm()
 
-    override suspend fun saveImageFromAddFormToDb(imageByteArray: ByteArray): String = recipeStorage.saveImage(imageByteArray)
+    override suspend fun saveImageFromAddFormToDb(imageByteArray: ByteArray): String =
+        recipeStorage.saveImage(imageByteArray)
 }

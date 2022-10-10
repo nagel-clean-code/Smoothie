@@ -5,13 +5,14 @@ import com.example.smoothie.data.repository.RecipeRepositoryImpl
 import com.example.smoothie.data.repository.SessionRepositoryImpl
 import com.example.smoothie.data.storage.databases.FirebaseRecipeStorageImpl
 import com.example.smoothie.data.storage.databases.RecipeStorageDB
+import com.example.smoothie.data.storage.databases.SessionStorageDb
+import com.example.smoothie.data.storage.databases.SessionStorageImpl
 import com.example.smoothie.data.storage.sharedprefs.RecipeStorageSharPref
 import com.example.smoothie.data.storage.sharedprefs.SessionStorageSharPref
 import com.example.smoothie.data.storage.sharedprefs.SessionStorageSharPrefImpl
 import com.example.smoothie.data.storage.sharedprefs.SharedPrefRecipeStorageImpl
 import com.example.smoothie.domain.repository.RecipeRepository
 import com.example.smoothie.domain.repository.SessionRepository
-import com.example.smoothie.domain.usecase.sharedpref.sesion.GetUserNameFromSharPrefUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,7 +33,13 @@ class DataModule {
     @Provides
     @Singleton
     fun provideFirebaseRecipeStorage(sessionStorageSharPref: SessionStorageSharPref): RecipeStorageDB {
-        return FirebaseRecipeStorageImpl(sessionStorageSharPref.getUserName())
+        return FirebaseRecipeStorageImpl(sessionStorageSharPref::getUserName)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSessionStorageDb(): SessionStorageDb {
+        return SessionStorageImpl()
     }
 
     @Provides
@@ -56,10 +63,12 @@ class DataModule {
     @Provides
     @Singleton
     fun provideSessionRepository(
-        sessionStorageSharPref: SessionStorageSharPref
+        sessionStorageSharPref: SessionStorageSharPref,
+        sessionStorageDb: SessionStorageDb
     ): SessionRepository {
         return SessionRepositoryImpl(
             sessionStorageSharPref = sessionStorageSharPref,
+            sessionStorageDb = sessionStorageDb
         )
     }
 }

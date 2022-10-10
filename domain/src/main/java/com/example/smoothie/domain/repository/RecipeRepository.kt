@@ -3,10 +3,12 @@ package com.example.smoothie.domain.repository
 import com.example.smoothie.domain.models.IRecipeModel
 
 interface RecipeRepository {
-    fun saveRecipeDataBase(recipe: IRecipeModel)
+    suspend fun saveRecipeDataBase(recipe: IRecipeModel)
     fun saveRecipeInSharPref(recipe: IRecipeModel, key: String)
     fun getRecipeFromSharPref(key: String): IRecipeModel?
     fun saveImageFromAddFormInSharPref(imageString: String)
+    fun saveCustomCategoriesListInSharPrefs(categories: List<String>, key: String?)
+    fun getCustomCategoriesListInSharPrefs(key: String?): MutableList<String>?
     fun getImageFromAddFormFromSharPref(): String
     suspend fun saveImageFromAddFormToDb(imageByteArray: ByteArray): String
     suspend fun getRandomRecipe(): IRecipeModel

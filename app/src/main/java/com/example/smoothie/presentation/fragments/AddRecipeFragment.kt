@@ -9,13 +9,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.viewModels
 import coil.load
-import com.example.smoothie.Category
 import com.example.smoothie.data.storage.models.RecipeEntity
-import com.example.smoothie.databinding.CategoryItemBinding
 import com.example.smoothie.databinding.FragmentAddRecipeBinding
 import com.example.smoothie.domain.models.IRecipeModel
 import com.example.smoothie.presentation.images.ImagePicker
 import com.example.smoothie.presentation.viewmodels.AddRecipeViewModel
+import com.example.smoothie.presentation.views.BordCategoriesView
 import com.example.smoothie.utils.convertDrawableToByteArray
 import com.example.smoothie.utils.decodeFromBase64IntoDrawable
 import com.example.smoothie.utils.encodeToBase64
@@ -27,10 +26,10 @@ import java.util.*
 class AddRecipeFragment : BaseFragment() {
 
     private lateinit var binding: FragmentAddRecipeBinding
+    private lateinit var table: BordCategoriesView
 
     override val viewModel: AddRecipeViewModel by viewModels()
     private val imagePicker = ImagePicker()
-    private val listCategory: MutableList<Int> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +50,6 @@ class AddRecipeFragment : BaseFragment() {
         }
         binding.addButton.setOnClickListener {
             saveRecipeToDatabase()
-            clearTable()
-            displayCategories()
         }
         viewModel.recipeDisplayLiveDataMutable.observe(viewLifecycleOwner) { recipe ->
             recipe?.let {
@@ -64,7 +61,9 @@ class AddRecipeFragment : BaseFragment() {
         }
         viewModel.load()
         viewModel.loadImage(::decodeFromBase64IntoDrawable)
-        displayCategories()
+        table = binding.table
+        table.setupApi(viewModel)
+        table.displayCategories()
         return binding.root
     }
 
@@ -72,66 +71,27 @@ class AddRecipeFragment : BaseFragment() {
         viewModel.resultImageLiveDataMutable.removeObservers(viewLifecycleOwner)
         viewModel.saveRecipeInSharedPrefs(recipeBuild())
         viewModel.saveImageInSharPref(binding.imagePreview.drawable, ::encodeToBase64)
+        viewModel.saveSelectedCategoriesInSharPrefs(table.listCategorySelected)
         super.onStop()
     }
 
-    private fun displayCategories() {
-        Category.values().forEach {
-            addSelectedCategory(it)
-        }
-    }
-
     private fun clearTable() {
-        binding.table.removeAllViews()
-        listCategory.clear()
-        countSelectedCategories = 0
+        binding.table.clearTable()
     }
 
-    private var countSelectedCategories: Int = 0
-    private lateinit var currentRow: TableRow
-    private fun addSelectedCategory(item: Category) {
-        countSelectedCategories++
-        if (countSelectedCategories % COUNT_ROWS_CATEGORIES == 1) {
-            currentRow = TableRow(context)
-            val params = TableRow.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-            )
-            currentRow.layoutParams = params
-        }
-
-        val bindingCurrentItem = CategoryItemBinding.inflate(layoutInflater)
-        bindingCurrentItem.textView.text = item.named
-        bindingCurrentItem.textView.tag = item
-        bindingCurrentItem.textView.setOnClickListener {
-            val tag = (it.tag as Category)
-            if (!listCategory.contains(tag.id)) {
-                listCategory.add(tag.id)
-                it.setBackgroundResource(com.example.smoothie.R.drawable.category_pressed)
-            } else {
-                listCategory.remove(tag.id)
-                it.setBackgroundResource(com.example.smoothie.R.drawable.category)
-            }
-        }
-
-        currentRow.addView(bindingCurrentItem.root, 0)
-        if (countSelectedCategories % COUNT_ROWS_CATEGORIES == 1) {
-            binding.table.addView(currentRow, countSelectedCategories / 3)
-        }
-    }
 
     private fun recipeDisplay(recipe: IRecipeModel) {
         binding.editTextNameRecipe.text.clear()
         binding.editTextNameRecipe.text.append(recipe.name)
         binding.enteringRecipe.text?.clear()
-        binding.enteringRecipe.text?.append(recipe.recipe)  //FIXME сделать ещё подгрузку маркировок
+        binding.enteringRecipe.text?.append(recipe.recipe)
     }
 
     private fun recipeBuild(): IRecipeModel = RecipeEntity(
         uniqueId = "${viewModel.getUserName()}_${UUID.randomUUID()}",
         name = binding.editTextNameRecipe.text.toString(),
         recipe = binding.enteringRecipe.text.toString(),
-        listCategory = listCategory
+        listCategory = table.listCategorySelected
     )
 
 
@@ -149,6 +109,8 @@ class AddRecipeFragment : BaseFragment() {
             binding.editTextNameRecipe.text.clear()
             binding.enteringRecipe.text?.clear()
             binding.imagePreview.setImageResource(0)
+            clearTable()
+            table.displayCategories()
         }
     }
 
@@ -164,7 +126,4 @@ class AddRecipeFragment : BaseFragment() {
         }
     }
 
-    companion object {
-        const val COUNT_ROWS_CATEGORIES = 3
-    }
 }

@@ -13,7 +13,10 @@ import com.example.smoothie.data.storage.models.RecipeEntity
 import com.example.smoothie.domain.usecase.database.DeleteRecipeInDbUseCase
 import com.example.smoothie.domain.usecase.database.GetListRecipeFromDBUseCase
 import com.example.smoothie.domain.usecase.database.SaveFavoriteFlagInDbUseCase
+import com.example.smoothie.domain.usecase.sharedpref.recipe.GetCustomCategoriesListFromSharPrefsUseCase
+import com.example.smoothie.domain.usecase.sharedpref.recipe.SaveCostumeCategoriesListSharPrefsUseCase
 import com.example.smoothie.presentation.adapters.RecipeAdapter
+import com.example.smoothie.presentation.views.ApiWorkWithDataForBordCategories
 import com.example.smoothie.utils.MutableLiveEvent
 import com.example.smoothie.utils.publishEvent
 import com.example.smoothie.utils.share
@@ -24,10 +27,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SharedFindRecipeViewModel @Inject constructor(
+    private val saveCostumeCategoriesListSharPrefsUseCase: SaveCostumeCategoriesListSharPrefsUseCase,
+    private val getCustomCategoriesListFromSharPrefsUseCase: GetCustomCategoriesListFromSharPrefsUseCase,
     private val getListRecipeFromDBUseCase: GetListRecipeFromDBUseCase,
     private val saveFavoriteFlagInDbUseCase: SaveFavoriteFlagInDbUseCase,
     private val deleteRecipeInDbUseCase: DeleteRecipeInDbUseCase
-) : BaseViewModel(), RecipeAdapter.Listener {
+) : BaseViewModel(), RecipeAdapter.Listener, ApiWorkWithDataForBordCategories {
 
     val recipesFlow: Flow<PagingData<RecipeEntity>>
 
@@ -59,6 +64,18 @@ class SharedFindRecipeViewModel @Inject constructor(
             this::merge
         )
     }
+
+    override fun getListCustomCategoriesFromSharPrefs(): MutableList<String> {
+        return getCustomCategoriesListFromSharPrefsUseCase.execute() ?: mutableListOf()
+    }
+
+    override fun saveCategoryInSharPrefs(list: List<String>) {
+        saveCostumeCategoriesListSharPrefsUseCase.execute(list)
+    }
+
+    override fun saveSelectedCategoriesInSharPrefs(list: List<String>) = Unit
+
+    override fun getSelectedCategoriesFromSharPrefs(): MutableList<String> = arrayListOf()
 
     fun setSearchBy(value: String) {
         if (this.searchBy.value == value) return

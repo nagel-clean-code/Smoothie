@@ -5,15 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.smoothie.Constants.Companion.FORM_ADD_RECIPE
-import com.example.smoothie.data.storage.models.RecipeEntity
 import com.example.smoothie.domain.models.IRecipeModel
 import com.example.smoothie.domain.usecase.database.SaveImageInDBUseCase
 import com.example.smoothie.domain.usecase.database.SaveRecipeToDbUseCase
-import com.example.smoothie.domain.usecase.sharedpref.recipe.GetImageFromAddFormSharPrefUseCase
-import com.example.smoothie.domain.usecase.sharedpref.recipe.GetRecipeFromSharPrefUseCase
-import com.example.smoothie.domain.usecase.sharedpref.recipe.SaveImageFromAddFormSharPrefUseCase
-import com.example.smoothie.domain.usecase.sharedpref.recipe.SaveRecipeSharPrefUseCase
+import com.example.smoothie.domain.usecase.sharedpref.recipe.*
 import com.example.smoothie.domain.usecase.sharedpref.sesion.GetUserNameFromSharPrefUseCase
+import com.example.smoothie.presentation.views.ApiWorkWithDataForBordCategories
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,6 +21,8 @@ import kotlin.reflect.KFunction1
 
 @HiltViewModel
 class AddRecipeViewModel @Inject constructor(
+    private val saveCostumeCategoriesListSharPrefsUseCase: SaveCostumeCategoriesListSharPrefsUseCase,
+    private val getCustomCategoriesListFromSharPrefsUseCase: GetCustomCategoriesListFromSharPrefsUseCase,
     private val saveRecipeSharPrefUseCase: SaveRecipeSharPrefUseCase,
     private val getRecipeSharPrefUseCase: GetRecipeFromSharPrefUseCase,
     private val getUserNameFromSharPrefUseCase: GetUserNameFromSharPrefUseCase,
@@ -31,7 +30,7 @@ class AddRecipeViewModel @Inject constructor(
     private val saveImageFromAddFormSharPrefUseCase: SaveImageFromAddFormSharPrefUseCase,
     private val getImageFromAddFormSharPrefUseCase: GetImageFromAddFormSharPrefUseCase,
     private val saveImageInDBUseCase: SaveImageInDBUseCase
-) : BaseViewModel() {
+) : BaseViewModel(), ApiWorkWithDataForBordCategories {
 
     private var _recipeDisplayLiveDataMutable = MutableLiveData<IRecipeModel>()
     val recipeDisplayLiveDataMutable: LiveData<IRecipeModel> = _recipeDisplayLiveDataMutable
@@ -49,6 +48,10 @@ class AddRecipeViewModel @Inject constructor(
             }
             _imageLiveDataMutable.value = null
         }
+    }
+
+    override fun getListCustomCategoriesFromSharPrefs(): MutableList<String> {
+        return getCustomCategoriesListFromSharPrefsUseCase.execute() ?: mutableListOf()
     }
 
     fun getUserName() = getUserNameFromSharPrefUseCase.execute()
@@ -85,5 +88,20 @@ class AddRecipeViewModel @Inject constructor(
                 drawableImage = convertStringToImage(stringImage)
         }
         _imageLiveDataMutable.value = drawableImage
+    }
+
+    override fun saveCategoryInSharPrefs(list: List<String>) {
+        saveCostumeCategoriesListSharPrefsUseCase.execute(list)
+    }
+
+    override fun saveSelectedCategoriesInSharPrefs(list: List<String>) =
+        saveCostumeCategoriesListSharPrefsUseCase.execute(list, SAVE_LAST_CATEGORY_SHAR_PREFS)
+
+    override fun getSelectedCategoriesFromSharPrefs(): MutableList<String> {
+        return getCustomCategoriesListFromSharPrefsUseCase.execute(SAVE_LAST_CATEGORY_SHAR_PREFS) ?: mutableListOf()
+    }
+
+    companion object {
+        const val SAVE_LAST_CATEGORY_SHAR_PREFS = "SAVE_LAST_CATEGORY_SHAR_PREFS_FRAGMENT_ADD"
     }
 }
