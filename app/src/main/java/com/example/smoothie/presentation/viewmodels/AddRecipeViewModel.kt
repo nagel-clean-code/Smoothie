@@ -1,6 +1,8 @@
 package com.example.smoothie.presentation.viewmodels
 
+import android.content.ContentValues
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -12,6 +14,7 @@ import com.example.smoothie.domain.usecase.sharedpref.recipe.*
 import com.example.smoothie.domain.usecase.sharedpref.sesion.GetUserNameFromSharPrefUseCase
 import com.example.smoothie.presentation.views.ApiWorkWithDataForBordCategories
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -39,7 +42,10 @@ class AddRecipeViewModel @Inject constructor(
     val resultImageLiveDataMutable: MutableLiveData<Drawable?> = _imageLiveDataMutable
 
     fun setRecipeToDataBase(recipe: IRecipeModel, image: ByteArray) {
-        viewModelScope.launch {
+        val handler = CoroutineExceptionHandler { _, throwable ->
+            Log.w(ContentValues.TAG, throwable)
+        }
+        viewModelScope.launch(handler) {
             withContext(Dispatchers.IO) {
                 if (!image.contentEquals("".toByteArray())) {
                     recipe.imageUrl = saveImageToDataBase(image)

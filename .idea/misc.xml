@@ -35,16 +35,27 @@
         <entry key="..\:/Users/dazen/AndroidStudioProjects/Smoothie/app/src/main/res/xml/root_preferences.xml" value="0.17" />
         <entry key="..\:/Users/nagel/AppData/Local/Android/Sdk/platforms/android-32/data/res/layout/simple_list_item_1.xml" value="0.3009833262077811" />
         <entry key="..\:/Users/nagel/AppData/Local/Android/Sdk/platforms/android-32/data/res/layout/simple_list_item_2.xml" value="0.3009833262077811" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.206" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable-v24/ic_star.xml" value="0.206" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/button_random.xml" value="0.2835" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/button_random_default.xml" value="0.2835" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/button_random_pressed.xml" value="0.2835" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/category.xml" value="0.195" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/category_pressed.xml" value="0.249" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_baseline_fast_forward_24.xml" value="0.206" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_baseline_fast_rewind_24.xml" value="0.206" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_baseline_find_in_page_24.xml" value="0.206" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_baseline_image_48.xml" value="0.206" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.206" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_button_prev.xml" value="0.2055" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_delete.xml" value="0.206" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_logo_background.xml" value="0.196" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_logo_r_background.xml" value="0.196" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_star_outline.xml" value="0.206" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/splash_screen.xml" value="0.2465" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/font/oswald.xml" value="0.3257802479692176" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/layout/board_categories.xml" value="0.3009833262077811" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/layout/category_item.xml" value="0.30012825994014536" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/layout/dialog_add_category.xml" value="0.30012825994014536" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/layout/fragment_add_recipe.xml" value="0.3009833262077811" />
@@ -54,7 +65,9 @@
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/layout/fragment_home.xml" value="0.3009833262077811" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/layout/fragment_my.xml" value="0.33" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/layout/home.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/layout/item_recipe.xml" value="0.3009833262077811" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/layout/part_result.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/menu/bottom_nav_menu.xml" value="0.3009833262077811" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/mipmap-anydpi-v26/ic_logo_r.xml" value="0.2465" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/mipmap-anydpi-v26/ic_logo_r_round.xml" value="0.2465" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/xml/root_preferences.xml" value="0.3009833262077811" />

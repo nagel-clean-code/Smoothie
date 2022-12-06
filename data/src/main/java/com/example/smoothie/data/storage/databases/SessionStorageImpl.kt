@@ -4,6 +4,8 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,6 +17,7 @@ import kotlin.math.floor
 
 class SessionStorageImpl : SessionStorageDb {
     private val firestore: FirebaseFirestore = Firebase.firestore
+    private val realtimeDatabase: DatabaseReference = FirebaseDatabase.getInstance().reference
 
     override suspend fun createNewUserAccount(): String {
         val ref = firestore.collection("USERS").document(PATH_USER_COUNT)
@@ -24,7 +27,15 @@ class SessionStorageImpl : SessionStorageDb {
         return username
     }
 
+    /**
+     *  создаю два счётчика, один для получения значения в реальном времени,
+     *  второй для сверки данных, если вдруг где то произошёл сбой
+     *  */
     private fun createCountRecipe(name: String) {
+        realtimeDatabase.child("counters").child("${name}_current").child("count_recipe").setValue(0)
+            .addOnSuccessListener { Log.d(TAG, "Realtime Счётчик успешно добавлен") }
+            .addOnFailureListener { e -> Log.w(TAG, "Не удалось создать realtime счётчик", e) }
+
         firestore.collection("counters").document("${name}_current")
             .set(mapOf("count_recipe" to 0))
             .addOnSuccessListener { Log.d(TAG, "Счётчик успешно добавлен") }
@@ -33,7 +44,6 @@ class SessionStorageImpl : SessionStorageDb {
 
     private suspend fun getCount(ref: DocumentReference): Int {
         var count = 0
-        // Sum the count of each shard in the subcollection
         ref.collection("shards").get()
             .continueWith { task ->
                 for (snap in task.result!!) {
