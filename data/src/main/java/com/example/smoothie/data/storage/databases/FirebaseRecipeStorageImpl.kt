@@ -30,7 +30,7 @@ class FirebaseRecipeStorageImpl(private val getUserName: () -> String) : RecipeS
     override suspend fun saveRecipe(recipe: IRecipeModel) {
         firebaseCounterRecipes.incrementCounter() {
             recipe.idRecipe = (it + 1).toInt()  //+1 потому что нумерация не с 0
-            firestore.collection(getUserName()).add(recipe.map())
+            firestore.collection(myNickname).add(recipe.map())
         }
     }
 
@@ -73,7 +73,7 @@ class FirebaseRecipeStorageImpl(private val getUserName: () -> String) : RecipeS
     }
 
     override suspend fun saveImage(imageByteArray: ByteArray): String {
-        val urlImage = "hats_recipes/${getUserName()}/image_${UUID.randomUUID()}.jpg"
+        val urlImage = "hats_recipes/${myNickname}/image_${UUID.randomUUID()}.jpg"
         val riversRef = storageRef.reference.child(urlImage)
         riversRef.putBytes(imageByteArray).addOnFailureListener {
             Log.w(TAG, "Не удалось загрузить изображение в БД: ", it)

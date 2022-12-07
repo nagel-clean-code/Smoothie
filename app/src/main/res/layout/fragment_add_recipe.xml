@@ -128,7 +128,7 @@
 
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/add_button"
+            android:id="@+id/addRecipeButton"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="20dp"

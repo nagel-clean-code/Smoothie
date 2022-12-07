@@ -40,13 +40,20 @@
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/button_random.xml" value="0.2835" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/button_random_default.xml" value="0.2835" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/button_random_pressed.xml" value="0.2835" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/button_shadow.xml" value="0.225" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/category.xml" value="0.195" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/category_pressed.xml" value="0.249" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_baseline_add_box_24.xml" value="0.225" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_baseline_add_photo_alternate_24.xml" value="0.225" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_baseline_bookmarks_24.xml" value="0.225" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_baseline_broken_image_48.xml" value="0.225" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_baseline_fast_forward_24.xml" value="0.206" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_baseline_fast_rewind_24.xml" value="0.206" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_baseline_find_in_page_24.xml" value="0.206" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.225" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_baseline_image_48.xml" value="0.206" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.206" />
+        <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_button_next.xml" value="0.22" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_button_prev.xml" value="0.2055" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_delete.xml" value="0.206" />
         <entry key="..\:/Users/nagel/StudioProjects/Smoothie/app/src/main/res/drawable/ic_logo_background.xml" value="0.196" />
