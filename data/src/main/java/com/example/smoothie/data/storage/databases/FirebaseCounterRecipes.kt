@@ -13,17 +13,20 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 class FirebaseCounterRecipes(
-    private val myNickname: String,
+    private val getUserName: () -> String,
     private val realtimeDatabase: DatabaseReference,
     private val firestore: FirebaseFirestore
 ) {
-    private val patchFieldCounterRecipes = realtimeDatabase
-        .child("counters")
-        .child("${myNickname}_current")
-        .child("count_recipe")
-    private val patchCountRecipeFirestore: DocumentReference =
-        firestore.collection("counters")
-            .document("${myNickname}_current")
+
+    private val patchFieldCounterRecipes by lazy {
+        realtimeDatabase
+            .child("counters")
+            .child("${getUserName.invoke()}_current")
+            .child("count_recipe")
+    }
+    private val patchCountRecipeFirestore: DocumentReference by lazy {
+        firestore.collection("counters").document("${getUserName.invoke()}_current")
+    }
 
     private val countRecipes = AtomicInteger(0)
     private var firstInitCount = false
@@ -56,7 +59,7 @@ class FirebaseCounterRecipes(
 
     private fun getCurrentValueCounterRecipes(updateRealtimeCounter: (Int) -> Unit) {
         val result = firestore.collection("counters")
-            .document("${myNickname}_current")
+            .document("${getUserName.invoke()}_current")
             .get()
             .addOnSuccessListener {
                 val res = it.data?.get("count_recipe") as Long

@@ -15,13 +15,12 @@ import kotlinx.coroutines.tasks.await
 import java.util.*
 
 class FirebaseRecipeStorageImpl(private val getUserName: () -> String) : RecipeStorageDB {
-    private val myNickname = getUserName.invoke()
 
     private val firestore: FirebaseFirestore = Firebase.firestore
     private val storageRef = FirebaseStorage.getInstance("gs://smoothie-40dd3.appspot.com")
     private val realtimeDatabase: DatabaseReference = FirebaseDatabase.getInstance().reference
     private val firebaseCounterRecipes = FirebaseCounterRecipes(
-        myNickname,
+        getUserName,
         realtimeDatabase,
         firestore
     )
@@ -30,7 +29,7 @@ class FirebaseRecipeStorageImpl(private val getUserName: () -> String) : RecipeS
     override suspend fun saveRecipe(recipe: IRecipeModel) {
         firebaseCounterRecipes.incrementCounter() {
             recipe.idRecipe = (it + 1).toInt()  //+1 потому что нумерация не с 0
-            firestore.collection(myNickname).add(recipe.map())
+            firestore.collection(getUserName.invoke()).add(recipe.map())
         }
     }
 
@@ -73,7 +72,7 @@ class FirebaseRecipeStorageImpl(private val getUserName: () -> String) : RecipeS
     }
 
     override suspend fun saveImage(imageByteArray: ByteArray): String {
-        val urlImage = "hats_recipes/${myNickname}/image_${UUID.randomUUID()}.jpg"
+        val urlImage = "hats_recipes/${getUserName.invoke()}/image_${UUID.randomUUID()}.jpg"
         val riversRef = storageRef.reference.child(urlImage)
         riversRef.putBytes(imageByteArray).addOnFailureListener {
             Log.w(TAG, "Не удалось загрузить изображение в БД: ", it)
