@@ -35,6 +35,7 @@ class FirebaseCounterRecipes(
             field = ""
             return buf
         }
+
     private val counterRealTimeRecipes = object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) {
             dataSnapshot.getValue(Int::class.java)?.let {
