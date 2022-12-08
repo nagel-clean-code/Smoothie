@@ -3,6 +3,7 @@ package com.example.smoothie.presentation.views
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -16,7 +17,6 @@ import com.example.smoothie.R
 import com.example.smoothie.databinding.BoardCategoriesBinding
 import com.example.smoothie.databinding.CategoryItemBinding
 import com.example.smoothie.databinding.DialogAddCategoryBinding
-import com.example.smoothie.presentation.fragments.AddRecipeFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,7 +29,7 @@ class BordCategoriesView(
     attrs: AttributeSet?,
     defStyleAttr: Int,
     defStyleRes: Int
-): ConstraintLayout(context, attrs, defStyleAttr, defStyleRes) {
+) : ConstraintLayout(context, attrs, defStyleAttr, defStyleRes) {
     private val binding: BoardCategoriesBinding
     private var countRows by Delegates.notNull<Int>()
     private var timer: Timer? = null
@@ -38,9 +38,9 @@ class BordCategoriesView(
     lateinit var listCustomCategories: MutableList<String>
     lateinit var listCategorySelected: MutableList<String>
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): this(context, attrs, defStyleAttr, 0)
-    constructor(context: Context, attrs: AttributeSet?): this(context, attrs, 0)
-    constructor(context: Context): this(context, null)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+    constructor(context: Context) : this(context, null)
 
     init {
         inflater = LayoutInflater.from(context)
@@ -50,20 +50,18 @@ class BordCategoriesView(
     }
 
     /** Перед работой нужно обязательно инициализировать, иначе view не будет работать*/
-    fun setupApi(api: ApiWorkWithDataForBordCategories){
+    fun setupApi(api: ApiWorkWithDataForBordCategories) {
         this.externalAPI = api
         listCustomCategories = externalAPI.getListCustomCategoriesFromSharPrefs()
         listCategorySelected = externalAPI.getSelectedCategoriesFromSharPrefs()
     }
 
-    private fun initialAttributes(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int){
-        if(attrs == null) return
-        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.BordCategoriesView, defStyleAttr, defStyleRes)
-        with(binding){
-            val headerText = typedArray.getString(R.styleable.BordCategoriesView_headerText)
-            countRows = typedArray.getInt(R.styleable.BordCategoriesView_countRows, 3)
-
-        }
+    private fun initialAttributes(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) {
+        if (attrs == null) return
+        val typedArray =
+            context.obtainStyledAttributes(attrs, R.styleable.BordCategoriesView, defStyleAttr, defStyleRes)
+        typedArray.getString(R.styleable.BordCategoriesView_headerText)
+        countRows = typedArray.getInt(R.styleable.BordCategoriesView_countRows, 3)
         typedArray.recycle()
     }
 
@@ -94,7 +92,7 @@ class BordCategoriesView(
         bindingCurrentItem.textView.text = item
         bindingCurrentItem.textView.tag = item
         if (listCategorySelected.contains(item)) {
-            bindingCurrentItem.textView.setBackgroundResource(com.example.smoothie.R.drawable.category_pressed)
+            bindingCurrentItem.textView.setBackgroundResource(R.drawable.category_pressed)
         }
 
         initEventsCategory(bindingCurrentItem)
@@ -106,12 +104,17 @@ class BordCategoriesView(
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun initEventsCategory(bindingCurrentItem: CategoryItemBinding){
+    private fun initEventsCategory(bindingCurrentItem: CategoryItemBinding) {
         bindingCurrentItem.textView.setOnClickListener {
             val tag = (it.tag as String)
             if (tag == "+") {
                 showDialogAddCategory()
             } else {
+                val currentColor = if (bindingCurrentItem.textView.currentTextColor == Color.WHITE)
+                    resources.getColor(R.color.carrot)
+                else
+                    Color.WHITE
+                bindingCurrentItem.textView.setTextColor(currentColor)
                 changingBackground(tag, it)
             }
         }
@@ -136,13 +139,13 @@ class BordCategoriesView(
         }
     }
 
-    private fun changingBackground(tag: String, view: View){
+    private fun changingBackground(tag: String, view: View) {
         if (!listCategorySelected.contains(tag)) {
             listCategorySelected.add(tag)
-            view.setBackgroundResource(com.example.smoothie.R.drawable.category_pressed)
+            view.setBackgroundResource(R.drawable.category_pressed)
         } else {
             listCategorySelected.remove(tag)
-            view.setBackgroundResource(com.example.smoothie.R.drawable.category)
+            view.setBackgroundResource(R.drawable.category)
         }
     }
 

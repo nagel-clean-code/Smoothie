@@ -55,7 +55,6 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
         observeRecipe()
         observeLoadState()
         setupSwipeToRefresh()
-
         setupSearchInput()
         handleScrollingToTopWhenSearching()
         handleListVisibility()
@@ -72,7 +71,7 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
         viewModel.refresh()
         table.clearTable()
         table.displayCategories()
-        CoroutineScope(Dispatchers.Main).launch {   //Костыльно решил проблему с расширение таблицы на весь экран
+        CoroutineScope(Dispatchers.Main).launch {   //Костыльно решил проблему с расширением таблицы на весь экран
             binding.table.visibility = View.GONE
         }
     }
@@ -128,15 +127,13 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
         recipeAdapter = RecipeAdapter(viewModel)
         val tryAgainAction: TryAgainAction = { recipeAdapter.retry() }
         val footerAdapter = DefaultLoadStateAdapter(tryAgainAction)
-        val adapterWithLoadState =
-            recipeAdapter.withLoadStateFooter(footerAdapter) //Объединяем адаптеры
+        val adapterWithLoadState = recipeAdapter.withLoadStateFooter(footerAdapter) //Объединяем адаптеры
 
-        (binding.recyclerView.itemAnimator as? DefaultItemAnimator)?.supportsChangeAnimations =
-            false
+        (binding.myRecipesRecyclerView.itemAnimator as? DefaultItemAnimator)?.supportsChangeAnimations = false
 
         val linearLayoutManager = LinearLayoutManager(context)
-        binding.recyclerView.layoutManager = linearLayoutManager
-        binding.recyclerView.adapter = adapterWithLoadState
+        binding.myRecipesRecyclerView.layoutManager = linearLayoutManager
+        binding.myRecipesRecyclerView.adapter = adapterWithLoadState
 
         loadStateHolder = DefaultLoadStateAdapter.Holder(
             binding.loadStateView,
@@ -154,7 +151,7 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
                 if (previousState is LoadState.Loading && currentState is LoadState.NotLoading
                     && viewModel.scrollEvents.value?.get() != null
                 ) {
-                    binding.recyclerView.scrollToPosition(0)
+                    binding.myRecipesRecyclerView.scrollToPosition(0)
                 }
             }
     }
@@ -167,7 +164,7 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
         getRefreshLoadStateFlow()
             .simpleScan(count = 3)
             .collectLatest { (beforePrevious, previous, current) ->
-                binding.recyclerView.isInvisible = current is LoadState.Error
+                binding.myRecipesRecyclerView.isInvisible = current is LoadState.Error
                         || previous is LoadState.Error
                         || (beforePrevious is LoadState.Error && previous is LoadState.NotLoading
                         && current is LoadState.Loading)
@@ -175,8 +172,7 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
     }
 
     private fun getRefreshLoadStateFlow(): Flow<LoadState> {
-        return recipeAdapter.loadStateFlow
-            .map { it.refresh }
+        return recipeAdapter.loadStateFlow.map { it.refresh }
     }
 
     private fun setupSwipeToRefresh() {

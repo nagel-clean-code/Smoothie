@@ -14,6 +14,10 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 import java.util.*
 
+/**
+ * @param getUserName - используем колбэк, потому что при запуске программы
+ *                      этот класс инициализируется вперёд создания нового аккаунта
+ */
 class FirebaseRecipeStorageImpl(private val getUserName: () -> String) : RecipeStorageDB {
 
     private val firestore: FirebaseFirestore = Firebase.firestore
