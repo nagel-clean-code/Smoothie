@@ -48,7 +48,7 @@ class AddRecipeFragment : BaseFragment() {
                 }
             }
         }
-        binding.addButton.setOnClickListener {
+        binding.addRecipeButton.setOnClickListener {
             saveRecipeToDatabase()
         }
         viewModel.recipeDisplayLiveDataMutable.observe(viewLifecycleOwner) { recipe ->

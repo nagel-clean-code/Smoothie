@@ -53,29 +53,29 @@ class MainActivity() : AppCompatActivity() {
     }
 
     private fun updateUI(user: FirebaseUser?) {
-        if(user == null){
-            Toast.makeText(this,"Не авторизирован", Toast.LENGTH_LONG).show()
+        if (user == null) {
+            Toast.makeText(this, "Не авторизирован", Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun signWhyAnonymous(){
+    private fun signWhyAnonymous() {
         auth.signInAnonymously()
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(this,"Sign in success", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Sign in success", Toast.LENGTH_LONG).show()
                     val user = auth.currentUser
                     updateUI(user)
                 } else {
-                    Toast.makeText(this,"sign in fails", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "sign in fails", Toast.LENGTH_LONG).show()
                     updateUI(null)
                 }
+                if (viewModel.getUserName().isBlank()) {
+                    viewModel.setupNewUserName()
+                }
             }
-        if(viewModel.getUserName().isBlank()){
-            viewModel.setupNewUserName()
-        }
     }
 
-        /** Скрытие поднятого меню над клавиатурой при вводе текста */
+    /** Скрытие поднятого меню над клавиатурой при вводе текста */
     private fun settingKeyboard() {
         binding.bottomNavigationView.viewTreeObserver.addOnGlobalLayoutListener {
             val r = Rect()

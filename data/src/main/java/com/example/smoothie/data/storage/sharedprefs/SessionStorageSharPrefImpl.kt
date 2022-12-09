@@ -12,9 +12,10 @@ class SessionStorageSharPrefImpl(context: Context) : SessionStorageSharPref {
         userNameBuf = userName
     }
 
+    //Второй параметр заменить на "no_name" при заполнении базы данными для общих стримов
     override fun getUserName(): String {
         if (userNameBuf == null) {
-            userNameBuf = sharedPreferences.getString(USER_NAME, "no_name") ?: ""
+            userNameBuf = sharedPreferences.getString(USER_NAME, "") ?: ""
         }
         return userNameBuf!!
     }
