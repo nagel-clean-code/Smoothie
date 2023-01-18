@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.smoothie.Constants
-import com.example.smoothie.presentation.FindMyFragment
+import com.example.smoothie.presentation.fragments.FindMyFragment
 
 
 class FindPagerAdapter(childFragmentManager: FragmentManager, fa: FragmentActivity): FragmentStateAdapter(childFragmentManager, fa.lifecycle) {

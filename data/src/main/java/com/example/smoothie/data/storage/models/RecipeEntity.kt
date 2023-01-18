@@ -9,7 +9,7 @@ data class RecipeEntity(
     override val uniqueId: String? = "",                         //userName_$id
     override val name: String? = "",
     override val recipe: String? = "",
-    override val listCategory: List<Int>? = mutableListOf(),
+    override val listCategory: List<String>? = mutableListOf(),
     override var imageUrl: String? = "",
     override var isFavorite: Boolean = false,
     override var inProgress: Boolean = false
@@ -21,7 +21,7 @@ data class RecipeEntity(
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
-        mutableListOf(),
+        parcel.createStringArrayList(),
         parcel.readString(),
         parcel.readByte() != 0.toByte(),
         parcel.readByte() != 0.toByte()
@@ -45,6 +45,7 @@ data class RecipeEntity(
         parcel.writeString(uniqueId)
         parcel.writeString(name)
         parcel.writeString(recipe)
+        parcel.writeStringList(listCategory)
         parcel.writeString(imageUrl)
         parcel.writeByte(if (isFavorite) 1 else 0)
         parcel.writeByte(if (inProgress) 1 else 0)

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BordCategoriesView">
+        <attr name="headerText" format="string"/>
+        <attr name="countRows" format="integer"/>
+    </declare-styleable>
+</resources>

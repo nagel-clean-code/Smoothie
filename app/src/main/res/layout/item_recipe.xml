@@ -14,7 +14,7 @@
         android:contentDescription="@string/app_name"
         android:paddingStart="8dp"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toStartOf="@+id/guideline1"
+        app:layout_constraintWidth_percent="0.30"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/roundedImageView"
@@ -91,12 +91,5 @@
         app:layout_constraintEnd_toEndOf="@id/deleteImageView"
         app:layout_constraintStart_toStartOf="@id/starImageView"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.30" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

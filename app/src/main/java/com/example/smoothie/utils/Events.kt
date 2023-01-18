@@ -5,18 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
 
-class Event<T>(
-    value: T
-) {
-
+class Event<T>(value: T) {
     private var _value: T? = value
-
     fun get(): T? = _value.also { _value = null }
-
 }
 
 // --- helper methods / aliases
-
 /**
  * Convert mutable live-data into non-mutable live-data.
  */

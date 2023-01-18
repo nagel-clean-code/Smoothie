@@ -9,25 +9,34 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.*
 import com.example.smoothie.R
 import com.example.smoothie.data.repository.RecipesPageSource
+import com.example.smoothie.data.repository.RecipesRemoteMediator
 import com.example.smoothie.data.storage.models.RecipeEntity
 import com.example.smoothie.domain.usecase.database.DeleteRecipeInDbUseCase
 import com.example.smoothie.domain.usecase.database.GetListRecipeFromDBUseCase
 import com.example.smoothie.domain.usecase.database.SaveFavoriteFlagInDbUseCase
+import com.example.smoothie.domain.usecase.sharedpref.recipe.GetCustomCategoriesListFromSharPrefsUseCase
+import com.example.smoothie.domain.usecase.sharedpref.recipe.SaveCostumeCategoriesListSharPrefsUseCase
 import com.example.smoothie.presentation.adapters.RecipeAdapter
+import com.example.smoothie.presentation.views.ApiWorkWithDataForBordCategories
 import com.example.smoothie.utils.MutableLiveEvent
 import com.example.smoothie.utils.publishEvent
 import com.example.smoothie.utils.share
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class SharedFindRecipeViewModel @Inject constructor(
+    private val saveCostumeCategoriesListSharPrefsUseCase: SaveCostumeCategoriesListSharPrefsUseCase,
+    private val getCustomCategoriesListFromSharPrefsUseCase: GetCustomCategoriesListFromSharPrefsUseCase,
     private val getListRecipeFromDBUseCase: GetListRecipeFromDBUseCase,
     private val saveFavoriteFlagInDbUseCase: SaveFavoriteFlagInDbUseCase,
     private val deleteRecipeInDbUseCase: DeleteRecipeInDbUseCase
-) : BaseViewModel(), RecipeAdapter.Listener {
+) : BaseViewModel(), RecipeAdapter.Listener, ApiWorkWithDataForBordCategories {
 
     val recipesFlow: Flow<PagingData<RecipeEntity>>
 
@@ -60,9 +69,21 @@ class SharedFindRecipeViewModel @Inject constructor(
         )
     }
 
+    override fun getListCustomCategoriesFromSharPrefs(): MutableList<String> {
+        return getCustomCategoriesListFromSharPrefsUseCase.execute() ?: mutableListOf()
+    }
+
+    override fun saveCategoryInSharPrefs(list: List<String>) {
+        saveCostumeCategoriesListSharPrefsUseCase.execute(list)
+    }
+
+    override fun saveSelectedCategoriesInSharPrefs(list: List<String>) = Unit
+
+    override fun getSelectedCategoriesFromSharPrefs(): MutableList<String> = arrayListOf()
+
     fun setSearchBy(value: String) {
-        if (this.searchBy.value == value) return
-        this.searchBy.value = value
+        if (searchBy.value == value) return
+        searchBy.value = value
         scrollListToTop()
     }
 
@@ -75,6 +96,7 @@ class SharedFindRecipeViewModel @Inject constructor(
             PagingConfig(PAGE_SIZE),
             pagingSourceFactory = {
                 RecipesPageSource(getListRecipeFromDBUseCase::execute, PAGE_SIZE, searchBy.value)
+//                RecipesRemoteMediator(getListRecipeFromDBUseCase::execute, PAGE_SIZE, searchBy.value) //FIXME требуется доработка
             }
         ).flow
     }

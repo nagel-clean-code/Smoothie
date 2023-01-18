@@ -4,13 +4,15 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.smoothie.databinding.ActivityMainBinding
-import com.example.smoothie.presentation.AddRecipeFragment
-import com.example.smoothie.presentation.FindRecipeFragment
-import com.example.smoothie.presentation.HomeFragment
-import com.example.smoothie.presentation.SettingsFragment
+import com.example.smoothie.presentation.fragments.AddRecipeFragment
+import com.example.smoothie.presentation.fragments.FindRecipeFragment
+import com.example.smoothie.presentation.fragments.HomeFragment
+import com.example.smoothie.presentation.fragments.SettingsFragment
+import com.example.smoothie.presentation.viewmodels.MainActivityViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -21,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity() : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var auth: FirebaseAuth
+    private val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_Smoothie)
@@ -50,26 +53,29 @@ class MainActivity() : AppCompatActivity() {
     }
 
     private fun updateUI(user: FirebaseUser?) {
-        if(user == null){
-            Toast.makeText(this,"Не авторизирован", Toast.LENGTH_LONG).show()
+        if (user == null) {
+            Toast.makeText(this, "Не авторизирован", Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun signWhyAnonymous(){
+    private fun signWhyAnonymous() {
         auth.signInAnonymously()
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(this,"Sign in success", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Sign in success", Toast.LENGTH_LONG).show()
                     val user = auth.currentUser
                     updateUI(user)
                 } else {
-                    Toast.makeText(this,"sign in fails", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "sign in fails", Toast.LENGTH_LONG).show()
                     updateUI(null)
+                }
+                if (viewModel.getUserName().isBlank()) {
+                    viewModel.setupNewUserName()
                 }
             }
     }
 
-        /** Скрытие поднятого меню над клавиатурой при вводе текста */
+    /** Скрытие поднятого меню над клавиатурой при вводе текста */
     private fun settingKeyboard() {
         binding.bottomNavigationView.viewTreeObserver.addOnGlobalLayoutListener {
             val r = Rect()

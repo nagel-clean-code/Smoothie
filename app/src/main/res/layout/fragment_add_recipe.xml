@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="presentation.AddRecipeFragment">
+    tools:context=".presentation.fragments.AddRecipeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -31,21 +31,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_button_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.25" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_button_end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.75" />
-
         <ImageView
             android:id="@+id/image_button"
             android:layout_width="0dp"
@@ -70,14 +55,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/editText_name_recipe" />
 
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_headers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.03" />
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/entering_recipe_Layout"
             android:layout_width="match_parent"
@@ -97,16 +74,14 @@
                 android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TableLayout
+        <com.example.smoothie.presentation.views.BordCategoriesView
             android:id="@+id/table"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/entering_recipe_Layout">
-
-        </TableLayout>
+            app:layout_constraintTop_toBottomOf="@+id/entering_recipe_Layout" />
 
         <TextView
             android:id="@+id/add_mark"
@@ -118,19 +93,11 @@
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/guideline_headers"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/table" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/middle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5" />
-
-
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/add_button"
+            android:id="@+id/addRecipeButton"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="20dp"
@@ -139,9 +106,10 @@
             android:textSize="20sp"
             app:cornerRadius="24dp"
             app:layout_constraintDimensionRatio="1:0.381"
-            app:layout_constraintEnd_toEndOf="@+id/guideline_button_end"
-            app:layout_constraintStart_toStartOf="@+id/guideline_button_start"
-            app:layout_constraintTop_toBottomOf="@+id/add_mark" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_mark"
+            app:layout_constraintWidth_percent="0.50" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

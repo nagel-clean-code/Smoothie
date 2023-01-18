@@ -1,25 +1,21 @@
 package com.example.smoothie.data.repository
 
-import com.example.smoothie.data.storage.databases.RecipeStorageDB
+import com.example.smoothie.data.storage.databases.external.RecipeStorageFB
 import com.example.smoothie.data.storage.sharedprefs.RecipeStorageSharPref
 import com.example.smoothie.domain.models.IRecipeModel
 import com.example.smoothie.domain.repository.RecipeRepository
 
 
 class RecipeRepositoryImpl(
-    private val recipeStorage: RecipeStorageDB,
+    private val recipeStorage: RecipeStorageFB,
     private val sharedPrefRecipeStorage: RecipeStorageSharPref
 ) : RecipeRepository {
 
-    override fun saveRecipeDataBase(recipe: IRecipeModel) {
-        recipeStorage.saveRecipe(recipe)
-    }
+    override suspend fun saveRecipeDataBase(recipe: IRecipeModel) { recipeStorage.saveRecipe(recipe) }
 
-    override suspend fun getRandomRecipe(): IRecipeModel = recipeStorage.nextRecipe()
+    override suspend fun getRandomRecipe(): IRecipeModel = recipeStorage.getNextRecipe()
 
-    override suspend fun getImageFromLinkFromDB(url: String): ByteArray {
-        return recipeStorage.getImageByUrl(url)
-    }
+    override suspend fun getImageFromLinkFromDB(url: String): ByteArray { return recipeStorage.getImageByUrl(url) }
 
     override suspend fun getListRecipe(
         searchBy: String,
@@ -41,6 +37,10 @@ class RecipeRepositoryImpl(
 
     override fun saveImageFromAddFormInSharPref(imageString: String) = sharedPrefRecipeStorage.saveImageFromAddForm(imageString)
 
+    override fun saveCustomCategoriesListInSharPrefs(categories: List<String>, key: String?) =
+        sharedPrefRecipeStorage.saveCustomCategories(categories, key)
+
+    override fun getCustomCategoriesListInSharPrefs(key: String?): MutableList<String>? = sharedPrefRecipeStorage.getCustomCategories(key)
 
     override fun getImageFromAddFormFromSharPref() = sharedPrefRecipeStorage.getImageFromAddForm()
 
