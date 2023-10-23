@@ -8,7 +8,7 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
 import com.example.smoothie.R
-import com.example.smoothie.data.repository.RecipesPageSource
+import com.example.smoothie.data.repository.RecipesRemoteMediator
 import com.example.smoothie.data.storage.models.RecipeEntity
 import com.example.smoothie.domain.usecase.database.DeleteRecipeInDbUseCase
 import com.example.smoothie.domain.usecase.database.GetListRecipeFromDBUseCase
@@ -78,8 +78,8 @@ class SharedFindRecipeViewModel @Inject constructor(
     override fun getSelectedCategoriesFromSharPrefs(): MutableList<String> = arrayListOf()
 
     fun setSearchBy(value: String) {
-        if (this.searchBy.value == value) return
-        this.searchBy.value = value
+        if (searchBy.value == value) return
+        searchBy.value = value
         scrollListToTop()
     }
 
@@ -91,7 +91,7 @@ class SharedFindRecipeViewModel @Inject constructor(
         return Pager(
             PagingConfig(PAGE_SIZE),
             pagingSourceFactory = {
-                RecipesPageSource(getListRecipeFromDBUseCase::execute, PAGE_SIZE, searchBy.value)
+                RecipesRemoteMediator(getListRecipeFromDBUseCase::execute, PAGE_SIZE, searchBy.value)
             }
         ).flow
     }

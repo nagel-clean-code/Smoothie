@@ -1,5 +1,6 @@
 package com.example.smoothie.data.repository
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.smoothie.data.storage.models.RecipeEntity
@@ -30,6 +31,7 @@ class RecipesPageSource(
                         recipesPageLoader.invoke(it, page * pageSize + 1, params.loadSize)
                     } as List<RecipeEntity>
             }
+            Log.d("RecipesPageSource_load:", "Текущее количество рецептов: ${listRecipe.size}")
             return LoadResult.Page(
                 data = listRecipe,
                 prevKey =  if (page == 0) null else page - 1,

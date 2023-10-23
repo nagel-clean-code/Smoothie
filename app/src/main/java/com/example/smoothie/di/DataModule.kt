@@ -3,10 +3,10 @@ package com.example.smoothie.di
 import android.content.Context
 import com.example.smoothie.data.repository.RecipeRepositoryImpl
 import com.example.smoothie.data.repository.SessionRepositoryImpl
-import com.example.smoothie.data.storage.databases.FirebaseRecipeStorageImpl
-import com.example.smoothie.data.storage.databases.RecipeStorageDB
-import com.example.smoothie.data.storage.databases.SessionStorageDb
-import com.example.smoothie.data.storage.databases.SessionStorageImpl
+import com.example.smoothie.data.storage.databases.external.RecipeStorageFBImpl
+import com.example.smoothie.data.storage.databases.external.RecipeStorageFB
+import com.example.smoothie.data.storage.databases.external.SessionStorageFB
+import com.example.smoothie.data.storage.databases.external.SessionStorageFbImpl
 import com.example.smoothie.data.storage.sharedprefs.RecipeStorageSharPref
 import com.example.smoothie.data.storage.sharedprefs.SessionStorageSharPref
 import com.example.smoothie.data.storage.sharedprefs.SessionStorageSharPrefImpl
@@ -32,20 +32,20 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseRecipeStorage(sessionStorageSharPref: SessionStorageSharPref): RecipeStorageDB {
-        return FirebaseRecipeStorageImpl(sessionStorageSharPref::getUserName)
+    fun provideFirebaseRecipeStorage(sessionStorageSharPref: SessionStorageSharPref): RecipeStorageFB {
+        return RecipeStorageFBImpl(sessionStorageSharPref::getUserName)
     }
 
     @Provides
     @Singleton
-    fun provideSessionStorageDb(): SessionStorageDb {
-        return SessionStorageImpl()
+    fun provideSessionStorageDb(): SessionStorageFB {
+        return SessionStorageFbImpl()
     }
 
     @Provides
     @Singleton
     fun provideRecipeRepository(
-        recipeStorage: RecipeStorageDB,
+        recipeStorage: RecipeStorageFB,
         sharedPrefRecipeStorage: RecipeStorageSharPref
     ): RecipeRepository {
         return RecipeRepositoryImpl(
@@ -64,7 +64,7 @@ class DataModule {
     @Singleton
     fun provideSessionRepository(
         sessionStorageSharPref: SessionStorageSharPref,
-        sessionStorageDb: SessionStorageDb
+        sessionStorageDb: SessionStorageFB
     ): SessionRepository {
         return SessionRepositoryImpl(
             sessionStorageSharPref = sessionStorageSharPref,

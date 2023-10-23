@@ -1,4 +1,4 @@
-package com.example.smoothie.data.storage.databases
+package com.example.smoothie.data.storage.databases.external
 
 import android.content.ContentValues.TAG
 import android.util.Log
@@ -15,7 +15,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import kotlin.math.floor
 
-class SessionStorageImpl : SessionStorageDb {
+class SessionStorageFbImpl : SessionStorageFB {
     private val firestore: FirebaseFirestore = Firebase.firestore
     private val realtimeDatabase: DatabaseReference = FirebaseDatabase.getInstance().reference
 
@@ -42,7 +42,7 @@ class SessionStorageImpl : SessionStorageDb {
             .addOnFailureListener { e -> Log.w(TAG, "Не удалось создать счётчик, крах", e) }
     }
 
-    private suspend fun getCount(ref: DocumentReference): Int {
+    private suspend fun getCount(ref: DocumentReference): Int { //FIXME - выяснить для чего это
         var count = 0
         ref.collection("shards").get()
             .continueWith { task ->

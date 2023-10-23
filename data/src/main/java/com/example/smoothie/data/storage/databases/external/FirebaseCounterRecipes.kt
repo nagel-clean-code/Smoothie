@@ -1,4 +1,4 @@
-package com.example.smoothie.data.storage.databases
+package com.example.smoothie.data.storage.databases.external
 
 import android.content.ContentValues
 import android.util.Log

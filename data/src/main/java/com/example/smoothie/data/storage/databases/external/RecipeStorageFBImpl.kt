@@ -1,4 +1,4 @@
-package com.example.smoothie.data.storage.databases
+package com.example.smoothie.data.storage.databases.external
 
 import android.content.ContentValues.TAG
 import android.util.Log
@@ -18,7 +18,7 @@ import java.util.*
  * @param getUserName - используем колбэк, потому что при запуске программы
  *                      этот класс инициализируется вперёд создания нового аккаунта
  */
-class FirebaseRecipeStorageImpl(private val getUserName: () -> String) : RecipeStorageDB {
+class RecipeStorageFBImpl(private val getUserName: () -> String) : RecipeStorageFB {
 
     private val firestore: FirebaseFirestore = Firebase.firestore
     private val storageRef = FirebaseStorage.getInstance("gs://smoothie-40dd3.appspot.com")
@@ -37,7 +37,7 @@ class FirebaseRecipeStorageImpl(private val getUserName: () -> String) : RecipeS
         }
     }
 
-    override suspend fun nextRecipe(): IRecipeModel {
+    override suspend fun getNextRecipe(): IRecipeModel {
         var recipe = RecipeEntity(name = "Рецептов нет")
         if (firebaseCounterRecipes.getCurrentCountRecipes() == 0L)
             return recipe

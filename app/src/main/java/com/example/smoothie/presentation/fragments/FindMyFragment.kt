@@ -1,6 +1,8 @@
 package com.example.smoothie.presentation.fragments
 
+import android.content.ContentValues
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -86,12 +88,13 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
         }
     }
 
-    private fun animationPopEnter(){
+    private fun animationPopEnter() {
         val animation = AnimationUtils.loadAnimation(context, com.example.smoothie.R.anim.pop_enter)
         animation.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
                 binding.table.visibility = View.VISIBLE
             }
+
             override fun onAnimationEnd(animation: Animation?) {}
 
             override fun onAnimationRepeat(animation: Animation?) {}
@@ -99,13 +102,14 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
         binding.table.startAnimation(animation)
     }
 
-    private fun animationPopExit(){
+    private fun animationPopExit() {
         val animation = AnimationUtils.loadAnimation(context, com.example.smoothie.R.anim.pop_exit)
         animation.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {}
             override fun onAnimationEnd(animation: Animation?) {
                 binding.table.visibility = View.GONE
             }
+
             override fun onAnimationRepeat(animation: Animation?) {}
         })
         binding.table.startAnimation(animation)
@@ -164,10 +168,15 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
         getRefreshLoadStateFlow()
             .simpleScan(count = 3)
             .collectLatest { (beforePrevious, previous, current) ->
-                binding.myRecipesRecyclerView.isInvisible = current is LoadState.Error
+                Log.d("getRefreshLoadStateFlow", "beforePrevious $beforePrevious, previous $previous, current $current")
+
+                val invisible = current is LoadState.Error
                         || previous is LoadState.Error
                         || (beforePrevious is LoadState.Error && previous is LoadState.NotLoading
                         && current is LoadState.Loading)
+                Log.d("getRefreshLoadStateFlow: isInvisible = ", "$invisible")
+
+                binding.myRecipesRecyclerView.isInvisible = invisible
             }
     }
 
@@ -181,6 +190,7 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
         }
     }
 
+    //TODO нужно сделать подгрузку из sharprefs, и проверять на сервере есть ли новые рецепты и только после этого подгружаеть новые
     private fun observeRecipe() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.recipesFlow.collectLatest {
@@ -207,9 +217,9 @@ class FindMyFragment(private val indexPager: Int) : BaseFragment() {
         viewModel.invalidateEvents.observeEvent(this) {
             recipeAdapter.refresh()
 
-            GlideApp.get(requireActivity().applicationContext).clearMemory();
+            GlideApp.get(requireActivity().applicationContext).clearMemory()
             CoroutineScope(Dispatchers.IO).launch {
-                GlideApp.get(requireActivity().applicationContext).clearDiskCache();
+                GlideApp.get(requireActivity().applicationContext).clearDiskCache()
             }
         }
     }
